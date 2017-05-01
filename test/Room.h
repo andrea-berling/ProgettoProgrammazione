@@ -22,6 +22,8 @@ class Room
 
         bool overlaps(Map M);
 
+        point pickAPointAround(Map& M);
+
 };
 
 Room generateRoom(int w, int h);

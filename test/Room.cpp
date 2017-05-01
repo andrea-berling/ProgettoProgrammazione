@@ -54,3 +54,42 @@ Room generateRoom(int w, int h)
     return R;
 
 }
+
+point pickAPointAround(Map& M)
+{
+    using namespace std;    
+
+    vector<point> points;
+    point q; 
+    
+    if(p.x > 1)
+    {
+        q.x = p.x - 1;
+        q.y = rand(p.y, p.y + height - 1);
+        points.insert(q);
+    }
+
+    if(p.y > 1)
+    {
+        q.y = p.y - 1;
+        q.x = rand(p.x, p.x + width - 1);
+        points.insert(q);
+    }
+
+    if(p.x + width < M.getWidth())
+    {
+        q.x = p.x + width;
+        q.y = rand(p.y, p.y + height - 1);
+        points.insert(q);
+    }
+
+    if(p.y + height < M.getHeight())
+    {
+        q.y = p.y + height;
+        q.x = rand(p.x, p.x + width - 1);
+        points.insert(q);
+    }
+
+    return pick<point>(points);
+
+}
