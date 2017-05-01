@@ -190,7 +190,9 @@ bool operator != (Room r1, Room r2)
 class Hall: public Area
 {
     private:
+
         orientation_t orientation;
+
     public:
 
         Hall():Area()
