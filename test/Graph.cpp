@@ -239,6 +239,11 @@ void Graph::print()
 
     cout << endl;
 }
+
+bool Graph::contains(Node n)
+{
+    return nodes.contains(n);
+}
 #endif
 
 #endif

@@ -18,14 +18,14 @@ class Room
 
         Room(point position, int width, int height);
 
-        void place(Map M);
+        void place(Map* M);
 
-        bool overlaps(Map M);
+        bool overlaps(Map* M);
 
-        point pickAPointAround(Map& M);
+        point pickAPointAround(Map* M);
 
 };
 
-Room generateRoom(int w, int h);
+Room generateRoom(int w, int h,int seed);
 
 #endif
