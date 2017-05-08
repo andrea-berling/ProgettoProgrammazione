@@ -135,6 +135,7 @@ class Graph
         
 #ifdef DEBUG
         void print();
+        bool contains(Node n);
 #endif
 };
 

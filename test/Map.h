@@ -1,13 +1,9 @@
 #ifndef MAP_H
 #define MAP_H
 #include "Matrix.h"
+#include "Graph.h"
 
-enum tile_t { VOID, PAVEMENT, WALL};
-
-struct point
-{
-    int x,y;
-};
+enum tile_t { VOID, PAVEMENT, WALL, ROOM_BORDER};
 
 class Map : public Matrix<tile_t>
 {
@@ -22,9 +18,6 @@ class Map : public Matrix<tile_t>
         
         Map(int width, int height);
         // Creates a new map with the given # of rows and columns
-
-        ~Map();
-        // Destructor
 
         tile_t& operator () (int x, int y);
         // Returns a reference variable to Map(x,y)
