@@ -3,6 +3,7 @@
 #include "Graph.h"
 #include "Map.h"
 #include "Room.h"
+#include "../../DataStructures/Dequeue/include/dequeue.h"
 #include "../../DataStructures/PriorityQueue/include/priorityqueue.h"
 #include "../../DataStructures/HashTable/include/HashTable.h"
 #include "../../DataStructures/List/include/List.h"
@@ -82,8 +83,7 @@ void shortestPath(Graph* G, Node r,HashTable<Node,Node>* T)
     HashTable<Node,int> d(G->n());
     HashTable<Node,bool> b(G->n());
     Hash::Set<Node>* adj = G->V();
-    HashTable<Node,PriorityItem<Node>> pos(G->n());
-    PriorityItem<Node> p;
+    Dequeue<Node> S;
     for(Hash::set_iterator<Node> it = adj->begin(); it != adj->end(); it++)
     {
         if((*it) != r)
@@ -97,12 +97,10 @@ void shortestPath(Graph* G, Node r,HashTable<Node,Node>* T)
     T->insert(r,nil);
     d.insert(r,0);
     b.insert(r,true);
-    PriorityQueue<Node> S(G->n());
-    p = S.insert(r,0);
-    pos.insert(r,p);
-    while(!S.isEmpty())
+    S.push(r);
+    while(!S.empty())
     {
-        Node u = S.deleteMin();
+        Node u = S.pop();
         b.insert(u,false);
         adj = G->adj(u);
         for(Hash::set_iterator<Node> it = adj->begin(); it != adj->end(); it++)
@@ -111,14 +109,11 @@ void shortestPath(Graph* G, Node r,HashTable<Node,Node>* T)
            {
                if(!b[*it])
                {
-                   p = S.insert(*it,d[u] + w(u,*it));
-                   pos.insert(*it,p);
+                   if(d[*it] == INF)
+                       S.push_back(*it);
+                   else
+                       S.push(*it);
                    b.insert(*it,true);
-               }
-               else
-               {
-                   PriorityItem<Node> dec = pos[*it];
-                   S.decrease(dec ,d[u] + w(u,*it));
                }
                T->insert(*it,u);
                d.insert(*it,d[u] + w(u,*it));
@@ -140,7 +135,7 @@ void generateMap(Map* M)
     int requiredRooms = 10;
     int seed = 2;
     Room R,Q;
-    List<Room> rooms;
+    Stack<Room> rooms;
     Graph dots;
 
     for(int i = 0; i < M->getWidth(); i++)        // Map initialization
@@ -156,7 +151,7 @@ void generateMap(Map* M)
             seed += 2;
             R = generateRoom(M->getWidth(), M->getHeight(), seed);
         }
-        rooms.insert(rooms.head(),R);
+        rooms.push(R);
         R.place(M);
         n++;
     }
@@ -171,10 +166,9 @@ void generateMap(Map* M)
         logfile.close();
 #endif
 
-    R = rooms.read(rooms.head());
-    rooms.remove(rooms.head());
-    Q = rooms.read(rooms.head());
-    while(!rooms.empty())
+    R = rooms.pop();
+    Q = rooms.top();
+    while(!rooms.isEmpty())
     {
         link(R,Q,&dots,M);
 #ifdef DEBUG
@@ -183,10 +177,9 @@ void generateMap(Map* M)
         printGraph(M,&dots,logfile);
         logfile.close();
 #endif
-        R = rooms.read(rooms.head());
-        rooms.remove(rooms.head());
-        if(!rooms.empty())
-            Q = rooms.read(rooms.head());
+        R = rooms.pop();
+        if(!rooms.isEmpty())
+            Q = rooms.top();
     }
     
 }
@@ -206,15 +199,14 @@ void link(Room& R,Room& Q,Graph* G,Map* M)
         steps = retrievePath(&T,one,two);
     }
     else
-        steps->insert(steps->head(),one);
+        steps->insert(one);
 
-    for(List<Node>* it = steps->head(); !steps->finished(it); it = steps->next(it))
+    for(List_iterator<Node> it = steps->begin(); it != steps->end(); it++)
     {
-        if((steps->read(it)).getPoint() != nil)
-            (*M)((steps->read(it)).getPoint()) = PAVEMENT;
+        if((*it).getPoint() != nil)
+            (*M)((*it).getPoint()) = PAVEMENT;
     }
 
-    steps->destroy();
     delete steps;
 }
 
@@ -222,7 +214,7 @@ List<Node>* retrievePath(HashTable<Node,Node>* T,Node& one,Node& two)
 {
     List<Node>* l = new List<Node>();    
     
-    l->insert(l->head(),two);
+    l->insert(two);
     Node p = (*T)[two];
 #ifdef DEBUG
     int i = 0;
@@ -230,7 +222,7 @@ List<Node>* retrievePath(HashTable<Node,Node>* T,Node& one,Node& two)
 
     while(p != one)
     {
-        l->insert(l->head(),p);
+        l->insert(p);
         p = (*T)[p];
 #ifdef DEBUG
         i++;
@@ -243,7 +235,7 @@ List<Node>* retrievePath(HashTable<Node,Node>* T,Node& one,Node& two)
 #endif
     }
 
-    l->insert(l->head(),one);
+    l->insert(one);
 
     return l;
 }
@@ -256,10 +248,8 @@ void printMap(Map* M)
     {
         for (int j = 0; j < M->getWidth(); j++)
         {
-            if ((*M)(j,i) == WALL)
+            if ((*M)(j,i) == WALL || (*M)(j,i) == ROOM_BORDER)
                 cout << "#";
-            else if ((*M)(j,i) == ROOM_BORDER)
-                cout << "%";
             else if (((*M)(j,i) == PAVEMENT) || ((*M)(j,i) == VOID))
                 cout << " ";
         }
@@ -275,10 +265,8 @@ void printMap(Map* M,ofstream& out)
     {
         for (int j = 0; j < M->getWidth(); j++)
         {
-            if ((*M)(j,i) == WALL)
+            if ((*M)(j,i) == WALL || (*M)(j,i) == ROOM_BORDER)
                 out << "#";
-            else if ((*M)(j,i) == ROOM_BORDER)
-                out << "%";
             else if (((*M)(j,i) == PAVEMENT) || ((*M)(j,i) == VOID))
                 out << " ";
         }
