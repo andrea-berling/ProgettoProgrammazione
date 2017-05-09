@@ -129,7 +129,7 @@ bool operator == (Edge e, Edge f)
     return (e.getFirstNode() == f.getFirstNode()) && (e.getSecondNode() == f.getSecondNode());
 }
 
-Graph::Graph():nodes(Hash::Set<Node>(6143)), edges(Hash::Set<Edge>(12289)) 
+Graph::Graph():nodes(HashTable<Node,List<Node>*>(6143)),C(0) 
 {}
 // Default constructor; creates an empty graph
 
@@ -137,7 +137,8 @@ bool Graph::insertNode(Node u)
 {
     if(!nodes.contains(u))
     {
-        nodes.insert(u);
+        nodes.insert(u,new List<Node>());
+        C++;
         return true;
     }
     else
@@ -147,12 +148,14 @@ bool Graph::insertNode(Node u)
 
 bool Graph::insertEdge(Node u, Node v)
 {
-    Edge e(u,v);
-    if(!edges.contains(e))
+    if(nodes.contains(u) && nodes.contains(v))
     {
-        edges.insert(e);
-        e = Edge(v,u);
-        edges.insert(e);
+        List<Node>* l = nodes.lookup(u); 
+        if(!l->contains(v))
+            l->insert(v);
+        l = nodes.lookup(v);
+        if(!l->contains(u))
+            l->insert(u);
         return true;
     }
     else
@@ -164,11 +167,17 @@ bool Graph::deleteNode(Node u)
 {
     if(nodes.contains(u))
     {
+        bool done = false;
         nodes.remove(u);
-        for(Hash::set_iterator<Edge> e = edges.begin(); e != edges.end(); e++)
+        for(hash_iterator<Node,List<Node>*> it = nodes.begin(); it != nodes.end(); it++)
         {
-            if ((*e).getFirstNode() == u || (*e).getSecondNode() == u)
-                edges.remove(*e);
+            for(List_iterator<Node> it2 = (*it).getValue()->begin(); it2 != (*it).getValue()->end() && !done; it2++)
+                if(*it2 == u)
+                {
+                    (*it).getValue()->remove(it2);
+                    done = true;
+                }
+            done = false;
         }
         return true;
     }
@@ -179,12 +188,24 @@ bool Graph::deleteNode(Node u)
 
 bool Graph::deleteEdge(Node u, Node v)
 {
-    Edge e(u,v);
-    if(edges.contains(e))
+    if(nodes.contains(u) && nodes.contains(v))
     {
-        edges.remove(e);
-        e = Edge(v,u);
-        edges.remove(e);
+        List<Node>* l = nodes.lookup(u);
+        bool done = false;
+        for(List_iterator<Node> it = l->begin(); it != l->end() && !done; it++)
+            if(*it == v)
+            {
+                l->remove(it);
+                done = true;
+            }
+        done = false;
+        l = nodes.lookup(v);
+        for(List_iterator<Node> it = l->begin(); it != l->end() && !done; it++)
+            if(*it == u)
+            {
+                l->remove(it);
+                done = true;
+            }
         return true;
     }
     else
@@ -194,14 +215,11 @@ bool Graph::deleteEdge(Node u, Node v)
 
 Hash::Set<Node>* Graph::adj(Node u)
 {
-    Hash::Set<Node> *adj = new Hash::Set<Node>(6143);
+    Hash::Set<Node> *adj = new Hash::Set<Node>(10);
 
-    for(Hash::set_iterator<Edge> e = edges.begin(); e != edges.end(); e++)
+    for(List_iterator<Node> it = (nodes.lookup(u))->begin(); it != (nodes.lookup(u))->end(); it++)
     {
-        if((*e).getFirstNode() == u)
-            adj->insert((*e).getSecondNode());
-        else if((*e).getSecondNode() == u)
-            adj->insert((*e).getFirstNode());
+        adj->insert(*it);
     }
 
     return adj;
@@ -212,9 +230,9 @@ Hash::Set<Node>* Graph::V()
 {
     Hash::Set<Node> *v = new Hash::Set<Node>(6143);               // a new set is created, so that modifications in this set without using the graph methods won't affect the graph
 
-    for(Hash::set_iterator<Node> it = nodes.begin(); it != nodes.end(); it++)
+    for(hash_iterator<Node,List<Node>*> it = nodes.begin(); it != nodes.end(); it++)
     {
-        v->insert(*it);
+        v->insert((*it).getKey());
     }
 
     return v;
@@ -223,22 +241,22 @@ Hash::Set<Node>* Graph::V()
 
 int Graph::n()
 {
-    return nodes.size();
+    return C;
 }
 
 #ifdef DEBUG
-void Graph::print()
-{
-    using namespace std;        
-
-    for(Hash::set_iterator<Edge> it = edges.begin(); it != edges.end(); it++)
-    {
-        (*it).print();
-        cout << " , ";
-    }
-
-    cout << endl;
-}
+//void Graph::print()
+//{
+//    using namespace std;        
+//
+//    for(Hash::set_iterator<Edge> it = edges.begin(); it != edges.end(); it++)
+//    {
+//        (*it).print();
+//        cout << " , ";
+//    }
+//
+//    cout << endl;
+//}
 
 bool Graph::contains(Node n)
 {

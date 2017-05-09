@@ -1,6 +1,8 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 #include "../../DataStructures/Set/include/set.h"
+#include "../../DataStructures/HashTable/include/HashTable.h"
+#include "../../DataStructures/List/include/List.h"
 #ifndef DEBUG
 #define DEBUG
 #endif
@@ -104,8 +106,8 @@ class Graph
 {
     private:
 
-        Hash::Set<Node> nodes;
-        Hash::Set<Edge> edges;
+        HashTable<Node,List<Node>*> nodes;
+        int C;
 
     public:
 
