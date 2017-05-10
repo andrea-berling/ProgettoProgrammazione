@@ -61,18 +61,18 @@ void populateGraph(Graph* dots,Map* M)
 
 void createLinks(Graph* dots,Map* M)
 {
-    for(int i = 1; i < M->getHeight() -1; i++)
-        for(int j = 1; j < M->getWidth() - 1; j++)
+    for(int i = 0; i < M->getHeight(); i++)
+        for(int j = 0; j < M->getWidth(); j++)
         {
             Node current(Node(j,i));
             Node right(Node(j + 1,i));
             Node down(Node(j, i + 1));
             if((*M)(current.getPoint()) == WALL || (*M)(current.getPoint()) == ROOM_BORDER)
             {
-                if(((*M)(right.getPoint()) == WALL || (*M)(right.getPoint()) == ROOM_BORDER) && j < M->getWidth() - 2)
+                if(j < M->getWidth() - 1 && ((*M)(right.getPoint()) == WALL || (*M)(right.getPoint()) == ROOM_BORDER))
                     dots->insertEdge(current,right);
 
-                if(((*M)(down.getPoint()) == WALL || (*M)(down.getPoint()) == ROOM_BORDER) && i < M->getHeight() - 2)
+                if(i < M->getHeight() - 1 && ((*M)(down.getPoint()) == WALL || (*M)(down.getPoint()) == ROOM_BORDER))
                     dots->insertEdge(current,down);
             }
         }
@@ -192,6 +192,13 @@ void link(Room& R,Room& Q,Graph* G,Map* M)
     Node two(q);
     List<Node>* steps = new List<Node>();
     HashTable<Node,Node> T(6143);
+#ifdef DEBUG
+    if(!G->contains(one) || !G->contains(two))
+    {
+        cerr << "Error, a point that is not in the graph was generated" << endl;
+        exit(1);
+    }
+#endif
 
     if(one != two)
     {
@@ -226,7 +233,7 @@ List<Node>* retrievePath(HashTable<Node,Node>* T,Node& one,Node& two)
         p = (*T)[p];
 #ifdef DEBUG
         i++;
-        if(i > 10000)
+        if(i > 50000)
         {
             cerr << "Too many tries, there's no link between one and two" << endl;
         logfile.close();
@@ -277,12 +284,73 @@ void printMap(Map* M,ofstream& out)
 
 void printGraph(Map* M,Graph* G,ofstream& out)
 {
-    for( int i = 0; i < M->getHeight(); i++)
+    for(int i = 0; i < M->getHeight(); i++)
     {
         for (int j = 0; j < M->getWidth(); j++)
         {
             if (G->contains(Node(j,i)))
                 out << "#";
+            else
+                out << " ";
+        }
+        out << endl;
+    }
+
+    out << endl;
+
+    Hash::Set<Node> *adj;
+    for(int i = 0; i < M->getHeight(); i++)
+    {
+        for (int j = 0; j < M->getWidth(); j++)
+        {
+            bool dirs[4];
+            adj = G->adj(Node(j,i));
+            if(adj->contains(Node(j - 1,i)))
+                dirs[0] = true;
+            else
+                dirs[0] = false;
+            if(adj->contains(Node(j,i + 1)))
+                dirs[1] = true;
+            else
+                dirs[1] = false;
+            if(adj->contains(Node(j,i - 1)))
+                dirs[2] = true;
+            else
+                dirs[2] = false;
+            if(adj->contains(Node(j + 1,i)))
+                dirs[3] = true;
+            else
+                dirs[3] = false;
+            if(dirs[0] && dirs[1] && dirs[2] && dirs[3])
+                out << "✛";
+            else if(dirs[0] && dirs[1] && dirs[2])
+                out << "⊣";
+            else if(dirs[1] && dirs[2] && dirs[3])
+                out << "⊢";
+            else if(dirs[0] && dirs[2] && dirs[3])
+                out << "⊥";
+            else if(dirs[0] && dirs[1] && dirs[3])
+                out << "⊤";
+            else if(dirs[0] && dirs[1])
+                out << "↰";
+            else if(dirs[1] && dirs[2])
+                out << "↕";
+            else if(dirs[2] && dirs[3])
+                out << "↱";
+            else if(dirs[3] && dirs[0])
+                out << "↔";
+            else if(dirs[0] && dirs[2])
+                out << "↵";
+            else if(dirs[3] && dirs[1])
+                out << "⸀";
+            else if (dirs[0])
+                out << "←";
+            else if (dirs[1])
+                out << "↓";
+            else if (dirs[2])
+                out << "↑";
+            else if (dirs[3])
+                out << "→";
             else
                 out << " ";
         }
