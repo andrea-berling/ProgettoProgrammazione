@@ -55,11 +55,11 @@ Room generateRoom(int w, int h,int seed)
     srand(time(NULL)*seed);
     int wLimit, hLimit;
 
-    p.x = rand(1,w - 6);
-    p.y = rand(1,h - 6);
+    p.x = rand(2,w - 7);
+    p.y = rand(2,h - 7);
 
-    wLimit = w - 1 - p.x < 20 ? w - 1 - p.x : 20;
-    hLimit = h - 1 - p.y < 20 ? h - 1 - p.y : 20;
+    wLimit = w - 2 - p.x < 20 ? w - 2 - p.x : 20;
+    hLimit = h - 2 - p.y < 20 ? h - 2 - p.y : 20;
     w = rand(5, wLimit);
     h = rand(5, hLimit);
 
