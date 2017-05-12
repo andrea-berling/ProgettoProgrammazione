@@ -146,6 +146,12 @@ bool Graph::insertNode(Node u)
 }
 // Inserts a node into the graph
 
+Graph::~Graph()
+{
+    for(hash_iterator<Node,List<Node>*> it = nodes.begin(); it != nodes.end(); it++)
+        delete (*it).getValue();
+}
+
 bool Graph::insertEdge(Node u, Node v)
 {
     if(nodes.contains(u) && nodes.contains(v))

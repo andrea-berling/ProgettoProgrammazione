@@ -114,6 +114,9 @@ class Graph
         Graph();
         // Default constructor; creates an empty graph
 
+        ~Graph();
+        // Destructor
+        
         bool insertNode(Node u);
         // Inserts a node into the graph
 
