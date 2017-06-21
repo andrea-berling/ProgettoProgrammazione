@@ -47,7 +47,7 @@ void HeadInsert(Item elemento, listptr p){
 void ListRemove(Item elemento, listptr p){
     listptr tmpptr = p;
     bool found = false;
-    while ((p != NULL) && !found){
+    while ((p != NULL) && !found){  //se ci sono elementi uguali ne deve rimuovere 1 solo
         if (elemento.description == p->next->thing.description){
             tmpptr = p;
             found = true;

@@ -4,10 +4,15 @@
 
 #include "list.h"
 
+struct Position{
+    double X, Y;
+};
+
 class PlayableCharacter{
 private:
     double LP, MP, DEF, ATK;
     int LV, Coins;
+    Position POS;
     string  Name, Description;
     listptr Inventory;
     listptr Equipment;
@@ -20,6 +25,8 @@ public:
         this->MP = MP;
         this->DEF = DEF;
         this->ATK = ATK;
+        this->POS.X=0;
+        this->POS.Y=0;
         this->LV = 0;
         this->Coins = 0;
         this->Name = Name;
@@ -44,6 +51,10 @@ public:
         return ATK;
     }
 
+    Position getPosition() {
+        return this->POS;
+    }
+
     int getLV(){
         return LV;
     }
@@ -66,6 +77,11 @@ public:
 
     void setATK(double ATK){
         this->ATK = ATK;
+    }
+
+    void setPosition(double x, double y){
+        this->POS.X = x;
+        this->POS.Y = y;
     }
 
     void setLV(int LV){
@@ -99,6 +115,7 @@ public:
             MP = MP + tmpptr->thing.MP;
             DEF = DEF + tmpptr->thing.DEF;
             ATK = ATK + tmpptr->thing.DEF;
+            ListRemove(thing, Inventory);           //consumabile utilizzabile una sola volta
             return thing.description + " usato!";
 
         }
