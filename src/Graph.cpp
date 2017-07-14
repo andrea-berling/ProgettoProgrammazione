@@ -1,6 +1,6 @@
 #ifndef GRAPH_CPP
 #define GRAPH_CPP
-#include "Graph.h"
+#include "../include/Graph.h"
 #include <iostream>
 #ifndef DEBUG
 #define DEBUG

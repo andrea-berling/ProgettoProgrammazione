@@ -1,13 +1,14 @@
 #include <limits.h>
+#include <ncurses.h>
 #include <math.h>
-#include "Graph.h"
-#include "Map.h"
-#include "Room.h"
-#include "../../DataStructures/Dequeue/include/dequeue.h"
-#include "../../DataStructures/PriorityQueue/include/priorityqueue.h"
-#include "../../DataStructures/HashTable/include/HashTable.h"
-#include "../../DataStructures/List/include/List.h"
-#include "../../DataStructures/Stack/include/stack.h"
+#include "../include/Graph.h"
+#include "../include/Map.h"
+#include "../include/Room.h"
+#include "../include/dequeue.h"
+#include "../include/HashTable.h"
+#include "../include/List.h"
+#include "../include/stack.h"
+#include "../include/utility.hpp"
 #include <iostream>
 #define DEBUG
 
@@ -42,11 +43,95 @@ List<Node>* retrievePath(HashTable<Node,Node>* T,Node& one,Node& two);
 
 void printMap(Map* M);
 
+void setUpMap(Map* M);
+
+void handleMovement(Map* M);
+
 int main()
 {
     Map M(WIDTH,HEIGHT);
     generateMap(&M);
-    printMap(&M);
+    setUpMap(&M);
+    handleMovement(&M);
+}
+
+void handleMovement(Map* M)
+{
+    int x,y;
+    getyx(stdscr,y,x);
+    int c = getch();
+    while(c != 'q')
+    {
+        switch(c)
+        {
+            case 'k':
+            case KEY_UP:
+                getyx(stdscr,y,x);
+                if((*M)(x - 1,y - 1) == PAVEMENT) 
+                {
+                    mvaddch(y,x - 1,' ');
+                    mvaddch(y - 1,x - 1,'@');
+                    refresh();
+                }
+                break;
+
+            case 'j':
+            case KEY_DOWN:
+                getyx(stdscr,y,x);
+                if((*M)(x - 1,y + 1) == PAVEMENT) 
+                {
+                    mvaddch(y,x - 1,' ');
+                    mvaddch(y + 1,x - 1,'@');
+                    refresh();
+                }
+                break;
+                
+            case 'h':
+            case KEY_LEFT:
+                getyx(stdscr,y,x);
+                if((*M)(x - 2,y) == PAVEMENT) 
+                {
+                    mvaddch(y,x - 1,' ');
+                    mvaddch(y,x - 2,'@');
+                    refresh();
+                }
+                break;
+
+            case 'l':
+            case KEY_RIGHT:
+                getyx(stdscr,y,x);
+                if((*M)(x,y) == PAVEMENT) 
+                {
+                    mvaddch(y,x - 1,' ');
+                    mvaddch(y,x,'@');
+                }
+                refresh();
+                break;
+
+        }
+        c = getch();
+    }
+    endwin();
+}
+
+void setUpMap(Map* M)
+{
+    initscr();
+    cbreak();
+    noecho();
+    keypad(stdscr,true);
+    curs_set(0);
+    printMap(M);
+    point p;
+    p.x = rand(0,WIDTH-1);
+    p.y = rand(0,HEIGHT-1);
+    while((*M)(p) != PAVEMENT)
+    {
+        p.x = rand(0,WIDTH-1);
+        p.y = rand(0,HEIGHT-1);
+    }
+    mvaddch(p.y,p.x,'@');
+    refresh();
 }
 
 void populateGraph(Graph* dots,Map* M)
@@ -256,11 +341,11 @@ void printMap(Map* M)
         for (int j = 0; j < M->getWidth(); j++)
         {
             if ((*M)(j,i) == WALL || (*M)(j,i) == ROOM_BORDER)
-                cout << "#";
+                printw("#");
             else if (((*M)(j,i) == PAVEMENT) || ((*M)(j,i) == VOID))
-                cout << " ";
+                printw(" ");
         }
-        cout << endl;
+        printw("\n");
     }
     cout << endl;
 }
