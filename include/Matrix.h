@@ -26,6 +26,6 @@ class Matrix
 
 };
 
-#include "Matrix.cpp"
+#include "../src/Matrix.cpp"
 
 #endif

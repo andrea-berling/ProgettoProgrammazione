@@ -1,5 +1,5 @@
 #include "Room.h"
-#include "utility.hpp"
+#include "../include/utility.hpp"
 
 Room::Room()
 {

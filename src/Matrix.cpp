@@ -1,6 +1,6 @@
 #ifndef MATRIX_CPP
 #define MATRIX_CPP
-#include "Matrix.h"
+#include "../include/Matrix.h"
 
 template<typename T>
 Matrix<T>::Matrix()
@@ -22,8 +22,9 @@ Matrix<T>::Matrix(int rows, int cols) : rows(rows), cols(cols)
 template<typename T>
 Matrix<T>::~Matrix()
 {
-    delete [] *matrix;
-    delete matrix;
+    for(int i = 0; i < rows; i++)
+        delete [] matrix[i];
+    delete [] matrix;
 }
 // Destructor
 
