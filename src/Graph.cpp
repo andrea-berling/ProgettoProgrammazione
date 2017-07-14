@@ -27,12 +27,6 @@ void Node::print()
     p.print();
 }
 
-void Edge::print()
-{
-    u.print();
-    cout << " -> ";
-    v.print();
-}
 #endif
 
 Node::Node()
@@ -82,51 +76,6 @@ namespace std
 
         return xHash ^ yHash;
     }
-
-    size_t hash<Edge>::operator()(Edge e) const
-    {
-        return hash<Node>()(e.getFirstNode()) ^ hash<Node>()(e.getSecondNode()); 
-    }
-}
-
-Edge::Edge():u(Node()), v(Node())
-{ }
-// Default constructor
-
-Edge::Edge(Node u, Node v)
-{
-    this->u = u;
-    this->v = v;
-}
-// Creates a new edge given u and v
-
-Node Edge::getFirstNode()
-{
-    return u;
-}
-// first node getter
-
-Node Edge::getSecondNode()
-{
-    return v;
-}
-// second node getter
-
-void Edge::setFirstNode(Node u)
-{
-    this->u = u;
-}
-// first node setter
-
-void Edge::setSecondNode(Node v)
-{
-    this->v = v;
-}
-// second node setter
-
-bool operator == (Edge e, Edge f)
-{
-    return (e.getFirstNode() == f.getFirstNode()) && (e.getSecondNode() == f.getSecondNode());
 }
 
 Graph::Graph():nodes(HashTable<Node,List<Node>*>(6143)),C(0) 
