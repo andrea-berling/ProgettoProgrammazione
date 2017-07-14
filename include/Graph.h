@@ -12,9 +12,11 @@ struct point
     int x,y;
 
     friend bool operator ==(point p, point q);
+    // returns true if two points have the same coordinates
 
 #ifdef DEBUG
     void print();
+    // debug method
 #endif
 };
 
@@ -42,13 +44,14 @@ class Node
         // point getter
 
         friend bool operator ==(Node n1, Node n2);
-        // == operator
+        // Returns true if two nodes have the same point
 
         friend bool operator !=(Node n1, Node n2);
-        // == operator
+        // Returns !(n1 == n2)
 
 #ifdef DEBUG
         void print();
+        // debug method
 #endif
 };
 
@@ -57,48 +60,7 @@ namespace std
     template <> struct hash<Node>
     {
         size_t operator()(Node n) const;
-    };
-}
-
-class Edge
-{
-    private:
-
-        Node u,v;
-
-    public:
-
-        Edge();
-        // Default constructor
-
-        Edge(Node u, Node v);
-        // Creates a new edge given u and v
-
-        Node getFirstNode();
-        // first node getter
-
-        Node getSecondNode();
-        // second node getter
-
-        void setFirstNode(Node u);
-        // first node setter
-
-        void setSecondNode(Node v);
-        // second node setter
-        
-        friend bool operator == (Edge e, Edge f);
-        // == operator
-        
-#ifdef DEBUG
-        void print();
-#endif
-};
-
-namespace std
-{
-    template <> struct hash<Edge>
-    {
-        size_t operator()(Edge e) const;
+        // needed to generate a hash code out of a node
     };
 }
 
@@ -121,7 +83,7 @@ class Graph
         // Inserts a node into the graph
 
         bool insertEdge(Node u, Node v);
-        // Inserts a node into the graph
+        // Inserts an edge into the graph
 
         bool deleteNode(Node u);
         // Deletes a node in the graph
@@ -143,7 +105,5 @@ class Graph
         bool contains(Node n);
 #endif
 };
-
-//#include "Graph.cpp"
 
 #endif
