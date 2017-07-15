@@ -12,6 +12,15 @@ List<T>::List()
 // Creates an empty list
 
 template<typename T>
+List<T>::List(List& l):List<T>()
+{
+    for(List_iterator<T> it = l.begin(); it != l.end(); it++)
+    {
+        this->insert(this->end(),*it);
+    }
+}
+
+template<typename T>
 List<T>::~List()
 {
     List_iterator<T> tmp;

@@ -21,13 +21,13 @@ class Room
         Room(point position, int width, int height);
         // Creates a new room given a position for the top left corner, a width and a height
 
-        void place(Map* M);
+        void place(Map& M);
         // Given a Map, it places the given room in the map grid
 
-        bool overlaps(Map* M);
+        bool overlaps(Map& M);
         // Returns true if the Room overlaps already occupied space in the given map
 
-        point pickAPointAround(Map* M);
+        point pickAPointAround(Map& M);
         // Returns a randomly picked point around the room border
 
 };

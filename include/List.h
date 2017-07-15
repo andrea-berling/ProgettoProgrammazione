@@ -27,6 +27,9 @@ class List
 		List();
 		// Creates an empty list
 
+		List(List& l);
+		// Copy constructor
+
 		~List();
 		// Destructor
 
