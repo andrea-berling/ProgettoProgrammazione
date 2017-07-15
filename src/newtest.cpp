@@ -10,7 +10,7 @@
 #include "../include/stack.h"
 #include "../include/utility.hpp"
 #include <iostream>
-#define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
 #include <fstream>
@@ -41,21 +41,21 @@ void generateMap(Map* M);
 
 List<Node>* retrievePath(HashTable<Node,Node>* T,Node& one,Node& two);
 
-void printMap(Map* M);
+void printMap(Map& M);
 
-void setUpMap(Map* M);
+void setUpMap(Map& M);
 
-void handleMovement(Map* M);
+void handleMovement(Map& M);
 
 int main()
 {
     Map M(WIDTH,HEIGHT);
     generateMap(&M);
-    setUpMap(&M);
-    handleMovement(&M);
+    setUpMap(M);
+    handleMovement(M);
 }
 
-void handleMovement(Map* M)
+void handleMovement(Map& M)
 {
     int x,y;
     getyx(stdscr,y,x);
@@ -67,7 +67,7 @@ void handleMovement(Map* M)
             case 'k':
             case KEY_UP:
                 getyx(stdscr,y,x);
-                if((*M)(x - 1,y - 1) == PAVEMENT) 
+                if((M)(x - 1,y - 1) == PAVEMENT) 
                 {
                     mvaddch(y,x - 1,' ');
                     mvaddch(y - 1,x - 1,'@');
@@ -78,7 +78,7 @@ void handleMovement(Map* M)
             case 'j':
             case KEY_DOWN:
                 getyx(stdscr,y,x);
-                if((*M)(x - 1,y + 1) == PAVEMENT) 
+                if((M)(x - 1,y + 1) == PAVEMENT) 
                 {
                     mvaddch(y,x - 1,' ');
                     mvaddch(y + 1,x - 1,'@');
@@ -89,7 +89,7 @@ void handleMovement(Map* M)
             case 'h':
             case KEY_LEFT:
                 getyx(stdscr,y,x);
-                if((*M)(x - 2,y) == PAVEMENT) 
+                if((M)(x - 2,y) == PAVEMENT) 
                 {
                     mvaddch(y,x - 1,' ');
                     mvaddch(y,x - 2,'@');
@@ -100,7 +100,7 @@ void handleMovement(Map* M)
             case 'l':
             case KEY_RIGHT:
                 getyx(stdscr,y,x);
-                if((*M)(x,y) == PAVEMENT) 
+                if((M)(x,y) == PAVEMENT) 
                 {
                     mvaddch(y,x - 1,' ');
                     mvaddch(y,x,'@');
@@ -114,7 +114,7 @@ void handleMovement(Map* M)
     endwin();
 }
 
-void setUpMap(Map* M)
+void setUpMap(Map& M)
 {
     initscr();
     cbreak();
@@ -125,7 +125,7 @@ void setUpMap(Map* M)
     point p;
     p.x = rand(0,WIDTH-1);
     p.y = rand(0,HEIGHT-1);
-    while((*M)(p) != PAVEMENT)
+    while((M)(p) != PAVEMENT)
     {
         p.x = rand(0,WIDTH-1);
         p.y = rand(0,HEIGHT-1);
@@ -332,17 +332,17 @@ List<Node>* retrievePath(HashTable<Node,Node>* T,Node& one,Node& two)
     return l;
 }
 
-void printMap(Map* M)
+void printMap(Map& M)
 {
     using namespace std;
 
-    for( int i = 0; i < M->getHeight(); i++)
+    for( int i = 0; i < M.getHeight(); i++)
     {
-        for (int j = 0; j < M->getWidth(); j++)
+        for (int j = 0; j < M.getWidth(); j++)
         {
-            if ((*M)(j,i) == WALL || (*M)(j,i) == ROOM_BORDER)
+            if ((M)(j,i) == WALL || (M)(j,i) == ROOM_BORDER)
                 printw("#");
-            else if (((*M)(j,i) == PAVEMENT) || ((*M)(j,i) == VOID))
+            else if (((M)(j,i) == PAVEMENT) || ((M)(j,i) == VOID))
                 printw(" ");
         }
         printw("\n");
