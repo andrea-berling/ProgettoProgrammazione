@@ -5,10 +5,11 @@
 
 enum tile_t { VOID, PAVEMENT, WALL, ROOM_BORDER};
 
-class Map : public Matrix<tile_t>
+class Map
 {
     protected:
 
+        Matrix<tile_t> grid;
         int width, height;
 
     public:
