@@ -1,120 +1,44 @@
 #ifndef HASHTABLE_H
 #define HASHTABLE_H
-#include <string>
 #include "List.h"
+#include <functional>
 
 /**
  * Implementation of a Hashtable based on bucket lists made with Linkedlist
  */
 
-template<typename K, typename V> class HashList;
-
 template<typename K, typename V>
-class HashPair
+struct HashPair
 {
-    private:
+    K key;
+    V value;
 
-        friend class HashList<K,V>;
-        K key;
-        V value;
-
-    public:
-
-        HashPair();
-        // Default constructor
-        
-        HashPair(K key,V value);
-        // constructs a new hash pair given a key and a value
-
-        K getKey();
-        // returns the key
-        
-        void setKey(K key);
-        // sets the key
-        
-        V getValue();
-        // returns the value
-        
-        void setValue(V v);
-        // sets the value
-        
+    bool operator ==(const HashPair& rhs);
+    bool operator ==(const K& key);
 };
 
-template<typename K, typename V>
-class HashList
+namespace std
 {
-    private:
+    template<typename K, typename V> struct hash<HashPair<K,V>>
+    {
+        size_t operator()(HashPair<K,V> & p) const
+        {
+            return hash<K>()(p.key);
+        }
 
-        List<HashPair<K,V>> l;
+    };
+}
 
-    public:
-
-        List_iterator<HashPair<K,V>> find(K key);
-        // Returns an HashPair given a key if present, null if absent
-        
-        void insert(K key,V value);
-        // Inserts a key-value pair in the HashList
-
-        V lookup(K key);
-        // Returns a reference to an HashPair value given a key if present; null otherwise
-        
-        void remove(K key);
-        // Removes an element given a key
-
-        bool empty();
-        // Returns true if the list is empty, false otherwise
-
-        List_iterator<HashPair<K,V>> begin();
-
-        List_iterator<HashPair<K,V>> end();
-
-        bool finished(List_iterator<HashPair<K,V>> p);
-
+template<typename K, typename V>
+struct HashTableType
+{
+    using ValueType = HashPair<K,V>;
 };
 
-template<typename K, typename V>
-class HashTable;
-
-template<typename K, typename V>
-class hash_iterator;
-
-template<typename K, typename V>
-bool operator ==(const hash_iterator<K,V>& it, const hash_iterator<K,V>& it2);
-
-template<typename K, typename V>
-bool operator !=(const hash_iterator<K,V>& it, const hash_iterator<K,V>& it2);
-
-template<typename K, typename V>
-class hash_iterator
+template<typename K>
+struct HashTableType<K,void>
 {
-    private:
-
-        HashTable<K,V>* baseTable;
-        int i;
-        List_iterator<HashPair<K,V>> it;
-        List_iterator<HashPair<K,V>> nextOccurrence();
-        
-    public:
-
-        hash_iterator();
-
-        hash_iterator(HashTable<K,V>* table);
-
-        hash_iterator(const hash_iterator& it2);
-
-        friend bool operator == <>(const hash_iterator& it, const hash_iterator& it2);
-
-        friend bool operator != <>(const hash_iterator& it, const hash_iterator& it2);
-
-        hash_iterator begin();
-
-        hash_iterator end();
-
-        hash_iterator operator ++(); //prefix
-
-        hash_iterator operator ++( int ); //postfix
-
-        HashPair<K,V> operator *();
+    using ValueType = K;
 };
 
 template<typename K, typename V>
@@ -122,44 +46,79 @@ class HashTable
 {
     protected:
 
-        HashList<K,V>* entries;
-        int m;	//table dimension
-        friend class hash_iterator<K,V>;
+        using ValueType = typename HashTableType<K,V>::ValueType;
+        using ListType = List<ValueType>;
+
+        ListType* entries;
+        int m;	// table dimension
 
     public:
 
-        HashTable()
-        {}
+        class iterator
+        {
+            private:
 
-        HashTable(int capacity);
-        //Creates a new hash table with given dimension
+                friend class HashTable;
+                HashTable<K,V>* baseTable;
+                int i;
+                typename List<ValueType>::iterator it;
+                typename List<ValueType>::iterator nextOccurrence();
+
+            public:
+
+                iterator():baseTable(nullptr),i(-1),it(typename List<ValueType>::iterator(nullptr)) {}
+
+                iterator(HashTable<K,V>* table): baseTable(table),i(0),it(typename List<ValueType>::iterator(nullptr)) {}
+
+                iterator(const iterator& it2): baseTable(it2.baseTable),i(it2.i),it(it2.it) {}
+
+                bool operator ==(const iterator rhs);
+
+                bool operator !=(const iterator rhs);
+
+                iterator operator ++(); // prefix
+
+                iterator operator ++( int ); // postfix
+
+                ValueType& operator *() const;
+
+        };
+
+        HashTable(const int capacity);
+        // Creates a new hash table with given dimension
+
+        HashTable(HashTable& H);
+        // Copy constructor
 
         ~HashTable();
-        //Destructor
+        // Destructor
         
-        bool contains(K k);
-        //Returns true if the hashtable contains k
+        bool contains(K k) const;
+        // Returns true if the hashtable contains k
 
-        V lookup(K k);
-        //returns the value being searched if present, nil otherwise
+        V lookup(const K k) const;
+        // returns the value with key k if present, nil otherwise
         
-        V operator [](K k);
+        V operator [](const K k) const;
         // same as lookup, with a array like notation
 
-        void insert(K key,V value);
-        //Inserts the key-value pair into the table
+        void insert(ValueType e);
 
-        void remove(K key);
-        //Given a key, it removes the key-pair value, if present
+        //void insert(const K key,const V value) const;
+        // Inserts the key-value pair into the table
 
-        int Hash(long int key);
-        //Hash function
+        void remove(const K key);
+        // Given a key, it removes the key-pair value, if present
+
+        int Hash(const long int key) const;
+        // Hash function
         
-        hash_iterator<K,V> begin();
+        iterator begin();
 
-        hash_iterator<K,V> end();
+        iterator end();
 };
 
+/*
 namespace keyOnly
 {
 
@@ -172,26 +131,23 @@ namespace keyOnly
 
         public:
 
-            List_iterator<K> find(K key);
+            List_iterator<K> find(const K key) const;
             // Returns an HashPair given a key if present, null if absent
             
-            void insert(K key);
+            void insert(const K key) const;
             // Inserts a key-value pair in the HashList
 
-            K lookup(K key);
-            // Returns a reference to an HashPair value given a key if present; null otherwise
-            
-            void remove(K key);
+            void remove(const K key) const;
             // Removes an element given a key
 
-            bool empty();
+            bool empty() const;
             // Returns true if the list is empty, false otherwise
 
-            List_iterator<K> begin();
+            List_iterator<K> begin() const;
 
-            List_iterator<K> end();
+            List_iterator<K> end() const;
 
-            bool finished(List_iterator<K> p);
+            bool finished(List_iterator<K> const p) const;
 
     };
 
@@ -202,10 +158,10 @@ namespace keyOnly
     class hash_iterator;
 
     template<typename K>
-    bool operator ==(const hash_iterator<K>& it, const hash_iterator<K>& it2);
+    bool operator ==(const hash_iterator<K> it, const hash_iterator<K> it2);
 
     template<typename K>
-    bool operator !=(const hash_iterator<K>& it, const hash_iterator<K>& it2);
+    bool operator !=(const hash_iterator<K> it, const hash_iterator<K> it2);
 
     template<typename K>
     class hash_iterator
@@ -225,19 +181,19 @@ namespace keyOnly
 
             hash_iterator(const hash_iterator& it2);
 
-            friend bool operator == <>(const hash_iterator& it, const hash_iterator& it2);
+            friend bool operator == <>(const hash_iterator it, const hash_iterator it2);
 
-            friend bool operator != <>(const hash_iterator& it, const hash_iterator& it2);
+            friend bool operator != <>(const hash_iterator it, const hash_iterator it2);
 
             hash_iterator begin();
 
-            hash_iterator end();
+            hash_iterator end() const;
 
-            hash_iterator operator ++(); //prefix
+            hash_iterator operator ++(); // prefix
 
-            hash_iterator operator ++( int ); //postfix
+            hash_iterator operator ++( int ); // postfix
 
-            K operator *();
+            K operator *() const;
     };
 
     template<typename K>
@@ -246,37 +202,35 @@ namespace keyOnly
         protected:
 
             HashList<K>* entries;
-            int m;	//table dimension
+            int m;	// table dimension
             friend class hash_iterator<K>;
 
         public:
 
             HashTable();
-            //Default constructor
+            // Default constructor
             
-            HashTable(int capacity);
-            //Creates a new hash table with given dimension
+            HashTable(const int capacity);
+            // Creates a new hash table with given dimension
 
             ~HashTable();
-            //Destructor
+            // Destructor
 
-            K lookup(K k);
-            //returns the value being searched if present, nil otherwise
-            
-            bool contains(K k);
+            bool contains(const K k) const;
             // Returns true if the table contains k
 
-            void insert(K key);
-            //Inserts the key-value pair into the table
+            void insert(const K key) const;
+            // Inserts the key-value pair into the table
 
-            void remove(K key);
-            //Given a key, it removes the key-pair value, if present
+            void remove(const K key) const;
+            // Given a key, it removes the key-pair value, if present
 
-            int Hash(long int key);
-            //Hash function
+            int Hash(const long int key) const;
+            // Hash function
     };
 
 }
+*/
 
 #include "../src/HashTable.cpp"
 #endif
