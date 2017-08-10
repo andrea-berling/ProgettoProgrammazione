@@ -1,39 +1,52 @@
 #ifndef ROOM_H
 #define ROOM_H
-#include "Map.h"
+#include <Graph.h>
+#include <string>
 
 class Room 
 {
     protected:
 
-        point p;
+        Point p;
         int width;
         int height;
+        std::string id;
+        bool visible;
 
     public:
 
         Room();
         // Default constructor
 
-        Room(Room& lhs);
-        // Copy constructor
+        Room(Point position, int width, int height, std::string id);
+        // Creates a new room given a position for the top left corner, a width, a height and an id
 
-        Room(point position, int width, int height);
-        // Creates a new room given a position for the top left corner, a width and a height
+        bool isVisible();
+        // Returns true if the room is visible
 
-        void place(Map& M);
-        // Given a Map, it places the given room in the map grid
+        void setVisible(bool);
+        // Sets the visibility of the room
 
-        bool overlaps(Map& M);
-        // Returns true if the Room overlaps already occupied space in the given map
+        Point pickPoint();
+        // Picks a Point in the room
 
-        point pickAPointAround(Map& M);
-        // Returns a randomly picked point around the room border
+        Point pickAPointAround();
+        // Returns a randomly picked Point around the room border (not the corners)
+        
+        Point getCorner();
+        // Returns the upper left corner
 
+        int getWidth();
+        // Returns the width of the room
+
+        int getHeight();
+        // Returns the height of the room
+
+        std::string getId();
+        // Returns the id of the room
+
+        void setId(std::string id);
+        // Sets the id of the room
 };
-
-Room generateRoom(int w, int h,int seed);
-// Given the width and the height of an area and a seed, it generates a room with min size 5x5
-// and max size 20x20, which does not overlap the area border
 
 #endif
