@@ -1,53 +1,19 @@
 #ifndef GRAPH_H
 #define GRAPH_H
-#include "../../DataStructures/Set/include/set.h"
-#include "../../DataStructures/HashTable/include/HashTable.h"
-#include "../../DataStructures/List/include/List.h"
+#include "set.h"
+#include "HashTable.h"
+#include "List.h"
 #ifndef DEBUG
 #define DEBUG
 #endif
 
-struct point
+class Point
 {
-    int x,y;
+    public: 
 
-    friend bool operator ==(point p, point q);
-    // returns true if two points have the same coordinates
-
-#ifdef DEBUG
-    void print();
-    // debug method
-#endif
-};
-
-class Node
-{
-    private:
-
-        point p;
-
-    public:
-        
-        Node();
-        // Default constructor
-        
-        Node(point p);
-        // Creates a new node given a point p
-        
-        Node(int x, int y);
-        // Creates a new node given a point p
-
-        void setPoint(point p);
-        // point setter
-        
-        point getPoint();
-        // point getter
-
-        friend bool operator ==(Node n1, Node n2);
-        // Returns true if two nodes have the same point
-
-        friend bool operator !=(Node n1, Node n2);
-        // Returns !(n1 == n2)
+        int x,y;
+        Point();
+        Point(int x,int y);
 
 #ifdef DEBUG
         void print();
@@ -55,11 +21,17 @@ class Node
 #endif
 };
 
+bool operator ==(Point p, Point q);
+// returns true if two Points have the same coordinates
+
+bool operator !=(Point p, Point q);
+// returns true if two Points have the same coordinates
+
 namespace std
 {
-    template <> struct hash<Node>
+    template <> struct hash<Point>
     {
-        size_t operator()(Node n) const;
+        size_t operator()(Point n) const;
         // needed to generate a hash code out of a node
     };
 }
@@ -68,7 +40,7 @@ class Graph
 {
     private:
 
-        HashTable<Node,List<Node>*> nodes;
+        HashTable<Point,List<Point>*> Points;
         int C;
 
     public:
@@ -79,22 +51,22 @@ class Graph
         ~Graph();
         // Destructor
         
-        bool insertNode(Node u);
+        bool insertPoint(Point p);
         // Inserts a node into the graph
 
-        bool insertEdge(Node u, Node v);
+        bool insertEdge(Point p, Point q);
         // Inserts an edge into the graph
 
-        bool deleteNode(Node u);
+        bool deletePoint(Point u);
         // Deletes a node in the graph
 
-        bool deleteEdge(Node u, Node v);
+        bool deleteEdge(Point u, Point v);
         // Deletes an edge in the graph
 
-        Hash::Set<Node>* adj(Node u);
+        HashSet<Point>* adj(Point u);
         // Returns the set of all the nodes adiacient to u
 
-        Hash::Set<Node>* V();
+        HashSet<Point>* V();
         // Retruns the set of all nodes in the graph
 
         int n();
@@ -102,7 +74,7 @@ class Graph
         
 #ifdef DEBUG
         void print();
-        bool contains(Node n);
+        bool contains(Point n);
 #endif
 };
 
