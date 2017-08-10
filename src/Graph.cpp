@@ -6,87 +6,53 @@
 #define DEBUG
 #endif
 
-bool operator !=(Node p, Node q)
-{
-    return !(p == q);
-}
-
-bool operator ==(point p, point q)
+bool operator ==(Point p, Point q)
 {
     return (p.x == q.x) && (p.y == q.y);
 }
 
+bool operator !=(Point p, Point q)
+{
+    return p.x != q.x || p.y != q.y;
+}
+
 #ifdef DEBUG
-void point::print()
+void Point::print()
 {
     cout << "(" << x << "," << y << ")";
 }
 
-void Node::print()
-{
-    p.print();
-}
-
 #endif
 
-Node::Node()
-{
-    p = {-1,-1};
-}
-// Default constructor
+Point::Point():x(-1),y(-1)
+{}
 
-Node::Node(point p)
+Point::Point(int x, int y): x(x),y(y)
 {
-    this->p = p;
 }
-// Creates a new node given a point p
-
-Node::Node(int x, int y)
-{
-    p.x = x;
-    p.y = y;
-}
-
-void Node::setPoint(point p)
-{
-    this->p = p;
-}
-// point setter
-
-point Node::getPoint()
-{
-    return this->p;
-}
-// point getter
-
-bool operator ==(Node n1, Node n2)
-{
-    return (n1.p == n2.p);
-}
-// == operator
 
 namespace std
 {
-    size_t hash<Node>::operator()(Node n) const
+    size_t hash<Point>::operator()(Point n) const
     {
-        int xHash = n.getPoint().x;
+        int xHash = n.x;
         xHash = hash<int>()(xHash);
-        int yHash = n.getPoint().y;
+        int yHash = n.y;
         yHash = hash<int>()(yHash);
 
         return xHash ^ yHash;
     }
 }
 
-Graph::Graph():nodes(HashTable<Node,List<Node>*>(6143)),C(0) 
+Graph::Graph():Points(6143),C(0) 
 {}
 // Default constructor; creates an empty graph
 
-bool Graph::insertNode(Node u)
+bool Graph::insertPoint(Point p)
 {
-    if(!nodes.contains(u))
+    if(!Points.contains(p))
     {
-        nodes.insert(u,new List<Node>());
+        Points.insert({p,new List<Point>()});
         C++;
         return true;
     }
@@ -97,20 +63,20 @@ bool Graph::insertNode(Node u)
 
 Graph::~Graph()
 {
-    for(hash_iterator<Node,List<Node>*> it = nodes.begin(); it != nodes.end(); it++)
-        delete (*it).getValue();
+    for(auto pair : Points)
+        delete pair.value;  // frees the memory occupied by the adjacency lists
 }
 
-bool Graph::insertEdge(Node u, Node v)
+bool Graph::insertEdge(Point p, Point q)
 {
-    if(nodes.contains(u) && nodes.contains(v))
+    if(Points.contains(p) && Points.contains(q))
     {
-        List<Node>* l = nodes.lookup(u); 
-        if(!l->contains(v))
-            l->insert(v);
-        l = nodes.lookup(v);
-        if(!l->contains(u))
-            l->insert(u);
+        List<Point>* l = Points[p]; 
+        if(!l->contains(q))
+            l->insert(q);
+        l = Points[q];
+        if(!l->contains(p)) // The graph is undirected
+            l->insert(p);
         return true;
     }
     else
@@ -118,18 +84,19 @@ bool Graph::insertEdge(Node u, Node v)
 }
 // Inserts a node into the graph
 
-bool Graph::deleteNode(Node u)
+bool Graph::deletePoint(Point p)
 {
-    if(nodes.contains(u))
+    if(Points.contains(p))
     {
         bool done = false;
-        nodes.remove(u);
-        for(hash_iterator<Node,List<Node>*> it = nodes.begin(); it != nodes.end(); it++)
+        Points.remove(p);
+        C--;
+        for(auto q : Points) // removing node p from all the adjacency lists where it appears
         {
-            for(List_iterator<Node> it2 = (*it).getValue()->begin(); it2 != (*it).getValue()->end() && !done; it2++)
-                if(*it2 == u)
+            for(List<Point>::iterator it = q.value->begin(); it != q.value->end() && !done; it++)
+                if(*it == p)
                 {
-                    (*it).getValue()->remove(it2);
+                    q.value->remove(it);
                     done = true;
                 }
             done = false;
@@ -141,22 +108,22 @@ bool Graph::deleteNode(Node u)
 }
 // Deletes a node in the graph
 
-bool Graph::deleteEdge(Node u, Node v)
+bool Graph::deleteEdge(Point p, Point q)
 {
-    if(nodes.contains(u) && nodes.contains(v))
+    if(Points.contains(p) && Points.contains(q))
     {
-        List<Node>* l = nodes.lookup(u);
+        List<Point>* l = Points[p];
         bool done = false;
-        for(List_iterator<Node> it = l->begin(); it != l->end() && !done; it++)
-            if(*it == v)
+        for(List<Point>::iterator it = l->begin(); it != l->end() && !done; it++)
+            if(*it == q)
             {
                 l->remove(it);
                 done = true;
             }
         done = false;
-        l = nodes.lookup(v);
-        for(List_iterator<Node> it = l->begin(); it != l->end() && !done; it++)
-            if(*it == u)
+        l = Points[q];
+        for(List<Point>::iterator it = l->begin(); it != l->end() && !done; it++)
+            if(*it == p)
             {
                 l->remove(it);
                 done = true;
@@ -168,31 +135,31 @@ bool Graph::deleteEdge(Node u, Node v)
 }
 // Deletes an edge in the graph
 
-Hash::Set<Node>* Graph::adj(Node u)
+HashSet<Point>* Graph::adj(Point p)
 {
-    Hash::Set<Node> *adj = new Hash::Set<Node>(10);
+    HashSet<Point> *adj = new HashSet<Point>(17);   // in the graph of the map there are at most 4 adjacent Points
 
-    for(List_iterator<Node> it = (nodes.lookup(u))->begin(); it != (nodes.lookup(u))->end(); it++)
+    for(Point q : *(Points[p]))
     {
-        adj->insert(*it);
+        adj->insert(q);
     }
 
     return adj;
 }
-// Returns the set of all the nodes adiacient to u
+// Returns the set of all the Points adiacient to u
 
-Hash::Set<Node>* Graph::V()
+HashSet<Point>* Graph::V()
 {
-    Hash::Set<Node> *v = new Hash::Set<Node>(6143);               // a new set is created, so that modifications in this set without using the graph methods won't affect the graph
+    HashSet<Point> *v = new HashSet<Point>(6143);               // a new set is created, so that modifications in this set without using the graph methods won't affect the graph
 
-    for(hash_iterator<Node,List<Node>*> it = nodes.begin(); it != nodes.end(); it++)
+    for(auto pair : Points)
     {
-        v->insert((*it).getKey());
+        v->insert(pair.key);
     }
 
     return v;
 }
-// Retruns the set of all nodes in the graph
+// Retruns the set of all Points in the graph
 
 int Graph::n()
 {
@@ -213,9 +180,9 @@ int Graph::n()
 //    cout << endl;
 //}
 
-bool Graph::contains(Node n)
+bool Graph::contains(Point p)
 {
-    return nodes.contains(n);
+    return Points.contains(p);
 }
 #endif
 
