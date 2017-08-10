@@ -1,16 +1,47 @@
 #ifndef MAP_H
 #define MAP_H
+#include <limits.h>
+#include <string>
+#include "Tile.h"
 #include "Matrix.h"
+#include "HashTable.h"
+#include "dequeue.h"
 #include "Graph.h"
+#include "Room.h"
 
-enum tile_t { VOID, PAVEMENT, WALL, ROOM_BORDER};
+#define INF INT_MAX
 
 class Map
 {
-    protected:
+    private:
 
-        Matrix<tile_t> grid;
+        Matrix<Tile> grid;
+        HashTable<std::string,Room> rooms;
         int width, height;
+
+        void connectToMap(Graph& G, Point& p, Point& q);
+        // Connects the given points to the graph
+
+        void disconnectFromMap(Graph& G, Point& p, Point& q);
+        // Removes the given points to the graph and the edege that connects them
+
+        void place(Room& R);
+        // Places a room in the grid
+
+        bool overlaps(Room& R);
+        // Returns true if the given room overlaps with other rooms or is adjacent to another room
+
+        void populateGraph(Graph& G);
+        // Fills the graph with the points of the grid that are not rooms
+
+        void createLinks(Graph& G);
+        // Creates the links between points in the graph
+
+        void link(Room& R,Room& Q,Graph& G);
+        // Links two rooms in the map making use of the graph of the map
+        
+        Room generateRoom(std::string id, int seed);
+        // Generates a room given an id and a seed
 
     public:
 
@@ -20,17 +51,42 @@ class Map
         Map(int width, int height);
         // Creates a new map with the given # of rows and columns
 
-        tile_t& operator () (int x, int y);
+        Tile& operator () (int x, int y);
         // Returns a reference variable to Map(x,y)
 
-        tile_t& operator () (point p);
-        // Returns a reference variable to Map(x,y)
+        Tile& operator () (Point p);
+        // Returns a reference variable to Map(p.x,p.y)
 
         int getWidth();
         // getter for width
         
         int getHeight();
         // getter for height
+
+        void addRoom(Room& R, std::string id);
+        // Adds the given room with the given id to the map
+
+        void generate(int requiredRooms);
+        // Generates the map given a number of required rooms
+
+        void setVisible(std::string id);
+        // Given an id, it sets the corresponding room visible
+
+        Room pickRoom();
+        // Picks the first room in the Rooms map
+
+        void showAround(int x, int y);
+        // Shows the tiles around the position of the main character
+
 };
+
+void shortestPath(Graph& G, Point r,HashTable<Point,Point>& T);
+// Find the shortest path between point r and all other points in the graph G
+
+List<Point>* retrievePath(HashTable<Point,Point>& T,Point& one,Point& two);
+// Retrieves the path between one and two, saved in the HashTable T and returns it as a list
+
+int w(Point p, Point q);
+// Returns the "distance" between p and q in the map
 
 #endif
