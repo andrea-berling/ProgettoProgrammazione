@@ -106,3 +106,13 @@ int Menu::handleChoice()
 	}	
     return choice;
 }
+
+int Menu::getX()
+{
+    return x;
+}
+
+int Menu::getY()
+{
+    return y;
+}
