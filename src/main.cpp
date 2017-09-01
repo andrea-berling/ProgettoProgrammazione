@@ -1,4 +1,5 @@
 #include "../include/Menu.h"
+#include "../include/Window.h"
 #include <cstdlib>
 #include <cstring>
 #include <ncurses.h>
@@ -28,15 +29,12 @@ void endCurses();
 int main()
 {	
     startCurses();
-    bool player = false;
     int choice = mainMenu();
-    endCurses();
     switch(choice)
     {
         case 0:
             startCurses();
             choice = playerChoiceMenu();
-            player = true;
             break;
         case 1:
             cout << "You selected Credits" << endl;
@@ -46,28 +44,6 @@ int main()
             break;
     }
     endCurses();
-    if(player)
-        switch(choice)
-        {
-            case 0:
-                cout << "You selected Stocazzo" << endl;
-                break;
-            case 1:
-                cout << "You selected Staminchia" << endl;
-                break;
-            case 2:
-                cout << "You selected Stograncazzo" << endl;
-                break;
-            case 3:
-                cout << "You selected Vaffanculo" << endl;
-                break;
-            case 4:
-                cout << "You selected Porcodio" << endl;
-                break;
-            case 5:
-                cout << "Ti coddiri" << endl;
-                break;
-        }
 }
 
 void startCurses()
@@ -93,6 +69,42 @@ void endCurses()
  
 int playerChoiceMenu()
 {
-    Menu players((COLS - 10)/2,(LINES - 10)/2,6,"Stocazzo","Staminchia","Stogran cazzo","Vaffanculo","Porcodio","SardiniaNoEstItalia");
-    return players.handleChoice();
+    Menu players((COLS)/2 - 25,(LINES - 10)/2,6,"Stocazzo","Staminchia","Stogran cazzo","Vaffanculo","Porcodio","SardiniaNoEstItalia");
+    Window description(players.getX() + 20,players.getY() - 5,19,50);
+    bool done = false;
+    int choice = -1;
+    int confirm; 
+    while(!done)
+    {
+        string filename = "resources/descriptions/";
+        if(choice == -1)    // The first time choice is uninitialized (= -1); the next times this won't be necessary
+            choice = players.handleChoice();
+        switch(choice)
+        {
+            case 0:
+                filename += "stocazzo.desc";
+                break;
+            case 1:
+                filename += "staminchia.desc";
+                break;
+            case 2:
+                filename += "stograncazzo.desc";
+                break;
+            case 3:
+                filename += "vaffanculo.desc";
+                break;
+            case 4:
+                filename += "porcodio.desc";
+                break;
+            case 5:
+                filename += "sardinia.desc";
+                break;
+        }
+        description.readFromFile(filename);
+        confirm = players.handleChoice();
+        if(confirm == choice)
+            done = true;
+        else
+            choice = confirm;
+    }
 }
