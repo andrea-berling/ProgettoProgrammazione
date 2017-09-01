@@ -4,7 +4,6 @@
 #include <ncurses.h>
 #include <string>
 #include <menu.h>
-#include "List.h"
 
 class Menu
 {
