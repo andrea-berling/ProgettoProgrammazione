@@ -31,6 +31,11 @@ class Menu
         // Lets an user navigate the menu and choose an option from it
         // Returns an int correponding to the positon of the choice (0 is first)
 
+        int getX();
+        // Returns the x coordinate of the top left corner of the window
+
+        int getY();
+        // Returns the y coordinate of the top left corner of the window
 };
 
 #endif
