@@ -1,7 +1,9 @@
 #include "../include/Window.h"
+#include <boost/tokenizer.hpp>
 #include <fstream>
 
 using namespace std;
+using namespace boost;
 
 Window::Window(int x, int y, int nlines, int ncols):x(x),y(y),nlines(nlines),ncols(ncols)
 {
@@ -21,13 +23,42 @@ void Window::readFromFile(string filename)
     wrefresh(win);
     ifstream file(filename);
     string line;
-    string buffer = "";
+    string description = "";
+    int length = 0;
+    string title;
+    getline(file,title);
+    title = wrap(title,ncols);
     while(file)
     {
         getline(file,line);
-        buffer += line + "\n";
+        description += line;
     }
-    wprintw(win,buffer.c_str());
+    description = wrap(description, ncols);
+    description = title + '\n' + description;
+    wprintw(win,description.c_str());
     wrefresh(win);
 }
 // Given a filename, it writes its contents in the window
+
+string wrap(string text,unsigned int maxLength)
+{
+    int length = 0;
+    char_separator<char> sep(" ");
+    string buffer = "";
+    tokenizer<char_separator<char>> tokens(text,sep);
+    for(string token : tokens)
+    {
+        if(token.length() + length + 1 > maxLength) // +1 for the space
+        {
+            buffer += "\n" + token + " ";
+            length = token.length() + 1;
+        }
+        else
+        {
+            buffer += token + " ";
+            length += token.length() + 1;
+        }
+    }
+    return buffer;
+}
+// Given a text and a limit length, it wraps the text to respect the given text width and returns it as a string

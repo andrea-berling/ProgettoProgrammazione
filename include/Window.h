@@ -23,4 +23,7 @@ class Window
         void readFromFile(std::string filename);
         // Given a filename, it writes its contents in the window
 };
+
+std::string wrap(std::string text,unsigned int maxLength);
+// Given a text and a limit length, it wraps the text to respect the given text width and returns it as a string
 #endif
