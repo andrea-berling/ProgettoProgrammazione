@@ -70,7 +70,7 @@ void endCurses()
 int playerChoiceMenu()
 {
     Menu players((COLS)/2 - 25,(LINES - 10)/2,6,"Stocazzo","Staminchia","Stogran cazzo","Vaffanculo","Porcodio","SardiniaNoEstItalia");
-    Window description(players.getX() + 20,players.getY() - 5,19,50);
+    Window description(players.getX() + 20,players.getY() - 5,19,70);
     bool done = false;
     int choice = -1;
     int confirm; 
