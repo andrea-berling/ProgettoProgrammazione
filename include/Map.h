@@ -1,6 +1,5 @@
 #ifndef MAP_H
 #define MAP_H
-#include <limits.h>
 #include <string>
 #include "Tile.h"
 #include "Matrix.h"
@@ -8,8 +7,6 @@
 #include "dequeue.h"
 #include "Graph.h"
 #include "Room.h"
-
-#define INF INT_MAX
 
 class Map
 {
@@ -79,14 +76,5 @@ class Map
         // Shows the tiles around the position of the main character
 
 };
-
-void shortestPath(Graph& G, Point r,HashTable<Point,Point>& T);
-// Find the shortest path between point r and all other points in the graph G
-
-List<Point>* retrievePath(HashTable<Point,Point>& T,Point& one,Point& two);
-// Retrieves the path between one and two, saved in the HashTable T and returns it as a list
-
-int w(Point p, Point q);
-// Returns the "distance" between p and q in the map
 
 #endif

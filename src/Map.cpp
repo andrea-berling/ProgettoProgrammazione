@@ -204,8 +204,8 @@ Room Map::generateRoom(string id, int seed)
 
 void Map::populateGraph(Graph& G)
 {
-    for(int i = 0; i < height; i++)
-        for(int j = 0; j < width; j++)
+    for(int i = 1; i < height - 1; i++)
+        for(int j = 1; j < width - 1; j++)
         {
             if((*this)(j,i).getType() == WALL)
                 G.insertPoint({j,i});
@@ -237,7 +237,7 @@ void Map::link(Room& R,Room& Q,Graph& G)
     Point q = Q.pickAPointAround();
     Point toRemove1;
     Point toRemove2;
-    List<Point>* steps;
+    List<Point> steps;
     HashTable<Point,Point> T(6143);
 
     connectToMap(G,p,toRemove1);
@@ -246,12 +246,12 @@ void Map::link(Room& R,Room& Q,Graph& G)
     if(p != q)
     {
         shortestPath(G,p,T);
-        steps = retrievePath(T,p,q);
+        retrievePath(steps,T,p,q);
     }
     else
-        steps->insert(p);
+        steps.insert(p);
 
-    for(Point p : *steps)
+    for(Point p : steps)
     {
         if(p != Point())
             (*this)(p).setType(HALLWAY);
@@ -259,75 +259,6 @@ void Map::link(Room& R,Room& Q,Graph& G)
 
     disconnectFromMap(G,p,toRemove1);
     disconnectFromMap(G,q,toRemove2);
-
-    delete steps;
-}
-
-void shortestPath(Graph& G, Point r,HashTable<Point,Point>& T)
-{
-    HashTable<Point,int> d(G.n());
-    HashTable<Point,bool> b(G.n());
-    HashSet<Point>* adj = G.V();
-    Dequeue<Point> S;
-    for(Point u : *adj)
-    {
-        if(u != r)
-        {
-            T.insert({u,Point()});
-            d.insert({u,INF});
-            b.insert({u,false});
-        }
-    }
-
-    delete adj;
-    T.insert({r,Point()});
-    d.insert({r,0});
-    b.insert({r,true});
-    S.push(r);
-    while(!S.empty())
-    {
-        Point u = S.pop();
-        b.insert({u,false});
-        adj = G.adj(u);
-        for(Point v : *adj)
-        {
-            if(d[u] + w(u,v) < d[v])
-            {
-                if(!b[v])
-                {
-                    if(d[v] == INF)
-                        S.push_back(v);
-                    else
-                        S.push(v);
-                    b.insert({v,true});
-                }
-                T.insert({v,u});
-                d.insert({v,d[u] + w(u,v)});
-            }
-        }
-        delete adj;
-    }
-}
-
-List<Point>* retrievePath(HashTable<Point,Point>& T,Point& one,Point& two)
-{
-    List<Point>* l = new List<Point>();
-    
-    
-    Point p = two;
-
-    while(p != Point())
-    {
-        l->insert(p);
-        p = T[p];
-    }
-
-    return l;
-}
-
-int w(Point p, Point q)
-{
-   return abs(p.x - q.x) + abs(p.y - q.y);
 }
 
 void Map::connectToMap(Graph& G, Point& p, Point& q)
