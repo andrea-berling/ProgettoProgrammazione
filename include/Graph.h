@@ -1,11 +1,14 @@
 #ifndef GRAPH_H
 #define GRAPH_H
+#include <limits.h>
 #include "set.h"
 #include "HashTable.h"
 #include "List.h"
 #ifndef DEBUG
 #define DEBUG
 #endif
+
+#define INF INT_MAX
 
 class Point
 {
@@ -78,4 +81,12 @@ class Graph
 #endif
 };
 
+void shortestPath(Graph& G, Point r,HashTable<Point,Point>& T);
+// Find the shortest path between point r and all other points in the graph G
+
+void retrievePath(List<Point>& l,HashTable<Point,Point>& T,Point& one,Point& two);
+// Retrieves the path between one and two, saved in the HashTable T and saves it in l
+
+int w(Point p, Point q);
+// Returns the "distance" between p and q in the map
 #endif

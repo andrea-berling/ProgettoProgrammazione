@@ -1,5 +1,6 @@
 #ifndef GRAPH_CPP
 #define GRAPH_CPP
+#include "../include/dequeue.h"
 #include "../include/Graph.h"
 #include <iostream>
 #ifndef DEBUG
@@ -185,5 +186,68 @@ bool Graph::contains(Point p)
     return Points.contains(p);
 }
 #endif
+
+void shortestPath(Graph& G, Point r,HashTable<Point,Point>& T)
+{
+    HashTable<Point,int> d(G.n());
+    HashTable<Point,bool> b(G.n());
+    HashSet<Point>* adj = G.V();
+    Dequeue<Point> S;
+    for(Point u : *adj)
+    {
+        if(u != r)
+        {
+            T.insert({u,Point()});
+            d.insert({u,INF});
+            b.insert({u,false});
+        }
+    }
+
+    delete adj;
+    T.insert({r,Point()});
+    d.insert({r,0});
+    b.insert({r,true});
+    S.push(r);
+    while(!S.empty())
+    {
+        Point u = S.pop();
+        b.insert({u,false});
+        adj = G.adj(u);
+        for(Point v : *adj)
+        {
+            if(d[u] + w(u,v) < d[v])
+            {
+                if(!b[v])
+                {
+                    if(d[v] == INF)
+                        S.push_back(v);
+                    else
+                        S.push(v);
+                    b.insert({v,true});
+                }
+                T.insert({v,u});
+                d.insert({v,d[u] + w(u,v)});
+            }
+        }
+        delete adj;
+    }
+}
+
+void retrievePath(List<Point>& l,HashTable<Point,Point>& T,Point& one,Point& two)
+{
+    Point p = two;
+
+    while(p != Point())
+    {
+        l.insert(p);
+        p = T[p];
+    }
+}
+
+int w(Point p, Point q)
+{
+   return abs(p.x - q.x) + abs(p.y - q.y);
+}
+
 
 #endif
