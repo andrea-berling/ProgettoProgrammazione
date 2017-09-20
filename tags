@@ -4,241 +4,132 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
-A	include/stack.h	/^		List<T> A;$/;"	m	class:Stack
 BUILD	makefile	/^BUILD=build$/;"	m
 C	include/Graph.h	/^        int C;$/;"	m	class:Graph
 CC	makefile	/^CC=g++$/;"	m
 CFLAGS	makefile	/^CFLAGS=-I include -g$/;"	m
-DEBUG	include/Graph.h	7;"	d
-DEBUG	src/Graph.cpp	6;"	d	file:
+DEBUG	include/Graph.h	8;"	d
+DEBUG	src/Graph.cpp	8;"	d	file:
 DEPS	makefile	/^DEPS=utility.hpp$/;"	m
-DEQUEUE_CPP	src/dequeue.cpp	2;"	d	file:
-DEQUEUE_H	include/dequeue.h	2;"	d
-Dequeue	include/dequeue.h	/^class Dequeue$/;"	c
 GRAPH_CPP	src/Graph.cpp	2;"	d	file:
 GRAPH_H	include/Graph.h	2;"	d
 Graph	include/Graph.h	/^class Graph$/;"	c
-Graph	src/Graph.cpp	/^Graph::Graph():nodes(HashTable<Node,List<Node>*>(6143)),C(0) $/;"	f	class:Graph
-HASHTABLE_CPP	src/HashTable.cpp	2;"	d	file:
-HASHTABLE_H	include/HashTable.h	2;"	d
-HEIGHT	src/newtest.cpp	21;"	d	file:
-Hash	src/HashTable.cpp	/^    int HashTable<K>::Hash(long int key)$/;"	f	class:keyOnly::HashTable
-Hash	src/HashTable.cpp	/^int HashTable<K,V>::Hash(long int key)$/;"	f	class:HashTable
-HashList	include/HashTable.h	/^    class HashList$/;"	c	namespace:keyOnly
-HashList	include/HashTable.h	/^class HashList$/;"	c
-HashPair	include/HashTable.h	/^class HashPair$/;"	c
-HashPair	src/HashTable.cpp	/^HashPair<K,V>::HashPair()$/;"	f	class:HashPair
-HashPair	src/HashTable.cpp	/^HashPair<K,V>::HashPair(K key,V value):key(key), value(value)$/;"	f	class:HashPair
-HashTable	include/HashTable.h	/^        HashTable()$/;"	f	class:HashTable
-HashTable	include/HashTable.h	/^    class HashTable$/;"	c	namespace:keyOnly
-HashTable	include/HashTable.h	/^class HashTable$/;"	c
-HashTable	src/HashTable.cpp	/^    HashTable<K>::HashTable()$/;"	f	class:keyOnly::HashTable
-HashTable	src/HashTable.cpp	/^    HashTable<K>::HashTable(int capacity)$/;"	f	class:keyOnly::HashTable
-HashTable	src/HashTable.cpp	/^HashTable<K,V>::HashTable(int capacity)$/;"	f	class:HashTable
-INF	src/newtest.cpp	20;"	d	file:
-LIST_CPP	src/List.cpp	2;"	d	file:
-LIST_H	include/List.h	2;"	d
-List	include/List.h	/^class List $/;"	c
-List	src/List.cpp	/^List<T>::List()$/;"	f	class:List
-ListNode	include/List.h	/^class ListNode$/;"	c
-List_iterator	include/List.h	/^class List_iterator$/;"	c
-List_iterator	src/List.cpp	/^List_iterator<T>::List_iterator():node(nullptr)$/;"	f	class:List_iterator
-List_iterator	src/List.cpp	/^List_iterator<T>::List_iterator(ListNode<T>* node):node(node)$/;"	f	class:List_iterator
+Graph	src/Graph.cpp	/^Graph::Graph():Points(6143),C(0)$/;"	f	class:Graph
+HALLWAY	include/Tile.h	/^enum tile_t { VOID, PAVEMENT, WALL, ROOM_BORDER, HALLWAY};$/;"	e	enum:tile_t
+HEIGHT	src/main.cpp	7;"	d	file:
+INF	include/Graph.h	11;"	d
+LEVEL_H	include/Level.h	2;"	d
+Level	include/Level.h	/^class Level$/;"	c
+Level	src/Level.cpp	/^Level::Level(int width,int height,int rooms, int _monsters, int _items):map(width,height),monsters(47),items(47)$/;"	f	class:Level
 MAP_H	include/Map.h	2;"	d
 MATRIX_CPP	src/Matrix.cpp	2;"	d	file:
 MATRIX_H	include/Matrix.h	2;"	d
-Map	include/Map.h	/^class Map : public Matrix<tile_t>$/;"	c
-Map	src/Map.cpp	/^Map::Map() : Matrix()$/;"	f	class:Map
-Map	src/Map.cpp	/^Map::Map(int width, int height) : Matrix(height, width), width(width), height(height)$/;"	f	class:Map
+Map	include/Map.h	/^class Map$/;"	c
+Map	src/Map.cpp	/^Map::Map(int width, int height) : grid(height, width), width(width), height(height), rooms(47)$/;"	f	class:Map
 Matrix	include/Matrix.h	/^class Matrix$/;"	c
 Matrix	src/Matrix.cpp	/^Matrix<T>::Matrix()$/;"	f	class:Matrix
 Matrix	src/Matrix.cpp	/^Matrix<T>::Matrix(int rows, int cols) : rows(rows), cols(cols)$/;"	f	class:Matrix
-Node	include/Graph.h	/^class Node$/;"	c
-Node	src/Graph.cpp	/^Node::Node()$/;"	f	class:Node
-Node	src/Graph.cpp	/^Node::Node(int x, int y)$/;"	f	class:Node
-Node	src/Graph.cpp	/^Node::Node(point p)$/;"	f	class:Node
-PAVEMENT	include/Map.h	/^enum tile_t { VOID, PAVEMENT, WALL, ROOM_BORDER};$/;"	e	enum:tile_t
-ROOM_BORDER	include/Map.h	/^enum tile_t { VOID, PAVEMENT, WALL, ROOM_BORDER};$/;"	e	enum:tile_t
+PAVEMENT	include/Tile.h	/^enum tile_t { VOID, PAVEMENT, WALL, ROOM_BORDER, HALLWAY};$/;"	e	enum:tile_t
+Point	include/Graph.h	/^class Point$/;"	c
+Point	src/Graph.cpp	/^Point::Point():x(-1),y(-1)$/;"	f	class:Point
+Point	src/Graph.cpp	/^Point::Point(int x, int y): x(x),y(y)$/;"	f	class:Point
+Points	include/Graph.h	/^        std::unordered_map<Point,std::list<Point>*> Points;$/;"	m	class:Graph
+ROOM_BORDER	include/Tile.h	/^enum tile_t { VOID, PAVEMENT, WALL, ROOM_BORDER, HALLWAY};$/;"	e	enum:tile_t
 ROOM_H	include/Room.h	2;"	d
 Room	include/Room.h	/^class Room $/;"	c
 Room	src/Room.cpp	/^Room::Room()$/;"	f	class:Room
-Room	src/Room.cpp	/^Room::Room(Room& lhs) : p(lhs.p), width(lhs.width), height(lhs.height)$/;"	f	class:Room
-Room	src/Room.cpp	/^Room::Room(point position, int width, int height) : p(position), width(width), height(height)$/;"	f	class:Room
+Room	src/Room.cpp	/^Room::Room(Point position, int width, int height, string id) : p(position), width(width), height(height), visible(false), id(id)$/;"	f	class:Room
 SRC	makefile	/^SRC=src$/;"	m
-STACK_CPP	src/stack.cpp	2;"	d	file:
-STACK_H	include/stack.h	2;"	d
-Stack	include/stack.h	/^class Stack$/;"	c
+TILE_H	include/Tile.h	2;"	d
+Tile	include/Tile.h	/^class Tile$/;"	c
+Tile	src/Tile.cpp	/^Tile::Tile(): type(VOID), id(""), visible(false), symbol('?')$/;"	f	class:Tile
+Tile	src/Tile.cpp	/^Tile::Tile(tile_t type): type(type), id(""), visible(false)$/;"	f	class:Tile
+Tile	src/Tile.cpp	/^Tile::Tile(tile_t type, string id, bool visible): type(type), id(id), visible(visible)$/;"	f	class:Tile
+Tile	src/Tile.cpp	/^Tile::Tile(tile_t type,bool visible): type(type), id(""), visible(visible)$/;"	f	class:Tile
 UTILITY_H	include/utility.hpp	2;"	d
-V	src/Graph.cpp	/^Hash::Set<Node>* Graph::V()$/;"	f	class:Graph
-VOID	include/Map.h	/^enum tile_t { VOID, PAVEMENT, WALL, ROOM_BORDER};$/;"	e	enum:tile_t
-WALL	include/Map.h	/^enum tile_t { VOID, PAVEMENT, WALL, ROOM_BORDER};$/;"	e	enum:tile_t
-WIDTH	src/newtest.cpp	22;"	d	file:
-adj	src/Graph.cpp	/^Hash::Set<Node>* Graph::adj(Node u)$/;"	f	class:Graph
-baseTable	include/HashTable.h	/^            HashTable<K>* baseTable;$/;"	m	class:keyOnly::hash_iterator
-baseTable	include/HashTable.h	/^        HashTable<K,V>* baseTable;$/;"	m	class:hash_iterator
-begin	src/HashTable.cpp	/^    List_iterator<K> HashList<K>::begin()$/;"	f	class:keyOnly::HashList
-begin	src/HashTable.cpp	/^    hash_iterator<K> hash_iterator<K>::begin()$/;"	f	class:keyOnly::hash_iterator
-begin	src/HashTable.cpp	/^List_iterator<HashPair<K,V>> HashList<K,V>::begin()$/;"	f	class:HashList
-begin	src/HashTable.cpp	/^hash_iterator<K,V> HashTable<K,V>::begin()$/;"	f	class:HashTable
-begin	src/HashTable.cpp	/^hash_iterator<K,V> hash_iterator<K,V>::begin()$/;"	f	class:hash_iterator
-begin	src/List.cpp	/^List_iterator<T> List<T>::begin()$/;"	f	class:List
+V	src/Graph.cpp	/^unordered_set<Point>* Graph::V()$/;"	f	class:Graph
+VOID	include/Tile.h	/^enum tile_t { VOID, PAVEMENT, WALL, ROOM_BORDER, HALLWAY};$/;"	e	enum:tile_t
+WALL	include/Tile.h	/^enum tile_t { VOID, PAVEMENT, WALL, ROOM_BORDER, HALLWAY};$/;"	e	enum:tile_t
+WIDTH	src/main.cpp	8;"	d	file:
+addRoom	src/Map.cpp	/^void Map::addRoom(Room& R,string id)$/;"	f	class:Map
+adj	src/Graph.cpp	/^unordered_set<Point>* Graph::adj(Point p)$/;"	f	class:Graph
 cols	include/Matrix.h	/^        int cols;$/;"	m	class:Matrix
-contains	src/Graph.cpp	/^bool Graph::contains(Node n)$/;"	f	class:Graph
-contains	src/HashTable.cpp	/^    bool HashTable<K>::contains(K k)$/;"	f	class:keyOnly::HashTable
-contains	src/HashTable.cpp	/^bool HashTable<K,V>::contains(K k)$/;"	f	class:HashTable
-contains	src/List.cpp	/^bool List<T>::contains(T v)$/;"	f	class:List
-createLinks	src/newtest.cpp	/^void createLinks(Graph* dots,Map& M)$/;"	f
-deleteEdge	src/Graph.cpp	/^bool Graph::deleteEdge(Node u, Node v)$/;"	f	class:Graph
-deleteNode	src/Graph.cpp	/^bool Graph::deleteNode(Node u)$/;"	f	class:Graph
-empty	src/HashTable.cpp	/^    bool HashList<K>::empty()$/;"	f	class:keyOnly::HashList
-empty	src/HashTable.cpp	/^bool HashList<K,V>::empty()$/;"	f	class:HashList
-empty	src/List.cpp	/^bool List<T>::empty()$/;"	f	class:List
-empty	src/dequeue.cpp	/^bool Dequeue<T>::empty()$/;"	f	class:Dequeue
-end	src/HashTable.cpp	/^    List_iterator<K> HashList<K>::end()$/;"	f	class:keyOnly::HashList
-end	src/HashTable.cpp	/^    hash_iterator<K> hash_iterator<K>::end()$/;"	f	class:keyOnly::hash_iterator
-end	src/HashTable.cpp	/^List_iterator<HashPair<K,V>> HashList<K,V>::end()$/;"	f	class:HashList
-end	src/HashTable.cpp	/^hash_iterator<K,V> HashTable<K,V>::end()$/;"	f	class:HashTable
-end	src/HashTable.cpp	/^hash_iterator<K,V> hash_iterator<K,V>::end()$/;"	f	class:hash_iterator
-end	src/List.cpp	/^List_iterator<T> List<T>::end()$/;"	f	class:List
-entries	include/HashTable.h	/^            HashList<K>* entries;$/;"	m	class:keyOnly::HashTable
-entries	include/HashTable.h	/^        HashList<K,V>* entries;$/;"	m	class:HashTable
-find	src/HashTable.cpp	/^    List_iterator<K> HashList<K>::find(K key)$/;"	f	class:keyOnly::HashList
-find	src/HashTable.cpp	/^List_iterator<HashPair<K,V>> HashList<K,V>::find(K key)$/;"	f	class:HashList
-finished	src/HashTable.cpp	/^    bool HashList<K>::finished(List_iterator<K> p)$/;"	f	class:keyOnly::HashList
-finished	src/HashTable.cpp	/^bool HashList<K,V>::finished(List_iterator<HashPair<K,V>> p)$/;"	f	class:HashList
-finished	src/List.cpp	/^bool List<T>::finished(List_iterator<T> p)$/;"	f	class:List
-first	include/List.h	/^        ListNode<T>* first;$/;"	m	class:List
-generateMap	src/newtest.cpp	/^void generateMap(Map& M)$/;"	f
-generateRoom	src/Room.cpp	/^Room generateRoom(int w, int h,int seed)$/;"	f
+connectToMap	src/Map.cpp	/^void Map::connectToMap(Graph& G, Point& p, Point& q)$/;"	f	class:Map
+contains	src/Graph.cpp	/^bool Graph::contains(Point p)$/;"	f	class:Graph
+createLinks	src/Map.cpp	/^void Map::createLinks(Graph& G)$/;"	f	class:Map
+deleteEdge	src/Graph.cpp	/^bool Graph::deleteEdge(Point p, Point q)$/;"	f	class:Graph
+deletePoint	src/Graph.cpp	/^bool Graph::deletePoint(Point p)$/;"	f	class:Graph
+disconnectFromMap	src/Map.cpp	/^void Map::disconnectFromMap(Graph& G, Point& p, Point& q)$/;"	f	class:Map
+generate	src/Map.cpp	/^void Map::generate(int requiredRooms)$/;"	f	class:Map
+generateRoom	src/Map.cpp	/^Room Map::generateRoom(string id)$/;"	f	class:Map
+getCorner	src/Room.cpp	/^Point Room::getCorner()$/;"	f	class:Room
 getHeight	src/Map.cpp	/^int Map::getHeight()$/;"	f	class:Map
-getKey	src/HashTable.cpp	/^K HashPair<K,V>::getKey()$/;"	f	class:HashPair
-getPoint	src/Graph.cpp	/^point Node::getPoint()$/;"	f	class:Node
-getValue	src/HashTable.cpp	/^V HashPair<K,V>::getValue()$/;"	f	class:HashPair
+getHeight	src/Room.cpp	/^int Room::getHeight()$/;"	f	class:Room
+getId	src/Room.cpp	/^string Room::getId()$/;"	f	class:Room
+getId	src/Tile.cpp	/^string Tile::getId()$/;"	f	class:Tile
+getSymbol	src/Tile.cpp	/^char Tile::getSymbol()$/;"	f	class:Tile
+getType	src/Tile.cpp	/^tile_t Tile::getType()$/;"	f	class:Tile
 getWidth	src/Map.cpp	/^int Map::getWidth()$/;"	f	class:Map
-handleMovement	src/newtest.cpp	/^void handleMovement(Map& M)$/;"	f
-hash	include/Graph.h	/^    template <> struct hash<Node>$/;"	s	namespace:std
-hash_iterator	include/HashTable.h	/^    class hash_iterator$/;"	c	namespace:keyOnly
-hash_iterator	include/HashTable.h	/^class hash_iterator$/;"	c
-hash_iterator	src/HashTable.cpp	/^    hash_iterator<K>::hash_iterator()$/;"	f	class:keyOnly::hash_iterator
-hash_iterator	src/HashTable.cpp	/^    hash_iterator<K>::hash_iterator(HashTable<K>* table)$/;"	f	class:keyOnly::hash_iterator
-hash_iterator	src/HashTable.cpp	/^    hash_iterator<K>::hash_iterator(const hash_iterator& it2)$/;"	f	class:keyOnly::hash_iterator
-hash_iterator	src/HashTable.cpp	/^hash_iterator<K,V>::hash_iterator()$/;"	f	class:hash_iterator
-hash_iterator	src/HashTable.cpp	/^hash_iterator<K,V>::hash_iterator(HashTable<K,V>* table)$/;"	f	class:hash_iterator
-hash_iterator	src/HashTable.cpp	/^hash_iterator<K,V>::hash_iterator(const hash_iterator& it2)$/;"	f	class:hash_iterator
+getWidth	src/Room.cpp	/^int Room::getWidth()$/;"	f	class:Room
+grid	include/Map.h	/^        Matrix<Tile> grid;$/;"	m	class:Map
+handleMovement	src/main.cpp	/^void handleMovement(Map& M)$/;"	f
+hash	include/Graph.h	/^    template <> struct hash<Point>$/;"	s	namespace:std
 height	include/Map.h	/^        int width, height;$/;"	m	class:Map
 height	include/Room.h	/^        int height;$/;"	m	class:Room
-i	include/HashTable.h	/^            int i;$/;"	m	class:keyOnly::hash_iterator
-i	include/HashTable.h	/^        int i;$/;"	m	class:hash_iterator
-insert	src/HashTable.cpp	/^    void HashList<K>::insert(K key)$/;"	f	class:keyOnly::HashList
-insert	src/HashTable.cpp	/^    void HashTable<K>::insert(K key)$/;"	f	class:keyOnly::HashTable
-insert	src/HashTable.cpp	/^void HashList<K,V>::insert(K key,V value)$/;"	f	class:HashList
-insert	src/HashTable.cpp	/^void HashTable<K,V>::insert(K key,V value)$/;"	f	class:HashTable
-insert	src/List.cpp	/^void List<T>::insert(List_iterator<T> p,T v)$/;"	f	class:List
-insert	src/List.cpp	/^void List<T>::insert(T v)$/;"	f	class:List
-insertEdge	src/Graph.cpp	/^bool Graph::insertEdge(Node u, Node v)$/;"	f	class:Graph
-insertNode	src/Graph.cpp	/^bool Graph::insertNode(Node u)$/;"	f	class:Graph
-isEmpty	src/stack.cpp	/^bool Stack<T>::isEmpty()$/;"	f	class:Stack
-it	include/HashTable.h	/^            List_iterator<K> it;$/;"	m	class:keyOnly::hash_iterator
-it	include/HashTable.h	/^        List_iterator<HashPair<K,V>> it;$/;"	m	class:hash_iterator
-iterator	include/List.h	/^        typedef List_iterator<T> iterator;$/;"	t	class:List
-iterator	include/List.h	/^        typedef List_iterator<T> iterator;$/;"	t	class:List_iterator
-key	include/HashTable.h	/^        K key;$/;"	m	class:HashPair
-keyOnly	include/HashTable.h	/^namespace keyOnly$/;"	n
-keyOnly	src/HashTable.cpp	/^namespace keyOnly$/;"	n	file:
-l	include/HashTable.h	/^            List<K> l;$/;"	m	class:keyOnly::HashList
-l	include/HashTable.h	/^        List<HashPair<K,V>> l;$/;"	m	class:HashList
-l	include/dequeue.h	/^        List<T> l;$/;"	m	class:Dequeue
-last	src/dequeue.cpp	/^T& Dequeue<T>::last()$/;"	f	class:Dequeue
-link	src/newtest.cpp	/^void link(Room& R,Room& Q,Graph* G,Map& M)$/;"	f
-logfile	src/newtest.cpp	/^ofstream logfile;$/;"	v
-lookup	src/HashTable.cpp	/^    K HashList<K>::lookup(K key)$/;"	f	class:keyOnly::HashList
-lookup	src/HashTable.cpp	/^    K HashTable<K>::lookup(K k)$/;"	f	class:keyOnly::HashTable
-lookup	src/HashTable.cpp	/^V HashList<K,V>::lookup(K key)$/;"	f	class:HashList
-lookup	src/HashTable.cpp	/^V HashTable<K,V>::lookup(K k)$/;"	f	class:HashTable
-m	include/HashTable.h	/^            int m;	\/\/table dimension$/;"	m	class:keyOnly::HashTable
-m	include/HashTable.h	/^        int m;	\/\/table dimension$/;"	m	class:HashTable
-main	src/newtest.cpp	/^int main()$/;"	f
+id	include/Room.h	/^        std::string id;$/;"	m	class:Room
+id	include/Tile.h	/^        std::string id;$/;"	m	class:Tile
+insertEdge	src/Graph.cpp	/^bool Graph::insertEdge(Point p, Point q)$/;"	f	class:Graph
+insertPoint	src/Graph.cpp	/^bool Graph::insertPoint(Point p)$/;"	f	class:Graph
+isVisible	src/Room.cpp	/^bool Room::isVisible()$/;"	f	class:Room
+isVisible	src/Tile.cpp	/^bool Tile::isVisible()$/;"	f	class:Tile
+items	include/Level.h	/^        HashTable<Point p,Item> items;$/;"	m	class:Level
+link	src/Map.cpp	/^void Map::link(Room& R,Room& Q,Graph& G)$/;"	f	class:Map
+main	src/main.cpp	/^int main()$/;"	f
+map	include/Level.h	/^        Map map;$/;"	m	class:Level
 matrix	include/Matrix.h	/^        T** matrix;$/;"	m	class:Matrix
+monsters	include/Level.h	/^        HashTable<std::string,Monster> monsters;$/;"	m	class:Level
 n	src/Graph.cpp	/^int Graph::n()$/;"	f	class:Graph
-next	include/List.h	/^        ListNode *next,*prev;$/;"	m	class:ListNode
-nextOccurrence	src/HashTable.cpp	/^    List_iterator<K> hash_iterator<K>::nextOccurrence()$/;"	f	class:keyOnly::hash_iterator
-nextOccurrence	src/HashTable.cpp	/^List_iterator<HashPair<K,V>> hash_iterator<K,V>::nextOccurrence()$/;"	f	class:hash_iterator
-nil	src/newtest.cpp	23;"	d	file:
-node	include/List.h	/^        ListNode<T>* node;$/;"	m	class:List_iterator
-nodes	include/Graph.h	/^        HashTable<Node,List<Node>*> nodes;$/;"	m	class:Graph
-operator !=	src/Graph.cpp	/^bool operator !=(Node p, Node q)$/;"	f
-operator !=	src/HashTable.cpp	/^    bool operator !=(const hash_iterator<K>& it, const hash_iterator<K>& it2)$/;"	f	namespace:keyOnly
-operator !=	src/HashTable.cpp	/^bool operator !=(const hash_iterator<K,V>& it, const hash_iterator<K,V>& it2)$/;"	f
-operator !=	src/List.cpp	/^bool List_iterator<T>::operator!=(const List_iterator<T> & rhs) const$/;"	f	class:List_iterator
-operator ()	src/Graph.cpp	/^    size_t hash<Node>::operator()(Node n) const$/;"	f	class:std::hash
-operator ()	src/Map.cpp	/^tile_t& Map::operator () (int x, int y)$/;"	f	class:Map
-operator ()	src/Map.cpp	/^tile_t& Map::operator () (point p)$/;"	f	class:Map
+operator !=	src/Graph.cpp	/^bool operator !=(Point p, Point q)$/;"	f
+operator ()	src/Graph.cpp	/^    size_t hash<Point>::operator()(Point n) const$/;"	f	class:std::hash
+operator ()	src/Map.cpp	/^Tile& Map::operator () (Point p)$/;"	f	class:Map
+operator ()	src/Map.cpp	/^Tile& Map::operator () (int x, int y)$/;"	f	class:Map
 operator ()	src/Matrix.cpp	/^T& Matrix<T>::operator () (int row, int col)$/;"	f	class:Matrix
-operator *	src/HashTable.cpp	/^    K hash_iterator<K>::operator *()$/;"	f	class:keyOnly::hash_iterator
-operator *	src/HashTable.cpp	/^HashPair<K,V> hash_iterator<K,V>::operator *()$/;"	f	class:hash_iterator
-operator *	src/List.cpp	/^T& List_iterator<T>::operator*()$/;"	f	class:List_iterator
-operator ++	src/HashTable.cpp	/^    hash_iterator<K> hash_iterator<K>::operator ++( int ) \/\/postfix$/;"	f	class:keyOnly::hash_iterator
-operator ++	src/HashTable.cpp	/^    hash_iterator<K> hash_iterator<K>::operator ++() \/\/prefix$/;"	f	class:keyOnly::hash_iterator
-operator ++	src/HashTable.cpp	/^hash_iterator<K,V> hash_iterator<K,V>::operator ++( int ) \/\/postfix$/;"	f	class:hash_iterator
-operator ++	src/HashTable.cpp	/^hash_iterator<K,V> hash_iterator<K,V>::operator ++() \/\/prefix$/;"	f	class:hash_iterator
-operator ++	src/List.cpp	/^List_iterator<T> List_iterator<T>::operator++(int)$/;"	f	class:List_iterator
-operator ++	src/List.cpp	/^List_iterator<T>& List_iterator<T>::operator++()$/;"	f	class:List_iterator
-operator --	src/List.cpp	/^List_iterator<T> List_iterator<T>::operator--(int)$/;"	f	class:List_iterator
-operator --	src/List.cpp	/^List_iterator<T>& List_iterator<T>::operator--()$/;"	f	class:List_iterator
-operator ==	src/Graph.cpp	/^bool operator ==(Node n1, Node n2)$/;"	f
-operator ==	src/Graph.cpp	/^bool operator ==(point p, point q)$/;"	f
-operator ==	src/HashTable.cpp	/^    bool operator ==(const hash_iterator<K>& it, const hash_iterator<K>& it2)$/;"	f	namespace:keyOnly
-operator ==	src/HashTable.cpp	/^bool operator ==(const hash_iterator<K,V>& it, const hash_iterator<K,V>& it2)$/;"	f
-operator ==	src/List.cpp	/^bool List_iterator<T>::operator==(const List_iterator<T> & rhs) const$/;"	f	class:List_iterator
-operator []	src/HashTable.cpp	/^V HashTable<K,V>::operator [](K k)$/;"	f	class:HashTable
-overlaps	src/Room.cpp	/^bool Room::overlaps(Map& M)$/;"	f	class:Room
-p	include/Graph.h	/^        point p;$/;"	m	class:Node
-p	include/Room.h	/^        point p;$/;"	m	class:Room
-pick	include/utility.hpp	/^T pick(vector<T> args)$/;"	f
-pickAPointAround	src/Room.cpp	/^point Room::pickAPointAround(Map& M)$/;"	f	class:Room
-place	src/Room.cpp	/^void Room::place(Map& M)$/;"	f	class:Room
-point	include/Graph.h	/^struct point$/;"	s
-pop	src/dequeue.cpp	/^T Dequeue<T>::pop()$/;"	f	class:Dequeue
-pop	src/stack.cpp	/^T Stack<T>::pop()$/;"	f	class:Stack
-pop_last	src/dequeue.cpp	/^T Dequeue<T>::pop_last()$/;"	f	class:Dequeue
-populateGraph	src/newtest.cpp	/^void populateGraph(Graph* dots,Map& M)$/;"	f
-prev	include/List.h	/^        ListNode *next,*prev;$/;"	m	class:ListNode
-print	src/Graph.cpp	/^void Node::print()$/;"	f	class:Node
-print	src/Graph.cpp	/^void point::print()$/;"	f	class:point
-printGraph	src/newtest.cpp	/^void printGraph(Map& M,Graph* G,ofstream& out)$/;"	f
-printMap	src/newtest.cpp	/^void printMap(Map& M)$/;"	f
-printMap	src/newtest.cpp	/^void printMap(Map& M,ofstream& out)$/;"	f
-push	src/dequeue.cpp	/^void Dequeue<T>::push(T v)$/;"	f	class:Dequeue
-push	src/stack.cpp	/^void Stack<T>::push(T v)$/;"	f	class:Stack
-push_back	src/dequeue.cpp	/^void Dequeue<T>::push_back(T v)$/;"	f	class:Dequeue
+operator ==	src/Graph.cpp	/^bool operator ==(Point p, Point q)$/;"	f
+overlaps	src/Map.cpp	/^bool Map::overlaps(Room& R)$/;"	f	class:Map
+p	include/Room.h	/^        Point p;$/;"	m	class:Room
+pickAPointAround	src/Room.cpp	/^Point Room::pickAPointAround()$/;"	f	class:Room
+pickPoint	src/Room.cpp	/^Point Room::pickPoint()$/;"	f	class:Room
+pickRoom	src/Map.cpp	/^Room Map::pickRoom()$/;"	f	class:Map
+place	src/Map.cpp	/^void Map::place(Room& R)$/;"	f	class:Map
+populateGraph	src/Map.cpp	/^void Map::populateGraph(Graph& G)$/;"	f	class:Map
+print	src/Graph.cpp	/^void Point::print()$/;"	f	class:Point
+printMap	src/main.cpp	/^void printMap(Map& M)$/;"	f
+printMap	src/main.cpp	/^void printMap(Map& M,std::string filename)$/;"	f
 rand	include/utility.hpp	/^inline int rand(int first, int second)$/;"	f
-remove	src/HashTable.cpp	/^    void HashList<K>::remove(K key)$/;"	f	class:keyOnly::HashList
-remove	src/HashTable.cpp	/^    void HashTable<K>::remove(K key)$/;"	f	class:keyOnly::HashTable
-remove	src/HashTable.cpp	/^void HashList<K,V>::remove(K key)$/;"	f	class:HashList
-remove	src/HashTable.cpp	/^void HashTable<K,V>::remove(K key)$/;"	f	class:HashTable
-remove	src/List.cpp	/^void List<T>::remove(List_iterator<T>& p)$/;"	f	class:List
-retrievePath	src/newtest.cpp	/^List<Node>* retrievePath(HashTable<Node,Node>* T,Node& one,Node& two)$/;"	f
+retrievePath	src/Graph.cpp	/^void retrievePath(list<Point>& l,unordered_map<Point,Point>& T,Point& one,Point& two)$/;"	f
+rooms	include/Map.h	/^        std::unordered_map<std::string,Room> rooms;$/;"	m	class:Map
 rows	include/Matrix.h	/^        int rows;$/;"	m	class:Matrix
-setKey	src/HashTable.cpp	/^void HashPair<K,V>::setKey(K key)$/;"	f	class:HashPair
-setPoint	src/Graph.cpp	/^void Node::setPoint(point p)$/;"	f	class:Node
-setUpMap	src/newtest.cpp	/^void setUpMap(Map& M)$/;"	f
-setValue	src/HashTable.cpp	/^void HashPair<K,V>::setValue(V v)$/;"	f	class:HashPair
-shortestPath	src/newtest.cpp	/^void shortestPath(Graph* G, Node r,HashTable<Node,Node>* T)$/;"	f
+setId	src/Room.cpp	/^void Room::setId(string id)$/;"	f	class:Room
+setId	src/Tile.cpp	/^void Tile::setId(string id)$/;"	f	class:Tile
+setSymbol	src/Tile.cpp	/^void Tile::setSymbol()$/;"	f	class:Tile
+setType	src/Tile.cpp	/^void Tile::setType(tile_t type)$/;"	f	class:Tile
+setUpMap	src/main.cpp	/^void setUpMap(Map& M)$/;"	f
+setVisible	src/Map.cpp	/^void Map::setVisible(string id)$/;"	f	class:Map
+setVisible	src/Room.cpp	/^void Room::setVisible(bool b)$/;"	f	class:Room
+setVisible	src/Tile.cpp	/^void Tile::setVisible(bool b)$/;"	f	class:Tile
+shortestPath	src/Graph.cpp	/^void shortestPath(Graph& G, Point r,unordered_map<Point,Point>& T)$/;"	f
+showAround	src/Map.cpp	/^void Map::showAround(int x, int y)$/;"	f	class:Map
 std	include/Graph.h	/^namespace std$/;"	n
 std	src/Graph.cpp	/^namespace std$/;"	n	file:
-tile_t	include/Map.h	/^enum tile_t { VOID, PAVEMENT, WALL, ROOM_BORDER};$/;"	g
-top	src/dequeue.cpp	/^T& Dequeue<T>::top()$/;"	f	class:Dequeue
-top	src/stack.cpp	/^T Stack<T>::top()$/;"	f	class:Stack
-value	include/HashTable.h	/^        V value;$/;"	m	class:HashPair
-value	include/List.h	/^        T value;$/;"	m	class:ListNode
-w	src/newtest.cpp	/^int w(Node u, Node v)$/;"	f
+symbol	include/Tile.h	/^        char symbol;$/;"	m	class:Tile
+tile_t	include/Tile.h	/^enum tile_t { VOID, PAVEMENT, WALL, ROOM_BORDER, HALLWAY};$/;"	g
+type	include/Tile.h	/^        tile_t type;$/;"	m	class:Tile
+visible	include/Room.h	/^        bool visible;$/;"	m	class:Room
+visible	include/Tile.h	/^        bool visible;$/;"	m	class:Tile
+w	src/Graph.cpp	/^int w(Point p, Point q)$/;"	f
 width	include/Map.h	/^        int width, height;$/;"	m	class:Map
 width	include/Room.h	/^        int width;$/;"	m	class:Room
-write	src/List.cpp	/^void List<T>::write(List_iterator<T> p,T v)$/;"	f	class:List
-x	include/Graph.h	/^    int x,y;$/;"	m	struct:point
-y	include/Graph.h	/^    int x,y;$/;"	m	struct:point
+x	include/Graph.h	/^        int x,y;$/;"	m	class:Point
+y	include/Graph.h	/^        int x,y;$/;"	m	class:Point
 ~Graph	src/Graph.cpp	/^Graph::~Graph()$/;"	f	class:Graph
-~HashTable	src/HashTable.cpp	/^    HashTable<K>::~HashTable()$/;"	f	class:keyOnly::HashTable
-~HashTable	src/HashTable.cpp	/^HashTable<K,V>::~HashTable()$/;"	f	class:HashTable
-~List	src/List.cpp	/^List<T>::~List()$/;"	f	class:List
 ~Matrix	src/Matrix.cpp	/^Matrix<T>::~Matrix()$/;"	f	class:Matrix

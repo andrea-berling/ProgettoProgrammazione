@@ -4,11 +4,7 @@
 
 using namespace std;
 
-Map::Map():grid(0,0),width(0),height(0),rooms(47)
-{}
-// Defualt constructor
-
-Map::Map(int width, int height) : grid(height, width), width(width), height(height),rooms(47)
+Map::Map(int width, int height) : grid(height, width), width(width), height(height), rooms(47)
 {}
 // Creates a new map with the given # of rows and columns
 
@@ -106,24 +102,29 @@ bool Map::overlaps(Room& R)
 
 void Map::addRoom(Room& R,string id)
 {
-    rooms.insert({id,R});
+    rooms[id] = R;
 }
 
 Room Map::pickRoom()
 {
-    HashTable<string,Room>::iterator it = rooms.begin();
-    Room R = (*it).value;
-    return R;
+    int index = rand(0,rooms.size()-1);
+    unordered_map<string,Room>::iterator it = rooms.begin();
+
+    while(index > 0)
+    {
+        ++it;
+        --index;
+    }
+
+    return (*it).second;
 }
 
 void Map::setVisible(string id)
 {
-    Room R = rooms[id];
-    R.setVisible(true);
-    rooms.insert({R.getId(),R});
-    Point p = R.getCorner();    
-    int width = R.getWidth();
-    int height = R.getHeight();
+    rooms[id].setVisible(true);
+    Point p = rooms[id].getCorner();    
+    int width = rooms[id].getWidth();
+    int height = rooms[id].getHeight();
     for(int i = p.x; i < p.x + width; i++)
         for(int j = p.y; j < p.y + height; j++)
             (*this)(i,j).setVisible(true);
@@ -140,10 +141,9 @@ void Map::showAround(int x, int y)
 void Map::generate(int requiredRooms)
 {
     int n = 0;
-    int seed = 2;
     int roomID = 0;
     Room R,Q;
-    Dequeue<Room> rooms;
+    deque<Room> rooms;
     Graph dots;
 
     for(int i = 0; i < width; i++)        // Map initialization
@@ -155,16 +155,14 @@ void Map::generate(int requiredRooms)
 
     while(n < requiredRooms)
     {
-        seed = 2;
         string id = "room" + to_string(roomID);
         roomID++;
-        R = generateRoom(id, seed);
+        R = generateRoom(id);
         while(overlaps(R))
         {
-            seed += 2;
-            R = generateRoom(id, seed);
+            R = generateRoom(id);
         }
-        rooms.push(R);
+        rooms.push_front(R);
         addRoom(R,id);
         place(R);
         n++;
@@ -173,21 +171,22 @@ void Map::generate(int requiredRooms)
     populateGraph(dots);
     createLinks(dots);
 
-    R = rooms.pop();
-    Q = rooms.top();
+    R = *(rooms.begin());
+    rooms.pop_front();
+    Q = *(rooms.begin());
     while(!rooms.empty())
     {
         link(R,Q,dots); // to add to map class
-        R = rooms.pop();
+        R = *(rooms.begin());
+        rooms.pop_front();
         if(!rooms.empty())
-            Q = rooms.top();
+            Q = *(rooms.begin());
     }
 }
 
-Room Map::generateRoom(string id, int seed)
+Room Map::generateRoom(string id)
 {
     Point p;
-    srand(time(NULL)*seed);
     int wLimit, hLimit;
     int w,h;
 
@@ -237,8 +236,8 @@ void Map::link(Room& R,Room& Q,Graph& G)
     Point q = Q.pickAPointAround();
     Point toRemove1;
     Point toRemove2;
-    List<Point> steps;
-    HashTable<Point,Point> T(6143);
+    list<Point> steps;
+    unordered_map<Point,Point> T(6143);
 
     connectToMap(G,p,toRemove1);
     connectToMap(G,q,toRemove2);
@@ -249,7 +248,7 @@ void Map::link(Room& R,Room& Q,Graph& G)
         retrievePath(steps,T,p,q);
     }
     else
-        steps.insert(p);
+        steps.insert(steps.begin(),p);
 
     for(Point p : steps)
     {
@@ -285,3 +284,68 @@ void Map::disconnectFromMap(Graph& G, Point& p, Point& q)
     G.deletePoint(p);
     G.deletePoint(q);
 }
+
+
+/*
+void Map::spawnMonsters(int _monsters,unordered_map<string,Monster>& monsters)
+{
+    unordered_map<string,Room>::iterator it = --(rooms.end());    // The last room created
+    int count = 0;
+
+    for(int i = 0; i < _monsters; i++) 
+    {
+        int x = (*it).key.getCorner().x;
+        int y = (*it).key.getCorner().y;
+        int height = (*it).key.getHeight();
+        int width = (*it).key.getWidth();
+        Point position(rand(x+1,x+width-1),rand(y+1,y+height-1));
+        string name = "monster" + toString(count);
+        Monster m(position,name); // The creation of the monster, depends on the constructor
+        monserts.insert({name,m});
+
+        --it;
+        --it; // skip one room
+        ++count;
+    }
+}
+
+void Map::spawnItems(int _items,unordered_map<Point p,Item>& items)
+{
+    unordered_map<string,Room>::iterator it = --(rooms.end());    // The last room created
+    int count = 0;
+
+    for(int i = 0; i < _items; i++) 
+    {
+        int x = (*it).key.getCorner().x;
+        int y = (*it).key.getCorner().y;
+        int height = (*it).key.getHeight();
+        int width = (*it).key.getWidth();
+        Point position;
+
+        do
+        {
+            position = Point(rand(x+1,x+width-1),rand(y+1,y+height-1));
+        }
+        while(!isFree(position.x,position.y));
+
+        string name = "item" + toString(count);
+        Item item(position,name); // The creation of the item, depends on the constructor
+        items.insert({name,m});
+        placeItem(item);
+
+        --it;
+        --it; // skip one room
+        ++count;
+    }
+}
+
+bool Map::isFree(int x, int y)
+{
+    return itemsLayer(y,x) == VOID // need to implement the VOID item
+}
+
+void Map::placeItem(Item item, int x, int y)
+{
+    itemsLayer[y][x] = item;
+}
+*/

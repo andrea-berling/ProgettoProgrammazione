@@ -1,9 +1,9 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 #include <limits.h>
-#include "set.h"
-#include "HashTable.h"
-#include "List.h"
+#include <unordered_set>
+#include <unordered_map>
+#include <list>
 #ifndef DEBUG
 #define DEBUG
 #endif
@@ -30,6 +30,7 @@ bool operator ==(Point p, Point q);
 bool operator !=(Point p, Point q);
 // returns true if two Points have the same coordinates
 
+
 namespace std
 {
     template <> struct hash<Point>
@@ -39,11 +40,12 @@ namespace std
     };
 }
 
+
 class Graph
 {
     private:
 
-        HashTable<Point,List<Point>*> Points;
+        std::unordered_map<Point,std::list<Point>*> Points;
         int C;
 
     public:
@@ -66,10 +68,10 @@ class Graph
         bool deleteEdge(Point u, Point v);
         // Deletes an edge in the graph
 
-        HashSet<Point>* adj(Point u);
+        std::unordered_set<Point>* adj(Point u);
         // Returns the set of all the nodes adiacient to u
 
-        HashSet<Point>* V();
+        std::unordered_set<Point>* V();
         // Retruns the set of all nodes in the graph
 
         int n();
@@ -81,11 +83,11 @@ class Graph
 #endif
 };
 
-void shortestPath(Graph& G, Point r,HashTable<Point,Point>& T);
+void shortestPath(Graph& G, Point r,std::unordered_map<Point,Point>& T);
 // Find the shortest path between point r and all other points in the graph G
 
-void retrievePath(List<Point>& l,HashTable<Point,Point>& T,Point& one,Point& two);
-// Retrieves the path between one and two, saved in the HashTable T and saves it in l
+void retrievePath(std::list<Point>& l,std::unordered_map<Point,Point>& T,Point& one,Point& two);
+// Retrieves the path between one and two, saved in the std::unordered_map T and saves it in l
 
 int w(Point p, Point q);
 // Returns the "distance" between p and q in the map
