@@ -1,11 +1,14 @@
 #ifndef GRAPH_CPP
 #define GRAPH_CPP
-#include "../include/dequeue.h"
+#include <algorithm>
+#include <deque>
 #include "../include/Graph.h"
 #include <iostream>
 #ifndef DEBUG
 #define DEBUG
 #endif
+
+using namespace std;
 
 bool operator ==(Point p, Point q)
 {
@@ -36,24 +39,24 @@ namespace std
 {
     size_t hash<Point>::operator()(Point n) const
     {
-        int xHash = n.x;
-        xHash = hash<int>()(xHash);
-        int yHash = n.y;
-        yHash = hash<int>()(yHash);
 
-        return xHash ^ yHash;
+        double arg = (double(n.x))/n.y;
+        int module = n.x*n.x + n.y*n.y;
+
+        return hash<double>()(arg*module);
     }
 }
 
-Graph::Graph():Points(6143),C(0) 
+
+Graph::Graph():Points(6143),C(0)
 {}
 // Default constructor; creates an empty graph
 
 bool Graph::insertPoint(Point p)
 {
-    if(!Points.contains(p))
+    if(Points.find(p) == Points.end())
     {
-        Points.insert({p,new List<Point>()});
+        Points[p] = new list<Point>();
         C++;
         return true;
     }
@@ -65,19 +68,19 @@ bool Graph::insertPoint(Point p)
 Graph::~Graph()
 {
     for(auto pair : Points)
-        delete pair.value;  // frees the memory occupied by the adjacency lists
+        delete pair.second;  // frees the memory occupied by the adjacency lists
 }
 
 bool Graph::insertEdge(Point p, Point q)
 {
-    if(Points.contains(p) && Points.contains(q))
+    if(Points.find(p) != Points.end() && Points.find(q) != Points.end())
     {
-        List<Point>* l = Points[p]; 
-        if(!l->contains(q))
-            l->insert(q);
+        list<Point>* l = Points[p]; 
+        if(find(l->begin(),l->end(),q) == l->end())
+            l->insert(l->begin(),q);
         l = Points[q];
-        if(!l->contains(p)) // The graph is undirected
-            l->insert(p);
+        if(find(l->begin(),l->end(),p) == l->end()) // The graph is undirected
+            l->insert(l->begin(),p);
         return true;
     }
     else
@@ -87,18 +90,19 @@ bool Graph::insertEdge(Point p, Point q)
 
 bool Graph::deletePoint(Point p)
 {
-    if(Points.contains(p))
+    unordered_map<Point,list<Point>*>::iterator p_it = Points.find(p);
+    if(p_it != Points.end())
     {
         bool done = false;
-        Points.remove(p);
+        Points.erase(p_it);
         C--;
         for(auto q : Points) // removing node p from all the adjacency lists where it appears
         {
-            for(List<Point>::iterator it = q.value->begin(); it != q.value->end() && !done; it++)
+            for(list<Point>::iterator it = q.second->begin(); it != q.second->end() && !done; it++)
                 if(*it == p)
                 {
-                    q.value->remove(it);
-                    done = true;
+                    q.second->erase(it);
+                    done = true;    // Stops looking for p in the adjacency list of the current node
                 }
             done = false;
         }
@@ -111,34 +115,29 @@ bool Graph::deletePoint(Point p)
 
 bool Graph::deleteEdge(Point p, Point q)
 {
-    if(Points.contains(p) && Points.contains(q))
+    if(Points.find(p) != Points.end() && Points.find(q) != Points.end())
     {
-        List<Point>* l = Points[p];
-        bool done = false;
-        for(List<Point>::iterator it = l->begin(); it != l->end() && !done; it++)
-            if(*it == q)
-            {
-                l->remove(it);
-                done = true;
-            }
-        done = false;
-        l = Points[q];
-        for(List<Point>::iterator it = l->begin(); it != l->end() && !done; it++)
-            if(*it == p)
-            {
-                l->remove(it);
-                done = true;
-            }
-        return true;
+        list<Point>* l = Points[p];
+        list<Point>* m = Points[q];
+        list<Point>::iterator it1 = find(l->begin(),l->end(),q); // Removing q from p's adjacency list
+        list<Point>::iterator it2 = find(m->begin(),m->end(),p); // Removing q from p's adjacency list
+        if(it1 != l->end() && it2 != m->end())
+        {
+            l->erase(it1);
+            m->erase(it2);
+            return true;
+        }
+        else
+            return false;
     }
     else
         return false;
 }
 // Deletes an edge in the graph
 
-HashSet<Point>* Graph::adj(Point p)
+unordered_set<Point>* Graph::adj(Point p)
 {
-    HashSet<Point> *adj = new HashSet<Point>(17);   // in the graph of the map there are at most 4 adjacent Points
+    unordered_set<Point> *adj = new unordered_set<Point>();   // in the graph of the map there are at most 4 adjacent Points
 
     for(Point q : *(Points[p]))
     {
@@ -149,13 +148,13 @@ HashSet<Point>* Graph::adj(Point p)
 }
 // Returns the set of all the Points adiacient to u
 
-HashSet<Point>* Graph::V()
+unordered_set<Point>* Graph::V()
 {
-    HashSet<Point> *v = new HashSet<Point>(6143);               // a new set is created, so that modifications in this set without using the graph methods won't affect the graph
+    unordered_set<Point> *v = new unordered_set<Point>();               // a new set is created, so that modifications in this set without using the graph methods won't affect the graph
 
     for(auto pair : Points)
     {
-        v->insert(pair.key);
+        v->insert(pair.first);
     }
 
     return v;
@@ -183,35 +182,39 @@ int Graph::n()
 
 bool Graph::contains(Point p)
 {
-    return Points.contains(p);
+    return Points.find(p) != Points.end();
 }
 #endif
 
-void shortestPath(Graph& G, Point r,HashTable<Point,Point>& T)
+void shortestPath(Graph& G, Point r,unordered_map<Point,Point>& T)
 {
-    HashTable<Point,int> d(G.n());
-    HashTable<Point,bool> b(G.n());
-    HashSet<Point>* adj = G.V();
-    Dequeue<Point> S;
+    unordered_map<Point,int> d(2*G.n()+1);
+    unordered_map<Point,bool> b(2*G.n()+1);
+    unordered_set<Point>* adj = G.V();
+    deque<Point> S;
+
     for(Point u : *adj)
     {
         if(u != r)
         {
-            T.insert({u,Point()});
-            d.insert({u,INF});
-            b.insert({u,false});
+            T[u] = Point();
+            d[u] = INF;
+            b[u] = false;
         }
     }
 
     delete adj;
-    T.insert({r,Point()});
-    d.insert({r,0});
-    b.insert({r,true});
-    S.push(r);
+
+    T[r] = Point();
+    d[r] = 0;
+    b[r] = true;
+    S.push_front(r);
+
     while(!S.empty())
     {
-        Point u = S.pop();
-        b.insert({u,false});
+        Point u = *(S.begin());
+        S.pop_front();
+        b[u] = false;
         adj = G.adj(u);
         for(Point v : *adj)
         {
@@ -222,24 +225,24 @@ void shortestPath(Graph& G, Point r,HashTable<Point,Point>& T)
                     if(d[v] == INF)
                         S.push_back(v);
                     else
-                        S.push(v);
-                    b.insert({v,true});
+                        S.push_front(v);
+                    b[v] = true;
                 }
-                T.insert({v,u});
-                d.insert({v,d[u] + w(u,v)});
+                T[v] = u;
+                d[v] = d[u] + w(u,v);
             }
         }
         delete adj;
     }
 }
 
-void retrievePath(List<Point>& l,HashTable<Point,Point>& T,Point& one,Point& two)
+void retrievePath(list<Point>& l,unordered_map<Point,Point>& T,Point& one,Point& two)
 {
     Point p = two;
 
     while(p != Point())
     {
-        l.insert(p);
+        l.insert(l.begin(),p);
         p = T[p];
     }
 }
@@ -248,6 +251,5 @@ int w(Point p, Point q)
 {
    return abs(p.x - q.x) + abs(p.y - q.y);
 }
-
 
 #endif

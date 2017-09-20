@@ -1,13 +1,7 @@
-#include <limits.h>
 #include <ncurses.h>
-#include <math.h>
-#include "../include/Graph.h"
+#include <cstdlib>
+#include <ctime>
 #include "../include/Map.h"
-#include "../include/Room.h"
-#include "../include/dequeue.h"
-#include "../include/HashTable.h"
-#include "../include/List.h"
-#include "../include/utility.hpp"
 #include <iostream>
 
 #define HEIGHT 37
@@ -24,6 +18,7 @@ void handleMovement(Map& M);
 
 int main()
 {
+    srand(time(0));
     Map M(WIDTH,HEIGHT);
     M.generate(10);
     setUpMap(M);
@@ -125,16 +120,13 @@ void printMap(Map& M)
     int x,y;
     getyx(stdscr,y,x);
     move(0,0);
-    for( int i = 0; i < M.getHeight(); i++)
+    for(int i = 0; i < M.getHeight(); i++)
     {
         for (int j = 0; j < M.getWidth(); j++)
         {
-            if(M(j,i).isVisible())
-                addch(M(j,i).getSymbol());
-            else
-                addch(' ');
+            addch(M(j,i).isVisible() ? M(j,i).getSymbol() : ' ');
         }
-        printw("\n");
+        addch('\n');
     }
     move(y,x);
     refresh();

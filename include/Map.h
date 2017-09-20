@@ -3,8 +3,8 @@
 #include <string>
 #include "Tile.h"
 #include "Matrix.h"
-#include "HashTable.h"
-#include "dequeue.h"
+#include <unordered_map>
+#include <deque>
 #include "Graph.h"
 #include "Room.h"
 
@@ -13,7 +13,8 @@ class Map
     private:
 
         Matrix<Tile> grid;
-        HashTable<std::string,Room> rooms;
+        std::unordered_map<std::string,Room> rooms;
+        //Matrix<Item> itemsLayer;
         int width, height;
 
         void connectToMap(Graph& G, Point& p, Point& q);
@@ -37,14 +38,17 @@ class Map
         void link(Room& R,Room& Q,Graph& G);
         // Links two rooms in the map making use of the graph of the map
         
-        Room generateRoom(std::string id, int seed);
+        Room generateRoom(std::string id);
         // Generates a room given an id and a seed
+
+        //bool isFree(int x, int y);
+        // Given the x,y coordinates, it returns true if in the position (x,y) there are no items
+
+        //void placeItem(Item item, int x, int y);
+        // Given the x,y coordinates, it places item in the position (x,y)
 
     public:
 
-        Map();
-        // Defualt constructor
-        
         Map(int width, int height);
         // Creates a new map with the given # of rows and columns
 
@@ -74,6 +78,12 @@ class Map
 
         void showAround(int x, int y);
         // Shows the tiles around the position of the main character
+
+        //void spawnMonsters(int _monsters,std::unordered_map<std::string,Monster>& monsters);
+        // Given a number of monsters to spawn and a HashTable, it spawns them on the map and inserts them in the table
+
+        //void spawnItems(int _items,std::unordered_map<Point p,Item>& items);
+        // Given a number of items to spawn and a HashTable, it spawns them on the map and inserts them in the table
 
 };
 
