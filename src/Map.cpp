@@ -285,56 +285,57 @@ void Map::disconnectFromMap(Graph& G, Point& p, Point& q)
     G.deletePoint(q);
 }
 
-
 /*
 void Map::spawnMonsters(int _monsters,unordered_map<string,Monster>& monsters)
 {
-    unordered_map<string,Room>::iterator it = --(rooms.end());    // The last room created
     int count = 0;
+    unordered_map<string,Room>::iterator it;
+    int arrengement[_monsters];
+    generateArrangement(arrangement,0,_monserts-1,_monsters/2);
 
     for(int i = 0; i < _monsters; i++) 
     {
+        it = rooms.begin();
+        for(int j = 0; j < arrangement[i]; j++)
+            ++it;
         int x = (*it).key.getCorner().x;
         int y = (*it).key.getCorner().y;
         int height = (*it).key.getHeight();
         int width = (*it).key.getWidth();
         Point position(rand(x+1,x+width-1),rand(y+1,y+height-1));
-        string name = "monster" + toString(count);
+        string name = "monster" + to_string(count);
         Monster m(position,name); // The creation of the monster, depends on the constructor
-        monserts.insert({name,m});
-
-        --it;
-        --it; // skip one room
+        monsters[name] = m;
         ++count;
     }
 }
 
 void Map::spawnItems(int _items,unordered_map<Point p,Item>& items)
 {
-    unordered_map<string,Room>::iterator it = --(rooms.end());    // The last room created
     int count = 0;
+    unordered_map<string,Room>::iterator it;
+    int arrengement[_items];
+    generateArrangement(arrangement,0,_items-1,_items/2);
 
     for(int i = 0; i < _items; i++) 
     {
+        it = rooms.begin();
+        for(int j = 0; j < arrangement[i]; j++)
+            ++it;
         int x = (*it).key.getCorner().x;
         int y = (*it).key.getCorner().y;
         int height = (*it).key.getHeight();
         int width = (*it).key.getWidth();
         Point position;
-
         do
         {
-            position = Point(rand(x+1,x+width-1),rand(y+1,y+height-1));
+            position = Point(rand(x+1,x+width-1),rand(y+1,y+height-1)); // Rememeber to implement the printing of the
+                                                                        // map to hide an object if a monster is on it
         }
         while(!isFree(position.x,position.y));
-
-        string name = "item" + toString(count);
-        Item item(position,name); // The creation of the item, depends on the constructor
-        items.insert({name,m});
-        placeItem(item);
-
-        --it;
-        --it; // skip one room
+        string name = "item" + to_string(count);
+        Item m(position,name); // The creation of the monster, depends on the constructor
+        items[name] = m;
         ++count;
     }
 }
