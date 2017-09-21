@@ -13,6 +13,8 @@ Window::Window(int x, int y, int nlines, int ncols):x(x),y(y),nlines(nlines),nco
 
 Window::~Window()
 {
+    werase(win);
+    wrefresh(win);
     delwin(win);
 }
 // Destructor
