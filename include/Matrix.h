@@ -21,6 +21,9 @@ class Matrix
         ~Matrix();
         // Destructor
 
+        bool isEmpty(int i, int j);
+        // Given two indexes i and j, returns true if matrix[i][j] == T()
+
         T& operator () (int row, int col);
         // Returns a reference variable to A[y][x]
 
