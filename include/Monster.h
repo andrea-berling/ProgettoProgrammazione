@@ -4,18 +4,20 @@
 
 #ifndef GAME_MONSTER_H
 #define GAME_MONSTER_H
+#include <string>
+#include "Graph.h"
 
 
 class Monster {
     private:
         double LP, DEF, ATK;
         int LV;
-        Position POS;
+        Point POS;
         std::string Name;
 
     public:
 
-    Monster(string Name, int LV, int x, int y);
+    Monster(std::string Name, int LV, int x, int y);
 
     double getLP();
 
@@ -23,7 +25,7 @@ class Monster {
 
     double getATK();
 
-    Position getPosition();
+    Point getPosition();
 
     int getLV();
 
