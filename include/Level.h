@@ -4,14 +4,16 @@
 #include <unordered_map>
 #include <string>
 #include "Graph.h"
+#include "Monster.h"
+#include "Item.h"
 
 class Level
 {
     private:
 
         Map map;
-        unordered_map<std::string,Monster> monsters;
-        unordered_map<std::string,Item> items;
+        std::unordered_map<std::string,Monster> monsters;
+        std::unordered_map<std::string,Item> items;
         int level;
 
     public:
