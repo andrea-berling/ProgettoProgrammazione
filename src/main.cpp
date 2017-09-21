@@ -1,5 +1,6 @@
 #include "../include/Menu.h"
 #include "../include/Window.h"
+#include "../include/Level.h"
 #include <cstdlib>
 #include <cstring>
 #include <ncurses.h>
@@ -28,22 +29,35 @@ void endCurses();
 
 int main()
 {	
-    startCurses();
-    int choice = mainMenu();
-    switch(choice)
+    int choice;
+    bool quit = false;
+    int character = -1;
+
+    while(character == -1 && !quit)
     {
-        case 0:
-            startCurses();
-            choice = playerChoiceMenu();
-            break;
-        case 1:
-            cout << "You selected Credits" << endl;
-            break;
-        case 2:
-            cout << "You selected Quit" << endl;
-            break;
+        startCurses();
+        choice = mainMenu();
+        switch(choice)
+        {
+            case 0:
+                startCurses();
+                character = playerChoiceMenu();
+                break;
+            case 1:
+                cout << "You selected Credits" << endl;
+                break;
+            case 2:
+                quit = true;
+                break;
+        }
     }
-    endCurses();
+    if(quit == true) 
+        endCurses();
+    else
+    {
+        endCurses();
+        // Generate the map with the given character
+    }
 }
 
 void startCurses()
@@ -69,11 +83,12 @@ void endCurses()
  
 int playerChoiceMenu()
 {
-    Menu players((COLS)/2 - 25,(LINES - 10)/2,6,"Stocazzo","Staminchia","Stogran cazzo","Vaffanculo","Porcodio","SardiniaNoEstItalia");
+    Menu players((COLS)/2 - 25,(LINES - 10)/2,4,"Gaudenzio","Peppino","Badore","Indietro");
     Window description(players.getX() + 20,players.getY() - 5,19,70);
-    bool done = false;
+    bool done = false, close = false;
     int choice = -1;
     int confirm; 
+
     while(!done)
     {
         string filename = "resources/descriptions/";
@@ -82,29 +97,32 @@ int playerChoiceMenu()
         switch(choice)
         {
             case 0:
-                filename += "stocazzo.desc";
+                filename += "gaudenzio.desc";
                 break;
             case 1:
-                filename += "staminchia.desc";
+                filename += "peppino.desc";
                 break;
             case 2:
-                filename += "stograncazzo.desc";
+                filename += "badore.desc";
                 break;
             case 3:
-                filename += "vaffanculo.desc";
-                break;
-            case 4:
-                filename += "porcodio.desc";
-                break;
-            case 5:
-                filename += "sardinia.desc";
+                close = true;
                 break;
         }
-        description.readFromFile(filename);
-        confirm = players.handleChoice();
-        if(confirm == choice)
-            done = true;
+        if(!close)
+        {
+            description.readFromFile(filename);
+            confirm = players.handleChoice();
+            if(confirm == choice)
+                done = true;
+            else
+                choice = confirm;
+        }
         else
-            choice = confirm;
+        {
+            return -1;   // The player hit back, no charater was selected
+        }
     }
+
+    return choice;
 }
