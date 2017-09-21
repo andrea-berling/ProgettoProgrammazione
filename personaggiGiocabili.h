@@ -7,7 +7,7 @@
 #include <string>
 #include "Item.h"
 
-struct Position{
+struct Position{            //Da rimuovere in futuro per usarne una in comune
     double X, Y;
 };
 
@@ -22,7 +22,7 @@ private:
 
 public:
 
-    PlayableCharacter(double LP, double MP, double DEF, double ATK, std::string Name):Inventory(47);
+    PlayableCharacter(double LP, double MP, double DEF, double ATK, std::string Name, int x, int y);
 
     double getLP();
 
@@ -47,8 +47,6 @@ public:
     void setATK(double ATK);
 
     void setPosition(double x, double y);
-
-    //void setLV(int LV);
 
     void setCoins(int Coins);
 

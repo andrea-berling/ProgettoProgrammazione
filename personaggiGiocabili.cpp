@@ -11,20 +11,19 @@
 #include "personaggiGiocabili.h"
 
 
-    PlayableCharacter::PlayableCharacter(double LP, double MP, double DEF, double ATK, std::string Name):Inventory(47){
+    PlayableCharacter::PlayableCharacter(double LP, double MP, double DEF, double ATK, std::string Name, int x, int y){
         this->LP = LP;
         this->MP = MP;
         this->DEF = DEF;
         this->ATK = ATK;
-        this->POS.X = 0;
-        this->POS.Y = 0;
+        this->POS.X = x;
+        this->POS.Y = y;
         this->LV = 0;
         this->Coins = 0;
         this->Name = Name;
         for (int i = 0; i<6; i++){
             equipment [i] = Item();      //Inizializza equipment
         }
-
     }
 
     double PlayableCharacter::getLP(){
@@ -76,10 +75,6 @@
         this->POS.Y = y;
     }
 
-/*  void PlayableCharacter::setLV(int LV){
-        this->LV = LV;
-    }
-*/
     void PlayableCharacter::setCoins(int Coins){
         this->Coins = Coins;
     }
