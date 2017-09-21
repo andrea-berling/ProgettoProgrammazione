@@ -81,7 +81,7 @@ class Map
         void showAround(int x, int y);
         // Shows the tiles around the position of the main character
 
-        void freeSpots(int n,int r = 1,std::vector<Point>& spots);
+        void freeSpots(int n,std::unordered_set<Point>& spots,int r = 1);
         // Given a number of rooms n, a number of repetitions r and a vector of points, it stores n*r free spots in the
         // map in the vector, with r spots per room
 };

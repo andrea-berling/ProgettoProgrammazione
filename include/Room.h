@@ -1,6 +1,6 @@
 #ifndef ROOM_H
 #define ROOM_H
-#include <Graph.h>
+#include "../include/Graph.h"
 #include <string>
 
 class Room 
