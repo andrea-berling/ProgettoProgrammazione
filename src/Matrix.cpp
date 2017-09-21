@@ -35,5 +35,12 @@ T& Matrix<T>::operator () (int row, int col)
 }
 // Returns a reference variable to A[y][x]
 
+template<typename T>
+bool Matrix<T>::isEmpty(int i, int j)
+{
+    return matrix[i][j] == T();     // if i and j are invalid indexes, a segmentation fault error will occurr
+    // Could implement differently with three return values(0 for false,1 for true, 2 for invalid indexes)
+}
+// Given two indexes i and j, returns true if matrix[i][j] == T()
 #endif
 
