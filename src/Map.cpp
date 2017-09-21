@@ -286,7 +286,7 @@ void Map::disconnectFromMap(Graph& G, Point& p, Point& q)
     G.deletePoint(q);
 }
 
-void Map::freeSpots(int n,int r = 1,unordered_set<Point>& spots)
+void Map::freeSpots(int n,unordered_set<Point>& spots,int r = 1)
 {
     unordered_map<string,Room>::iterator it;
     int permutation[n];
