@@ -13,26 +13,32 @@ inline int rand(int first, int second)
         return second + rand() % (first - second + 1);
 }
 
-// Given an array, its dimension, a range of numbers and a number n, it puts an ordered arrangement of n numbers taken
-// from the given range
-void generateArrangement(int array, int first, int last, int n)
+// Given an array, a range of numbers and a number k, it stores a k-permutation of the numbers 
+// between first and last (included) in the array
+// The size of the array must be at least k, otherwise a segmentation fault error will occurr
+// Complexity: O(n)
+void generateKPermutation(int array[], int first, int last, int k)
 {
+
     int d = last - first + 1;
-    int i = 0,j=0;
-    int numbers[d];
-    int index;
-
-    for(int i = 0; i < d; i++)
-        numbers[i] = i;
-
-
-    while(i < n)
+    if (k <= d)
     {
-        index = rand(i,d-1);
-        array[j] = numbers[index];
-        swap(numbers[i],numbers[index]);
-        i++;
-        j++;
+        int i = 0,j=0;
+        int numbers[d];
+        int index;
+
+        for(int i = 0; i < d; i++)
+            numbers[i] = i;
+
+
+        while(i < k)
+        {
+            index = rand(i,d-1);
+            array[j] = numbers[index];
+            swap(numbers[i],numbers[index]);
+            i++;
+            j++;
+        }
     }
 }
 
