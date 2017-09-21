@@ -4,7 +4,8 @@
 
 using namespace std;
 
-Map::Map(int width, int height) : grid(height, width), width(width), height(height), rooms(47)
+Map::Map(int width, int height) : grid(height, width), width(width), height(height),
+    rooms(47)//,itemsLayer(height,width),monstersLayer(height,width)
 {}
 // Creates a new map with the given # of rows and columns
 
@@ -285,68 +286,43 @@ void Map::disconnectFromMap(Graph& G, Point& p, Point& q)
     G.deletePoint(q);
 }
 
-/*
-void Map::spawnMonsters(int _monsters,unordered_map<string,Monster>& monsters)
+void Map::freeSpots(int n,int r = 1,unordered_set<Point>& spots)
 {
-    int count = 0;
     unordered_map<string,Room>::iterator it;
-    int arrengement[_monsters];
-    generateArrangement(arrangement,0,_monserts-1,_monsters/2);
+    int permutation[n];
+    generateKPermutation(permutation,0,rooms.size()-1,n);
 
-    for(int i = 0; i < _monsters; i++) 
+    for(int i = 0; i < n; i++) 
     {
-        it = rooms.begin();
-        for(int j = 0; j < arrangement[i]; j++)
-            ++it;
-        int x = (*it).key.getCorner().x;
-        int y = (*it).key.getCorner().y;
-        int height = (*it).key.getHeight();
-        int width = (*it).key.getWidth();
-        Point position(rand(x+1,x+width-1),rand(y+1,y+height-1));
-        string name = "monster" + to_string(count);
-        Monster m(position,name); // The creation of the monster, depends on the constructor
-        monsters[name] = m;
-        ++count;
-    }
-}
-
-void Map::spawnItems(int _items,unordered_map<Point p,Item>& items)
-{
-    int count = 0;
-    unordered_map<string,Room>::iterator it;
-    int arrengement[_items];
-    generateArrangement(arrangement,0,_items-1,_items/2);
-
-    for(int i = 0; i < _items; i++) 
-    {
-        it = rooms.begin();
-        for(int j = 0; j < arrangement[i]; j++)
-            ++it;
-        int x = (*it).key.getCorner().x;
-        int y = (*it).key.getCorner().y;
-        int height = (*it).key.getHeight();
-        int width = (*it).key.getWidth();
-        Point position;
-        do
-        {
-            position = Point(rand(x+1,x+width-1),rand(y+1,y+height-1)); // Rememeber to implement the printing of the
-                                                                        // map to hide an object if a monster is on it
+        if(i < n/2) 
+        { 
+            it = rooms.begin();
+            for(int j = 0; j < permutation[i]; j++)
+                ++it;
         }
-        while(!isFree(position.x,position.y));
-        string name = "item" + to_string(count);
-        Item m(position,name); // The creation of the monster, depends on the constructor
-        items[name] = m;
-        ++count;
+        else
+        {
+            it = --(rooms.end());
+            for(int j = 0; j < n - permutation[i]; j++)
+                --it;
+
+        }   // Slightly speeds up the rooms picking
+
+        for(k = 0; k < r; k++)
+        {
+            int x = (*it).key.getCorner().x;
+            int y = (*it).key.getCorner().y;
+            int height = (*it).key.getHeight();
+            int width = (*it).key.getWidth();
+
+            do
+            {
+                position = Point(rand(x+1,x+width-2),rand(y+1,y+height-2)); // Rememeber to implement the printing of the
+                // map to hide an object if a monster is on it
+            }
+            while(!itemsLayer.isEmpty(position.y,position.x) && !monstersLayer.isEmpty(position.y,position.x) &&
+                    (spots.find(position) == spots.end()));
+            spots.insert(position);
+        }
     }
 }
-
-bool Map::isFree(int x, int y)
-{
-    return itemsLayer(y,x) == VOID // need to implement the VOID item
-}
-
-void Map::placeItem(Item item, int x, int y)
-{
-    itemsLayer[y][x] = item;
-}
-*/

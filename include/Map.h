@@ -5,6 +5,7 @@
 #include "Matrix.h"
 #include <unordered_map>
 #include <deque>
+#include <vector>
 #include "Graph.h"
 #include "Room.h"
 
@@ -13,8 +14,9 @@ class Map
     private:
 
         Matrix<Tile> grid;
-        std::unordered_map<std::string,Room> rooms;
         //Matrix<Item> itemsLayer;
+        //Matrix<Monster> monstersLayer;
+        std::unordered_map<std::string,Room> rooms;
         int width, height;
 
         void connectToMap(Graph& G, Point& p, Point& q);
@@ -79,12 +81,9 @@ class Map
         void showAround(int x, int y);
         // Shows the tiles around the position of the main character
 
-        //void spawnMonsters(int _monsters,std::unordered_map<std::string,Monster>& monsters);
-        // Given a number of monsters to spawn and a HashTable, it spawns them on the map and inserts them in the table
-
-        //void spawnItems(int _items,std::unordered_map<Point p,Item>& items);
-        // Given a number of items to spawn and a HashTable, it spawns them on the map and inserts them in the table
-
+        void freeSpots(int n,int r = 1,std::vector<Point>& spots);
+        // Given a number of rooms n, a number of repetitions r and a vector of points, it stores n*r free spots in the
+        // map in the vector, with r spots per room
 };
 
 #endif
