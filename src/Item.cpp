@@ -2,7 +2,7 @@
 // Created by zacomo on 19/09/17.
 //
 
-#include "Item.h"
+#include "../include/Item.h"
 
 using namespace std;
 
@@ -52,10 +52,19 @@ int Item::getATK() {
     return this->ATK;
 }
 
-bool Item::operator==(Item rhs) {
-    return this->name == rhs.name;
+bool operator==(Item i1, Item i2) {
+    return i1.name == i2.name;
 }
 
-bool Item::operator!=(Item rhs) {
-    return this->name != rhs.name;
+bool operator!=(Item i1, Item i2) {
+    return i1.name != i2.name;
+}
+
+namespace std
+{
+    size_t hash<Item>::operator()(Item i) const
+    {
+        return hash<string>()(i.getname());
+    }
+    // Hash function for the class Item
 }
