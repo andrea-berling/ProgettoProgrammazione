@@ -14,6 +14,7 @@ struct Position{            //Da rimuovere in futuro per usarne una in comune
 class PlayableCharacter{
 private:
     double LP, MP, DEF, ATK;
+    double LPMAX, MPMAX;
     int LV, Coins;
     Position POS;
     std::string Name;
@@ -25,11 +26,15 @@ public:
     PlayableCharacter();
     // Costruttore di default
 
-    PlayableCharacter(double LP, double MP, double DEF, double ATK, std::string Name);
+    PlayableCharacter(double LPMAX, double MPMAX, double DEF, double ATK, std::string Name);
 
     double getLP();
 
+    double getLPMAX();
+
     double getMP();
+
+    double getMPMAX();
 
     double getDEF();
 

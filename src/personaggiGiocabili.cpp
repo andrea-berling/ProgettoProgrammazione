@@ -16,7 +16,9 @@
 
     PlayableCharacter::PlayableCharacter(double LP, double MP, double DEF, double ATK, std::string Name){
         this->LP = LP;
+        this->LPMAX = LP;
         this->MP = MP;
+        this->MPMAX = MP;
         this->DEF = DEF;
         this->ATK = ATK;
         this->LV = 0;
@@ -31,8 +33,16 @@
         return this->LP;
     }
 
+    double PlayableCharacter::getLPMAX() {
+        return this->LPMAX;
+    }
+
     double PlayableCharacter::getMP(){
         return this->MP;
+    }
+
+    double PlayableCharacter::getMPMAX() {
+        return this->LPMAX;
     }
 
     double PlayableCharacter::getDEF(){
@@ -86,11 +96,20 @@
 
     bool PlayableCharacter::useConsumable(Item sbobba){
         if (sbobba.gettype() == 6){
-            LP = LP + sbobba.getLP();
-            MP = MP + sbobba.getMP();
+            if (LPMAX >= LP + sbobba.getLP())
+                LP = LP + sbobba.getLP();
+            else
+                LP = LPMAX;
+
+            if (MPMAX >= MP + sbobba.getMP())
+                MP = MP + sbobba.getMP();
+            else
+                MP = MPMAX;
+
             DEF = DEF + sbobba.getDEF();
             ATK = ATK + sbobba.getATK();
-            Inventory.erase(Inventory.find(sbobba));           //consumabile utilizzabile una sola volta
+            Inventory.erase(Inventory.find(sbobba));    //consumabile utilizzabile una sola volta
+
             return true;
         }
         return false;
@@ -100,8 +119,6 @@
         if ((ferraglia.gettype() > -1 && ferraglia.gettype() < 6) && (equipment[ferraglia.gettype()] == Item())){
 
             equipment[ferraglia.gettype()] = ferraglia;
-            LP = LP + ferraglia.getLP();
-            MP = MP + ferraglia.getMP();
             DEF = DEF + ferraglia.getDEF();
             ATK = ATK + ferraglia.getATK();
             return true;
@@ -111,8 +128,6 @@
 
     bool PlayableCharacter::unequip(Item ferraglia){
         if (equipment[ferraglia.gettype()] != Item()){
-            LP = LP - ferraglia.getLP();
-            MP = MP - ferraglia.getMP();
             DEF = DEF - ferraglia.getDEF();
             ATK = ATK - ferraglia.getATK();
             equipment[ferraglia.gettype()] = Item(); //Rimuove l'oggetto dall'equip.
@@ -164,9 +179,10 @@
         }
         this->ATK += atk;
         this->DEF += def;
-        this->MP  += mp ;
-        this->LP  += lp ;
-
+        this->MPMAX += mp ;
+        this->LPMAX += lp ;
+        this->LP = LPMAX;
+        this->MP = MPMAX;
 };
 
 
