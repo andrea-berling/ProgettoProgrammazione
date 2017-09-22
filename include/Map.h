@@ -8,6 +8,8 @@
 #include <vector>
 #include "Graph.h"
 #include "Room.h"
+#include "Item.h"
+#include "Monster.h"
 
 class Map
 {
@@ -87,6 +89,12 @@ class Map
 
         void placeCharacter(PlayableCharacter& player);
         // Given a main character, places it in a random room in the map
+
+        void placeItem(Item i);
+        // Given an item it places it on the map
+
+        void placeMonster(Monster& m);
+        // Given a monster it places it on the map
 };
 
 #endif
