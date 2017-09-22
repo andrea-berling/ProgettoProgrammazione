@@ -5,7 +5,7 @@
 
 #include <unordered_set>
 #include <string>
-#include "Item.h"
+#include "../include/Item.h"
 
 struct Position{            //Da rimuovere in futuro per usarne una in comune
     double X, Y;
@@ -22,7 +22,10 @@ private:
 
 public:
 
-    PlayableCharacter(double LP, double MP, double DEF, double ATK, std::string Name, int x, int y);
+    PlayableCharacter();
+    // Costruttore di default
+
+    PlayableCharacter(double LP, double MP, double DEF, double ATK, std::string Name);
 
     double getLP();
 
