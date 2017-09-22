@@ -1,6 +1,8 @@
 #include "../include/Menu.h"
 #include "../include/Window.h"
 #include "../include/Level.h"
+#include "../include/personaggiGiocabili.h"
+#include <list>
 #include <cstdlib>
 #include <cstring>
 #include <ncurses.h>
@@ -40,7 +42,7 @@ int main()
         switch(choice)
         {
             case 0:
-                startCurses();
+                //startCurses();
                 character = playerChoiceMenu();
                 break;
             case 1:
@@ -55,9 +57,31 @@ int main()
         endCurses();
     else
     {
-        endCurses();
+        clear();
+        refresh();
+        PlayableCharacter player;
+        switch(character)
+        {
+            case 0:
+                player = PlayableCharacter(15,0,20,12,"Gaudenzio");
+                break;
+            case 1:
+                player = PlayableCharacter(10,20,10,8,"Peppino");
+                break;
+            case 2:
+                player = PlayableCharacter(10,0,5,12,"Badore");
+                break;
+        }
+        list<Level> levels;
+        list<Level>::iterator currentLevel;
+        levels.insert(Level(1,100,37,2,1,1));
+        currentLevel = levels.begin();
+        (*currentLevel).printMap();
+        (*currentLevel).placeCharacter(player);
         // Generate the map with the given character
     }
+
+    return 0;
 }
 
 void startCurses()
