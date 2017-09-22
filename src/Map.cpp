@@ -341,3 +341,16 @@ void Map::placeCharacter(PlayableCharacter& player)
     }
     while(!itemsLayer.isEmpty(p.y,p.x) && !monstersLayer.isEmpty(p.y,p.x))
 }
+
+void Map::placeItem(Item i)
+{
+    Point p = i.getPosition();
+    itemsLayer[p.y][p.x] = i;
+}
+// Given an items and its position
+
+void Map::placeMonster(Monster& m)
+{
+    Point p = m.getPosition();
+    itemsLayer[p.y][p.x] = m;
+}
