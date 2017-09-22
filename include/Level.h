@@ -27,5 +27,10 @@ class Level
 
         void placeCharacter(PlayableCharacter& player);
         // Given a main character, places it in a random room in the map
+
+        void handleMovement(playableCharacter& player);
+        // Handles the movement of the main character and the exploration of the map
+
 };
+
 #endif
