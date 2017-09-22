@@ -78,8 +78,11 @@ int main()
         currentLevel = levels.begin();
         (*currentLevel).printMap();
         (*currentLevel).placeCharacter(player);
+        (*currentLevel).handleMovement(player);
         // Generate the map with the given character
     }
+
+    endCurses();
 
     return 0;
 }
