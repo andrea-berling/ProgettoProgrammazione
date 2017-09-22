@@ -26,7 +26,7 @@ public:
     PlayableCharacter();
     // Costruttore di default
 
-    PlayableCharacter(double LPMAX, double MPMAX, double DEF, double ATK, std::string Name);
+    PlayableCharacter(double LP, double MP, double DEF, double ATK, std::string Name);
 
     double getLP();
 
