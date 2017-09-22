@@ -6,6 +6,7 @@
 #define GAME_ITEM_H
 
 #include <string>
+#include "Graph.h"
 
 class Item {
     protected:
@@ -13,6 +14,7 @@ class Item {
         int type;           //0-3 Armatura 4-5 Arma/Scudo 6 Consumabile
         int LP,MP,DEF,ATK;
         char symbol;
+        Point position;
     public:
         Item();
 
@@ -31,6 +33,10 @@ class Item {
         int getATK();
 
         char getsymbol();
+
+        Point getposition();
+
+        Point setposition(int x, int y);
 
         friend bool operator ==(Item i1, Item i2);
 
