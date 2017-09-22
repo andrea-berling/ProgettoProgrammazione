@@ -8,16 +8,17 @@
 
 #include <unordered_set>
 
-#include "personaggiGiocabili.h"
+#include "../include/personaggiGiocabili.h"
 
 
-    PlayableCharacter::PlayableCharacter(double LP, double MP, double DEF, double ATK, std::string Name, int x, int y){
+    PlayableCharacter::PlayableCharacter():LP(-1),MP(-1),DEF(-1),ATK(-1),Name("")
+    {}
+
+    PlayableCharacter::PlayableCharacter(double LP, double MP, double DEF, double ATK, std::string Name){
         this->LP = LP;
         this->MP = MP;
         this->DEF = DEF;
         this->ATK = ATK;
-        this->POS.X = x;
-        this->POS.Y = y;
         this->LV = 0;
         this->Coins = 0;
         this->Name = Name;
