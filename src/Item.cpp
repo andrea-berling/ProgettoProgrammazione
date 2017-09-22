@@ -3,6 +3,10 @@
 //
 
 #include "../include/Item.h"
+#include <fstream>
+#include <string>
+#include <vector>
+#include <boost/tokenizer>
 
 using namespace std;
 
@@ -73,4 +77,31 @@ namespace std
         return hash<string>()(i.getname());
     }
     // Hash function for the class Item
+}
+
+void retrieveItems(std::ifstream& file, std::vector& set)
+{
+    using namespace boost;
+    using namespace std;
+    string name,line;
+    int type,LP,MP,DEF,ATK;
+    char_separator<char> sep(",");
+    while(file)
+    {
+        getline(file,line);
+        tokenizer<char_separator<char>> tokens(line,sep);
+        tokenizer::iterator it = tokens.begin();
+        name = *it;
+        ++it;
+        type = *it;
+        ++it;
+        LP = *it;
+        ++it;
+        MP = *it;
+        ++it;
+        DEF = *it;
+        ++it;
+        ATK = *it;
+        set.push_back(Item(name,type,LP,MP,DEF,ATK));
+    }
 }
