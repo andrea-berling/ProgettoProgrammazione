@@ -30,9 +30,18 @@ class Item {
 
         int getATK();
 
-        bool operator ==(Item rhs);
+        friend bool operator ==(Item i1, Item i2);
 
-        bool operator !=(Item rhs);
+        friend bool operator !=(Item i1, Item i2);
 };
+
+namespace std
+{
+    template <> struct hash<Item>
+    {
+        size_t operator()(Item i) const;
+        // Hash function for the class Item
+    };
+}
 
 #endif //GAME_ITEM_H
