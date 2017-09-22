@@ -6,16 +6,13 @@
 #include <unordered_set>
 #include <string>
 #include "../include/Item.h"
-
-struct Position{            //Da rimuovere in futuro per usarne una in comune
-    double X, Y;
-};
+#include "../include/Graph.h"
 
 class PlayableCharacter{
 private:
     double LP, MP, DEF, ATK;
     int LV, Coins;
-    Position POS;
+    Point POS;
     std::string Name;
     std::unordered_multiset<Item> Inventory;
     Item equipment [6];
@@ -35,7 +32,7 @@ public:
 
     double getATK();
 
-    Position getPosition();
+    Point getPosition();
 
     int getLV();
 
