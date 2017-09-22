@@ -12,7 +12,7 @@ class Item {
         std::string name;
         int type;           //0-3 Armatura 4-5 Arma/Scudo 6 Consumabile
         int LP,MP,DEF,ATK;
-
+        char symbol;
     public:
         Item();
 
@@ -29,6 +29,8 @@ class Item {
         int getDEF();
 
         int getATK();
+
+        char getsymbol();
 
         friend bool operator ==(Item i1, Item i2);
 

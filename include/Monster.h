@@ -14,6 +14,7 @@ class Monster {
         int LV;
         Point POS;
         std::string Name;
+        char symbol;   
 
     public:
 
@@ -38,6 +39,8 @@ class Monster {
     void setPosition(double x, double y);
 
     std::string getName();
+
+    char getsymbol();
 };
 
 
