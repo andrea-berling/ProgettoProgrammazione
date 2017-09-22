@@ -17,6 +17,8 @@ Item::Item() {
     MP = 0;
     DEF = 0;
     ATK = 0;
+    position.x = -1;
+    position.y = -1;
     symbol = '?';
 }
 
@@ -30,6 +32,8 @@ Item::Item(string name, int type, int LP, int MP, int DEF, int ATK) {
     this->MP = MP;
     this->DEF = DEF;
     this->ATK = ATK;
+    position.x = -1;
+    position.y = -1;
     symbol = '?';
 
 }
@@ -67,7 +71,16 @@ bool operator!=(Item i1, Item i2) {
 }
 
 char Item::getsymbol(){
-    return symbol;
+    return this->symbol;
+}
+
+Point Item::getposition() {
+    return this->position;
+}
+
+Point Item::setposition(int x, int y) {
+    this->position.x = x;
+    this->position.y = y;
 }
 
 namespace std

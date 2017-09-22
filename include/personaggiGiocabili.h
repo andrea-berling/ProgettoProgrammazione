@@ -5,12 +5,13 @@
 
 #include <unordered_set>
 #include <string>
-#include "../include/Item.h"
-#include "../include/Graph.h"
+#include "Item.h"
+#include "Graph.h"
 
 class PlayableCharacter{
 private:
     double LP, MP, DEF, ATK;
+    double LPMAX, MPMAX;
     int LV, Coins;
     Point POS;
     std::string Name;
@@ -26,7 +27,11 @@ public:
 
     double getLP();
 
+    double getLPMAX();
+
     double getMP();
+
+    double getMPMAX();
 
     double getDEF();
 
