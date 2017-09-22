@@ -326,3 +326,18 @@ void Map::freeSpots(int n,unordered_set<Point>& spots,int r = 1)
         }
     }
 }
+
+void Map::placeCharacter(PlayableCharacter& player)
+{
+    Room R = pickRoom();
+    Point p;
+    int x = R.getCorner().x;
+    int y = R.getCorner().y;
+    int height = R.getHeight();
+    int width = R.getWidth();
+    do
+    {
+                position = Point(rand(x+1,x+width-2),rand(y+1,y+height-2)); // Rememeber to implement the printing of the
+    }
+    while(!itemsLayer.isEmpty(p.y,p.x) && !monstersLayer.isEmpty(p.y,p.x))
+}

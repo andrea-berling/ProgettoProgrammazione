@@ -84,6 +84,9 @@ class Map
         void freeSpots(int n,std::unordered_set<Point>& spots,int r = 1);
         // Given a number of rooms n, a number of repetitions r and a vector of points, it stores n*r free spots in the
         // map in the vector, with r spots per room
+
+        void placeCharacter(PlayableCharacter& player);
+        // Given a main character, places it in a random room in the map
 };
 
 #endif
