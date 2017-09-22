@@ -13,6 +13,7 @@ Item::Item() {
     MP = 0;
     DEF = 0;
     ATK = 0;
+    symbol = '?';
 }
 
 Item::Item(string name, int type, int LP, int MP, int DEF, int ATK) {
@@ -25,6 +26,7 @@ Item::Item(string name, int type, int LP, int MP, int DEF, int ATK) {
     this->MP = MP;
     this->DEF = DEF;
     this->ATK = ATK;
+    symbol = '?';
 
 }
 
@@ -58,6 +60,10 @@ bool operator==(Item i1, Item i2) {
 
 bool operator!=(Item i1, Item i2) {
     return i1.name != i2.name;
+}
+
+char Item::getsymbol(){
+    return symbol;
 }
 
 namespace std
