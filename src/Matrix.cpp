@@ -3,12 +3,14 @@
 #include "../include/Matrix.h"
 
 template<typename T>
-Matrix<T>::Matrix()
+Matrix<T>::Matrix(const Matrix& m):Matrix(m.rows,m.cols)
 {
-    matrix = nullptr;
-    cols = rows = -1;
+    for(int i = 0; i < rows; i++)
+        for(int j = 0; j < cols; j++)
+        {
+            matrix[i][j] = m.matrix[i][j];
+        }
 }
-// Defualt constructor
 
 template<typename T>
 Matrix<T>::Matrix(int rows, int cols) : rows(rows), cols(cols)

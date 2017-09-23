@@ -20,10 +20,10 @@ class Level
     public:
 
         Level(int level,int width,int height,int rooms, int _monsters, int _items);
-        // Given a width, a height and a  number of rooms, it creates a new level
+        // Given a width, a height and a number of rooms, monsters and items, it creates a new level
 
         void printMap(PlayableCharacter& player);
-        // Prints the map, the monsters and the items
+        // Prints the map, the monsters, the items and the player
 
         void placeCharacter(PlayableCharacter& player);
         // Given a main character, places it in a random room in the map

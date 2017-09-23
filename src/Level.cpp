@@ -81,7 +81,7 @@ void Level::handleMovement(PlayableCharacter& player)
     x = pos.x;
     y = pos.y;
     map.showAround(x,y);
-    while((c = getch()) != KEY_F(4))
+    while((c = getch()) != 'q')
     {
         switch(c)
         {
