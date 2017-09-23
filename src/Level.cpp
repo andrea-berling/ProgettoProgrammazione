@@ -12,7 +12,7 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
     unordered_set<Point> spots;
     vector<Item> itemsSet;
     vector<Monster> monstersSet;
-    ifstream itemsFile("/home/andrea/C_C++_Projects/ProgettoProgrammazione/resources/items.txt");
+    ifstream itemsFile("resources/items.txt");
     retrieveItems(itemsFile,itemsSet);
     monstersSet = {Monster("Goblin",level),Monster("Troll",level),Monster("Golem",level),Monster("Gineppino",level)};
 
@@ -21,7 +21,7 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
     for(Point p : spots)
     {
         int index = rand(0,max(level*3,static_cast<int>(itemsSet.size())-1));
-        itemsSet[index].setposition(p.x,p.y);
+        itemsSet[index].setPosition(p.x,p.y);
         map.placeItem(itemsSet[index]);
         items.insert(itemsSet[index]);
         // Place an object
@@ -56,12 +56,12 @@ void Level::printMap(PlayableCharacter& player)
     for(Monster m : monsters)
     {
         Point position = m.getPosition();
-        mvaddch(position.y,position.x,m.getsymbol());
+        mvaddch(position.y,position.x,m.getSymbol());
     }
     for(Item i : items)
     {
-        Point position = i.getposition();
-        mvaddch(position.y,position.x,i.getsymbol());
+        Point position = i.getPosition();
+        mvaddch(position.y,position.x,i.getSymbol());
     }
     Point p = player.getPosition();
     mvaddch(p.y,p.x,'@');

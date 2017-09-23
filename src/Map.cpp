@@ -338,7 +338,7 @@ void Map::placeCharacter(PlayableCharacter& player)
 
 void Map::placeItem(Item i)
 {
-    Point p = i.getposition();
+    Point p = i.getPosition();
     itemsLayer(p.y,p.x) = i;
 }
 // Given an items and its position

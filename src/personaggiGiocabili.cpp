@@ -95,7 +95,7 @@
     }
 
     bool PlayableCharacter::useConsumable(Item sbobba){
-        if (sbobba.gettype() == 6){
+        if (sbobba.getType() == 6){
             if (LPMAX >= LP + sbobba.getLP())
                 LP = LP + sbobba.getLP();
             else
@@ -116,9 +116,9 @@
     }
 
     bool PlayableCharacter::equip(Item ferraglia){                       //
-        if ((ferraglia.gettype() > -1 && ferraglia.gettype() < 6) && (equipment[ferraglia.gettype()] == Item())){
+        if ((ferraglia.getType() > -1 && ferraglia.getType() < 6) && (equipment[ferraglia.getType()] == Item())){
 
-            equipment[ferraglia.gettype()] = ferraglia;
+            equipment[ferraglia.getType()] = ferraglia;
             DEF = DEF + ferraglia.getDEF();
             ATK = ATK + ferraglia.getATK();
             return true;
@@ -127,10 +127,10 @@
     }
 
     bool PlayableCharacter::unequip(Item ferraglia){
-        if (equipment[ferraglia.gettype()] != Item()){
+        if (equipment[ferraglia.getType()] != Item()){
             DEF = DEF - ferraglia.getDEF();
             ATK = ATK - ferraglia.getATK();
-            equipment[ferraglia.gettype()] = Item(); //Rimuove l'oggetto dall'equip.
+            equipment[ferraglia.getType()] = Item(); //Rimuove l'oggetto dall'equip.
             return true;
         }
 
