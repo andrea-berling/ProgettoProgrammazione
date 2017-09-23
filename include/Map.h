@@ -35,7 +35,7 @@ class Map
         // Returns true if the given room overlaps with other rooms or is adjacent to another room
 
         void populateGraph(Graph& G);
-        // Fills the graph with the points of the grid that are not rooms
+        // Fills the graph with the points of the grid that are not rooms, borders excluded
 
         void createLinks(Graph& G);
         // Creates the links between points in the graph
@@ -44,13 +44,8 @@ class Map
         // Links two rooms in the map making use of the graph of the map
         
         Room generateRoom(std::string id);
-        // Generates a room given an id and a seed
+        // Generates a room with the given an id 
 
-        //bool isFree(int x, int y);
-        // Given the x,y coordinates, it returns true if in the position (x,y) there are no items
-
-        //void placeItem(Item item, int x, int y);
-        // Given the x,y coordinates, it places item in the position (x,y)
 
     public:
 
@@ -79,7 +74,7 @@ class Map
         // Given an id, it sets the corresponding room visible
 
         Room pickRoom();
-        // Picks the first room in the Rooms map
+        // Picks a random room in the Rooms map
 
         void showAround(int x, int y);
         // Shows the tiles around the position of the main character
