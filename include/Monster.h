@@ -42,7 +42,7 @@ class Monster {
 
     std::string getName();
 
-    char getsymbol();
+    char getSymbol();
 
     friend bool operator==(Monster m1,Monster m2);
 

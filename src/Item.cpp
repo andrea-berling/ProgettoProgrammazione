@@ -42,7 +42,7 @@ string Item::getname() {
     return this->name;
 }
 
-int Item::gettype() {
+int Item::getType(){
     return this->type;
 }
 
@@ -70,15 +70,15 @@ bool operator!=(Item i1, Item i2) {
     return i1.name != i2.name;
 }
 
-char Item::getsymbol(){
+char Item::getSymbol(){
     return this->symbol;
 }
 
-Point Item::getposition() {
+Point Item::getPosition() {
     return this->position;
 }
 
-Point Item::setposition(int x, int y) {
+Point Item::setPosition(int x, int y) {
     this->position.x = x;
     this->position.y = y;
 }
