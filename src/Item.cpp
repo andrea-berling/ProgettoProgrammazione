@@ -34,11 +34,11 @@ Item::Item(string name, int type, int LP, int MP, int DEF, int ATK) {
     this->ATK = ATK;
     position.x = -1;
     position.y = -1;
-    symbol = '?';
+    symbol = '?';   //  E' il simbolo che indica un Item sulla mappa
 
 }
 
-string Item::getname() {
+string Item::getName() {
     return this->name;
 }
 
