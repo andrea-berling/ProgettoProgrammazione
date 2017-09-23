@@ -19,9 +19,9 @@ Monster::Monster(string Name, int LV) {
 
     this->LV = LV;
     this->Name = Name;
-    double atk = 0, def = 0, lp = 1;
+    int atk = 0, def = 0, lp = 1;
 
-    if (Name == "Goblin"){
+    if (Name == "Goblin"){  //  Mostri diversi statistiche e simboli diversi
         atk = 2 * (LV +1 );
         def = 1;
         lp = LV;
@@ -54,15 +54,15 @@ Monster::Monster(string Name, int LV) {
     this->LP = lp;
 }
 
-double Monster::getLP(){
+int Monster::getLP(){
     return this->LP;
 }
 
-double Monster::getDEF(){
+int Monster::getDEF(){
     return this->DEF;
 }
 
-double Monster::getATK(){
+int Monster::getATK(){
     return this->ATK;
 }
 
@@ -74,19 +74,19 @@ int Monster::getLV(){
     return this->LV;
 }
 
-void Monster::setLP(double LP){
+void Monster::setLP(int LP){
     this->LP = LP;
 }
 
-void Monster::setDEF(double DEF){
+void Monster::setDEF(int DEF){
     this->DEF = DEF;
 }
 
-void Monster::setATK(double ATK){
+void Monster::setATK(int ATK){
     this->ATK = ATK;
 }
 
-void Monster::setPosition(double x, double y){
+void Monster::setPosition(int x, int y){
     this->POS.x = x;
     this->POS.y = y;
 }
@@ -113,5 +113,5 @@ namespace std
     {
         return hash<string>()(m.getName());
     }
-    // Hash function for the class Item
+    // Hash function for the class Monster
 }

@@ -14,7 +14,7 @@
     PlayableCharacter::PlayableCharacter():LP(-1),MP(-1),DEF(-1),ATK(-1),Name("")
     {}
 
-    PlayableCharacter::PlayableCharacter(double LP, double MP, double DEF, double ATK, std::string Name){
+    PlayableCharacter::PlayableCharacter(int LP, int MP, int DEF, int ATK, std::string Name){
         this->LP = LP;
         this->LPMAX = LP;
         this->MP = MP;
@@ -25,31 +25,31 @@
         this->Coins = 0;
         this->Name = Name;
         for (int i = 0; i<6; i++){
-            equipment [i] = Item();      //Inizializza equipment
+            equipment [i] = Item();      //Inizializza il vettore di Item "equipment"
         }
     }
 
-    double PlayableCharacter::getLP(){
+    int PlayableCharacter::getLP(){
         return this->LP;
     }
 
-    double PlayableCharacter::getLPMAX() {
+    int PlayableCharacter::getLPMAX() {
         return this->LPMAX;
     }
 
-    double PlayableCharacter::getMP(){
+    int PlayableCharacter::getMP(){
         return this->MP;
     }
 
-    double PlayableCharacter::getMPMAX() {
+    int PlayableCharacter::getMPMAX() {
         return this->LPMAX;
     }
 
-    double PlayableCharacter::getDEF(){
+    int PlayableCharacter::getDEF(){
         return this->DEF;
     }
 
-    double PlayableCharacter::getATK(){
+    int PlayableCharacter::getATK(){
         return this->ATK;
     }
 
@@ -65,23 +65,23 @@
         return this->Coins;
     }
 
-    void PlayableCharacter::setLP(double LP){
+    void PlayableCharacter::setLP(int LP){
         this->LP = LP;
     }
 
-    void PlayableCharacter::setMP(double MP){
+    void PlayableCharacter::setMP(int MP){
         this->MP = MP;
     }
 
-    void PlayableCharacter::setDEF(double DEF){
+    void PlayableCharacter::setDEF(int DEF){
         this->DEF = DEF;
     }
 
-    void PlayableCharacter::setATK(double ATK){
+    void PlayableCharacter::setATK(int ATK){
         this->ATK = ATK;
     }
 
-    void PlayableCharacter::setPosition(double x, double y){
+    void PlayableCharacter::setPosition(int x, int y){
         this->POS.x = x;
         this->POS.y = y;
     }
@@ -95,7 +95,7 @@
     }
 
     bool PlayableCharacter::useConsumable(Item sbobba){
-        if (sbobba.getType() == 6){
+        if (sbobba.getType() == 6){ //  I consumabili sono item con campo Type pari a 6
             if (LPMAX >= LP + sbobba.getLP())
                 LP = LP + sbobba.getLP();
             else
@@ -108,17 +108,17 @@
 
             DEF = DEF + sbobba.getDEF();
             ATK = ATK + sbobba.getATK();
-            Inventory.erase(Inventory.find(sbobba));    //consumabile utilizzabile una sola volta
+            Inventory.erase(Inventory.find(sbobba));    //  Consumabile utilizzabile una sola volta, quindi rimosso poi
 
             return true;
         }
         return false;
     }
 
-    bool PlayableCharacter::equip(Item ferraglia){                       //
+    bool PlayableCharacter::equip(Item ferraglia){  //  Item equipaggiabili hanno Type da 0 a 5 compresi
         if ((ferraglia.getType() > -1 && ferraglia.getType() < 6) && (equipment[ferraglia.getType()] == Item())){
 
-            equipment[ferraglia.getType()] = ferraglia;
+            equipment[ferraglia.getType()] = ferraglia; //  L'Item va ad occupare la sua posizione nel vettore equip.
             DEF = DEF + ferraglia.getDEF();
             ATK = ATK + ferraglia.getATK();
             return true;
@@ -127,7 +127,7 @@
     }
 
     bool PlayableCharacter::unequip(Item ferraglia){
-        if (equipment[ferraglia.getType()] != Item()){
+        if (equipment[ferraglia.getType()] != Item()){  //Controllo per vedere se un oggetto di quel tipo è nell'equip.
             DEF = DEF - ferraglia.getDEF();
             ATK = ATK - ferraglia.getATK();
             equipment[ferraglia.getType()] = Item(); //Rimuove l'oggetto dall'equip.
@@ -138,9 +138,9 @@
     }
 
 
-    bool PlayableCharacter::getItem(Item thing){
+    bool PlayableCharacter::pickItem(Item thing){
         bool done = false;
-        if (Inventory.size() < 20) {     //20 è la dimensione dell'inventario
+        if (Inventory.size() < 20) {    // 20 è la dimensione dell'inventario
             Inventory.insert(thing);
             done = true;
         }
@@ -159,8 +159,8 @@
 
     void PlayableCharacter::LVLup() {
         this->LV++;
-        double atk = 0, def = 0, lp = 0, mp = 0;
-        if (this->Name == "Gaudenzio"){
+        int atk = 0, def = 0, lp = 0, mp = 0;
+        if (this->Name == "Gaudenzio"){ //  Ogni PG Incrementa le statistiche in modo diverso
             atk = 2;
             def = 3;
             lp = 2;
@@ -181,7 +181,7 @@
         this->DEF += def;
         this->MPMAX += mp ;
         this->LPMAX += lp ;
-        this->LP = LPMAX;
+        this->LP = LPMAX;   //  Quando il PG sale di livello LP e MP vengono portati al loro valore massimo.
         this->MP = MPMAX;
 };
 
