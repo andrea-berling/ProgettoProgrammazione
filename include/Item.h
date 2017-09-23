@@ -23,7 +23,7 @@ class Item {
 
         std::string getname();
 
-        int gettype();
+        int getType();
 
         int getLP();
 
@@ -33,11 +33,11 @@ class Item {
 
         int getATK();
 
-        char getsymbol();
+        char getSymbol();
 
-        Point getposition();
+        Point getPosition();
 
-        Point setposition(int x, int y);
+        Point setPosition(int x, int y);
 
         friend bool operator ==(Item i1, Item i2);
 

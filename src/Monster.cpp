@@ -91,7 +91,7 @@ void Monster::setPosition(double x, double y){
     this->POS.y = y;
 }
 
-char Monster:: getsymbol(){
+char Monster:: getSymbol(){
     return this->symbol;
 }
 
