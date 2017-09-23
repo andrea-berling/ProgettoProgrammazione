@@ -12,6 +12,7 @@ class Tile
         std::string id;
         bool visible;
         char symbol;
+
         void setSymbol();
         // Sets the symbol of the tile given its type
 
