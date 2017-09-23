@@ -4,7 +4,6 @@ using namespace std;
 
 Tile::Tile(): type(VOID), id(""), visible(false), symbol('?')
 {
-
 }
 
 Tile::Tile(tile_t type): type(type), id(""), visible(false)

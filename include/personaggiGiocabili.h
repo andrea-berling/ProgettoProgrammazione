@@ -2,6 +2,8 @@
 // Created by zacomo
 //
 
+#ifndef PERSONAGGI_GIOCABILI_H
+#define PERSONAGGI_GIOCABILI_H
 
 #include <unordered_set>
 #include <string>
@@ -70,5 +72,5 @@ public:
     void LVLup();
 };
 
-
+#endif //PERSONAGGI_GIOCABILI_H
 

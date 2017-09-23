@@ -53,7 +53,7 @@
         return this->ATK;
     }
 
-    Position PlayableCharacter::getPosition() {
+    Point PlayableCharacter::getPosition() {
         return this->POS;
     }
 
@@ -82,8 +82,8 @@
     }
 
     void PlayableCharacter::setPosition(double x, double y){
-        this->POS.X = x;
-        this->POS.Y = y;
+        this->POS.x = x;
+        this->POS.y = y;
     }
 
     void PlayableCharacter::setCoins(int Coins){

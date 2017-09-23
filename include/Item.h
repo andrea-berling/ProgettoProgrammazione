@@ -6,6 +6,7 @@
 #define GAME_ITEM_H
 
 #include <string>
+#include <vector>
 #include "Graph.h"
 
 class Item {
@@ -52,6 +53,6 @@ namespace std
     };
 }
 
-void retrieveItems(std::ifstream& file, std::vector& set);
+void retrieveItems(std::ifstream& file, std::vector<Item>& set);
 // Given a file with the items and a vector of Items, it retireves them and stores them in the vector
 #endif //GAME_ITEM_H

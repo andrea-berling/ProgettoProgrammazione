@@ -1,11 +1,11 @@
 #include "../include/Map.h"
-#include "../include/utility.hpp"
+#include "../include/utility.h"
 #include <iostream>
 
 using namespace std;
 
 Map::Map(int width, int height) : grid(height, width), width(width), height(height),
-    rooms(47)//,itemsLayer(height,width),monstersLayer(height,width)
+    rooms(47),itemsLayer(height,width),monstersLayer(height,width)
 {}
 // Creates a new map with the given # of rows and columns
 
@@ -286,7 +286,7 @@ void Map::disconnectFromMap(Graph& G, Point& p, Point& q)
     G.deletePoint(q);
 }
 
-void Map::freeSpots(int n,unordered_set<Point>& spots,int r = 1)
+void Map::freeSpots(int n,unordered_set<Point>& spots,int r)
 {
     unordered_map<string,Room>::iterator it;
     int permutation[n];
@@ -294,26 +294,17 @@ void Map::freeSpots(int n,unordered_set<Point>& spots,int r = 1)
 
     for(int i = 0; i < n; i++) 
     {
-        if(i < n/2) 
-        { 
-            it = rooms.begin();
-            for(int j = 0; j < permutation[i]; j++)
-                ++it;
-        }
-        else
-        {
-            it = --(rooms.end());
-            for(int j = 0; j < n - permutation[i]; j++)
-                --it;
+        it = rooms.begin();
+        for(int j = 0; j < permutation[i]; j++)
+            ++it;
 
-        }   // Slightly speeds up the rooms picking
-
-        for(k = 0; k < r; k++)
+        for(int k = 0; k < r; k++)
         {
-            int x = (*it).key.getCorner().x;
-            int y = (*it).key.getCorner().y;
-            int height = (*it).key.getHeight();
-            int width = (*it).key.getWidth();
+            int x = (*it).second.getCorner().x;
+            int y = (*it).second.getCorner().y;
+            int height = (*it).second.getHeight();
+            int width = (*it).second.getWidth();
+            Point position;
 
             do
             {
@@ -330,6 +321,7 @@ void Map::freeSpots(int n,unordered_set<Point>& spots,int r = 1)
 void Map::placeCharacter(PlayableCharacter& player)
 {
     Room R = pickRoom();
+    setVisible(R.getId());
     Point p;
     int x = R.getCorner().x;
     int y = R.getCorner().y;
@@ -337,20 +329,22 @@ void Map::placeCharacter(PlayableCharacter& player)
     int width = R.getWidth();
     do
     {
-                position = Point(rand(x+1,x+width-2),rand(y+1,y+height-2)); // Rememeber to implement the printing of the
+                p = Point(rand(x+1,x+width-2),rand(y+1,y+height-2)); // Rememeber to implement the printing of the
     }
-    while(!itemsLayer.isEmpty(p.y,p.x) && !monstersLayer.isEmpty(p.y,p.x))
+    while(!itemsLayer.isEmpty(p.y,p.x) && !monstersLayer.isEmpty(p.y,p.x));
+
+    player.setPosition(p.x,p.y);
 }
 
 void Map::placeItem(Item i)
 {
-    Point p = i.getPosition();
-    itemsLayer[p.y][p.x] = i;
+    Point p = i.getposition();
+    itemsLayer(p.y,p.x) = i;
 }
 // Given an items and its position
 
 void Map::placeMonster(Monster& m)
 {
     Point p = m.getPosition();
-    itemsLayer[p.y][p.x] = m;
+    monstersLayer(p.y,p.x) = m;
 }

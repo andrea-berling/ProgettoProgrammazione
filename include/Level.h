@@ -13,8 +13,8 @@ class Level
     private:
 
         Map map;
-        std::unordered_map<std::string,Monster> monsters;
-        std::unordered_map<std::string,Item> items;
+        std::unordered_set<Monster> monsters;
+        std::unordered_set<Item> items;
         int level;
 
     public:
@@ -22,13 +22,13 @@ class Level
         Level(int level,int width,int height,int rooms, int _monsters, int _items);
         // Given a width, a height and a  number of rooms, it creates a new level
 
-        void printMap();
+        void printMap(PlayableCharacter& player);
         // Prints the map, the monsters and the items
 
         void placeCharacter(PlayableCharacter& player);
         // Given a main character, places it in a random room in the map
 
-        void handleMovement(playableCharacter& player);
+        void handleMovement(PlayableCharacter& player);
         // Handles the movement of the main character and the exploration of the map
 
 };
