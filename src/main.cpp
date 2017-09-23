@@ -75,7 +75,7 @@ int main()
         }
         list<Level> levels;
         list<Level>::iterator currentLevel;
-        Level first(1,100,37,10,5,3);
+        Level first(1,100,37,10,10,3);
         levels.insert(levels.begin(),first);
         currentLevel = levels.begin();
         (*currentLevel).placeCharacter(player);
