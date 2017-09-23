@@ -10,14 +10,15 @@
 #include "Room.h"
 #include "Item.h"
 #include "Monster.h"
+#include "personaggiGiocabili.h"
 
 class Map
 {
     private:
 
         Matrix<Tile> grid;
-        //Matrix<Item> itemsLayer;
-        //Matrix<Monster> monstersLayer;
+        Matrix<Item> itemsLayer;
+        Matrix<Monster> monstersLayer;
         std::unordered_map<std::string,Room> rooms;
         int width, height;
 

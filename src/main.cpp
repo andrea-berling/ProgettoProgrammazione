@@ -34,6 +34,7 @@ int main()
     int choice;
     bool quit = false;
     int character = -1;
+    srand(time(0));
 
     while(character == -1 && !quit)
     {
@@ -42,11 +43,11 @@ int main()
         switch(choice)
         {
             case 0:
-                //startCurses();
                 character = playerChoiceMenu();
                 break;
             case 1:
-                cout << "You selected Credits" << endl;
+                quit = true;
+                // To implement the credits window
                 break;
             case 2:
                 quit = true;
@@ -74,10 +75,11 @@ int main()
         }
         list<Level> levels;
         list<Level>::iterator currentLevel;
-        levels.insert(Level(1,100,37,2,1,1));
+        Level first(1,100,37,10,5,3);
+        levels.insert(levels.begin(),first);
         currentLevel = levels.begin();
-        (*currentLevel).printMap();
         (*currentLevel).placeCharacter(player);
+        (*currentLevel).printMap(player);
         (*currentLevel).handleMovement(player);
         // Generate the map with the given character
     }

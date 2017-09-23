@@ -1,5 +1,5 @@
 #include "../include/Room.h"
-#include "../include/utility.hpp"
+#include "../include/utility.h"
 
 using namespace std;
 

@@ -18,7 +18,9 @@ class Monster {
 
     public:
 
-    Monster(std::string Name, int LV, int x, int y);
+    Monster();
+
+    Monster(std::string Name, int LV);
 
     double getLP();
 
@@ -41,7 +43,20 @@ class Monster {
     std::string getName();
 
     char getsymbol();
+
+    friend bool operator==(Monster m1,Monster m2);
+
+    friend bool operator!=(Monster m1,Monster m2);
 };
+
+namespace std
+{
+    template <> struct hash<Monster>
+    {
+        size_t operator()(Monster m) const;
+        // Hash function for the class Item
+    };
+}
 
 
 #endif //GAME_MONSTER_H

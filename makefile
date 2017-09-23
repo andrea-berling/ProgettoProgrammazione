@@ -1,26 +1,37 @@
 CC=g++
 SRC=src
 CFLAGS=-I include -g
+CURSES=-lncurses -lmenu
 BUILD=build
-DEPS=utility.hpp
+DEPS=utility.h
 
-all: $(BUILD)/Graph.o $(BUILD)/main.o $(BUILD)/Map.o $(BUILD)/Matrix.o $(BUILD)/Room.o $(BUILD)/Tile.o build/main.o build/Menu.o build/Window.o
-	$(CC) $(BUILD)/Graph.o $(BUILD)/main.o $(BUILD)/Map.o $(BUILD)/Matrix.o $(BUILD)/Room.o $(BUILD)/Tile.o -o Test $(CFLAGS) -lncurses build/*.o -o Test -g -lncurses -lmenu
-build/main.o: src/main.cpp
-	g++ -c -lncurses -lmenu src/main.cpp -o build/main.o -g
-build/Menu.o: src/Menu.cpp include/Menu.h
-	g++ -c -lncurses -lmenu src/Menu.cpp -o build/Menu.o -g
-build/Window.o: src/Window.cpp include/Window.h
-	g++ -c -lncurses -lmenu src/Window.cpp -o build/Window.o -g
+all: $(BUILD)/Graph.o $(BUILD)/main.o $(BUILD)/Map.o $(BUILD)/Matrix.o $(BUILD)/Room.o $(BUILD)/Tile.o $(BUILD)/main.o $(BUILD)/Menu.o $(BUILD)/Window.o $(BUILD)/Item.o $(BUILD)/Level.o $(BUILD)/Monster.o $(BUILD)/personaggiGiocabili.o $(BUILD)/utility.o
+	$(CC) build/*.o -o Test $(CFLAGS) $(CURSES)
+$(BUILD)/main.o: src/main.cpp
+	g++ -c $(CFLAGS) src/main.cpp -o $(BUILD)/main.o -g $(CURSES)
+$(BUILD)/Menu.o: src/Menu.cpp include/Menu.h
+	g++ -c $(CFLAGS) src/Menu.cpp -o $(BUILD)/Menu.o -g $(CURSES) 
+$(BUILD)/Window.o: src/Window.cpp include/Window.h
+	g++ -c $(CFLAGS) src/Window.cpp -o $(BUILD)/Window.o -g $(CURSES)
 $(BUILD)/Tile.o: src/Tile.cpp include/Tile.h
 	$(CC) -c $(SRC)/Tile.cpp $(CFLAGS) -o $(BUILD)/Tile.o
 $(BUILD)/Graph.o: src/Graph.cpp include/Graph.h
 	$(CC) -c $(SRC)/Graph.cpp $(CFLAGS) -o $(BUILD)/Graph.o
-$(BUILD)/Map.o: src/Map.cpp include/Map.h
+$(BUILD)/Map.o: src/Map.cpp include/Map.h include/utility.h
 	$(CC) -c $(SRC)/Map.cpp $(CFLAGS) -o $(BUILD)/Map.o
 $(BUILD)/Matrix.o: src/Matrix.cpp include/Matrix.h
 	$(CC) -c $(SRC)/Matrix.cpp $(CFLAGS) -o $(BUILD)/Matrix.o
-$(BUILD)/Room.o: src/Room.cpp include/Room.h include/utility.hpp
+$(BUILD)/Room.o: src/Room.cpp include/Room.h include/utility.h
 	$(CC) -c $(SRC)/Room.cpp $(CFLAGS) -o $(BUILD)/Room.o
+$(BUILD)/Item.o: src/Item.cpp include/Item.h
+	$(CC) -c $(SRC)/Item.cpp $(CFLAGS) -o $(BUILD)/Item.o
+$(BUILD)/Level.o: src/Level.cpp include/Level.h
+	$(CC) -c $(SRC)/Level.cpp $(CFLAGS) -o $(BUILD)/Level.o $(CURSES)
+$(BUILD)/Monster.o: src/Monster.cpp include/Monster.h
+	$(CC) -c $(SRC)/Monster.cpp $(CFLAGS) -o $(BUILD)/Monster.o
+$(BUILD)/personaggiGiocabili.o: src/personaggiGiocabili.cpp include/personaggiGiocabili.h
+	$(CC) -c $(SRC)/personaggiGiocabili.cpp $(CFLAGS) -o $(BUILD)/personaggiGiocabili.o
+$(BUILD)/utility.o: src/utility.cpp include/utility.h
+	$(CC) -c $(SRC)/utility.cpp $(CFLAGS) -o $(BUILD)/utility.o
 clean:
 	rm build/* Test

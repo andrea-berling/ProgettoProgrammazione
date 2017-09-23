@@ -4,13 +4,20 @@
 
 #include "Monster.h"
 
-Monster::Monster(string Name, int LV, int x, int y) {
+using namespace std;
+
+Monster::Monster() {
+    this->LP = -1;
+    this->DEF = -1;
+    this->ATK = -1;
+    Name = "";
+}
+
+Monster::Monster(string Name, int LV) {
     if (LV < 1)
         LV = 1; //il livello non può essere negativo
 
     this->LV = LV;
-    this->POS.X = x;
-    this->POS.Y = y;
     this->Name = Name;
     double atk = 0, def = 0, lp = 1;
 
@@ -59,7 +66,7 @@ double Monster::getATK(){
     return this->ATK;
 }
 
-Position Monster::getPosition() {
+Point Monster::getPosition() {
     return this->POS;
 }
 
@@ -80,8 +87,8 @@ void Monster::setATK(double ATK){
 }
 
 void Monster::setPosition(double x, double y){
-    this->POS.X = x;
-    this->POS.Y = y;
+    this->POS.x = x;
+    this->POS.y = y;
 }
 
 char Monster:: getsymbol(){
@@ -92,4 +99,19 @@ std::string Monster::getName(){
     return this->Name;
 }
 
+bool operator==(Monster m1,Monster m2){
+    m1.Name == m2.Name;
+}
 
+bool operator!=(Monster m1,Monster m2){
+    m1.Name == m2.Name;
+}
+
+namespace std
+{
+    size_t hash<Monster>::operator()(Monster m) const
+    {
+        return hash<string>()(m.getName());
+    }
+    // Hash function for the class Item
+}
