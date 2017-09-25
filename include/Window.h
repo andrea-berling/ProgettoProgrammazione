@@ -10,7 +10,7 @@ class Window
     private:
 
         WINDOW* win;
-        int x,y,nlines,ncols;
+        int x,y,nlines,ncols, firstAvailableLine;
 
     public:
 
@@ -22,6 +22,15 @@ class Window
 
         void readFromFile(std::string filename);
         // Given a filename, it writes its contents in the window
+
+        void printLine(std::string);
+
+        void box();
+        // Prints a box around the window
+
+        void clear();
+        // Clears the window
+
 };
 
 std::string wrap(std::string text,unsigned int maxLength);

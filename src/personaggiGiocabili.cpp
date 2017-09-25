@@ -42,7 +42,7 @@
     }
 
     int PlayableCharacter::getMPMAX() {
-        return this->LPMAX;
+        return this->MPMAX;
     }
 
     int PlayableCharacter::getDEF(){

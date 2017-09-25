@@ -58,6 +58,7 @@ int main()
         endCurses();
     else
     {
+        Window infoWindow(101, 0, 37, 20);
         clear();
         refresh();
         PlayableCharacter player;
@@ -75,12 +76,12 @@ int main()
         }
         list<Level> levels;
         list<Level>::iterator currentLevel;
-        Level first(1,100,37,10,10,3);
         levels.insert(levels.begin(),Level(1,100,37,10,10,3));
         currentLevel = levels.begin();
         (*currentLevel).placeCharacter(player);
         (*currentLevel).printMap(player);
-        (*currentLevel).handleMovement(player);
+        writeInfo(infoWindow,player);
+        (*currentLevel).handleMovement(infoWindow,player);
         // Generate the map with the given character
     }
 
@@ -155,3 +156,4 @@ int playerChoiceMenu()
 
     return choice;
 }
+
