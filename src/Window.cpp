@@ -8,6 +8,7 @@ using namespace boost;
 Window::Window(int x, int y, int nlines, int ncols):x(x),y(y),nlines(nlines),ncols(ncols)
 {
     win = newwin(nlines,ncols,y,x);
+    firstAvailableLine = 1;
 }
 // Given position coordinates and the number of lines and columns, it creates a new window
 
@@ -64,3 +65,26 @@ string wrap(string text,unsigned int maxLength)
     return buffer;
 }
 // Given a text and a limit length, it wraps the text to respect the given text width and returns it as a string
+
+void Window::printLine(string line) {
+    if (line.length() < ncols) {
+        line += '\n';
+        mvwprintw(win,firstAvailableLine,1,line.c_str());
+        wborder(win, '|', '|', '-', '-', '+', '+', '+', '+');
+        firstAvailableLine++;
+        wrefresh(win);
+
+    }
+}
+
+void Window::box()
+{
+    wborder(win, '|', '|', '-', '-', '+', '+', '+', '+');
+    wrefresh(win);
+}
+
+void Window::clear()
+{
+    wclear(win);
+    firstAvailableLine = 1;
+}

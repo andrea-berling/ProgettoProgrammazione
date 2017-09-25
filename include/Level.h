@@ -7,6 +7,7 @@
 #include "personaggiGiocabili.h"
 #include "Monster.h"
 #include "Item.h"
+#include "Window.h"
 
 class Level
 {
@@ -28,9 +29,13 @@ class Level
         void placeCharacter(PlayableCharacter& player);
         // Given a main character, places it in a random room in the map
 
-        void handleMovement(PlayableCharacter& player);
+        void handleMovement(Window& info, PlayableCharacter& player);
         // Handles the movement of the main character and the exploration of the map
+        // and the printing of the stats
 
 };
+
+void writeInfo(Window& win,PlayableCharacter& pg);
+//  Finestra che fornisce i dati su oggetti posseduti e statistiche del PG
 
 #endif

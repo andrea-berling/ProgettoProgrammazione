@@ -74,7 +74,7 @@ void Level::placeCharacter(PlayableCharacter& player)
     map.placeCharacter(player);
 }
 
-void Level::handleMovement(PlayableCharacter& player)
+void Level::handleMovement(Window& info,PlayableCharacter& player)
 {
     int x,y,c;
     Point pos = player.getPosition();
@@ -133,5 +133,16 @@ void Level::handleMovement(PlayableCharacter& player)
             map.showAround(x,y);
         }
         printMap(player);
+        info.clear();
+        writeInfo(info,player);
     }
+}
+
+void writeInfo(Window& win,PlayableCharacter& pg){
+    win.box();
+    win.printLine(pg.getName());
+    win.printLine("LP: " + to_string(pg.getLP()) + '/' + to_string(pg.getLPMAX()));
+    win.printLine("MP: " + to_string(pg.getMP()) + '/' + to_string(pg.getMPMAX()));
+    win.printLine("ATK: " + to_string(pg.getATK()));
+    win.printLine("DEF: " + to_string(pg.getDEF()));
 }
