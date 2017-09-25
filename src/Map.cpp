@@ -1,6 +1,11 @@
 #include "../include/Map.h"
 #include "../include/utility.h"
+#include <unordered_set>
+#ifdef DEBUG
+#include <cstdlib>
 #include <iostream>
+#include <fstream>
+#endif
 
 using namespace std;
 
@@ -34,13 +39,13 @@ int Map::getHeight()
 void Map::place(Room& R)
 {
     Point p = R.getCorner();
-    int width = R.getWidth();
-    int height = R.getHeight();
+    int RWidth = R.getWidth();
+    int RHeight = R.getHeight();
 
-    for(int i = p.x; i < p.x + width; i++)
-        for(int j = p.y; j < p.y + height; j++)
+    for(int i = p.x; i < p.x + RWidth; i++)
+        for(int j = p.y; j < p.y + RHeight; j++)
         {
-            if((i != p.x && i != p.x + width - 1) && (j != p.y && j != p.y + height - 1))
+            if((i != p.x && i != p.x + RWidth - 1) && (j != p.y && j != p.y + RHeight - 1))
                 (*this)(i,j).setType(PAVEMENT);
             else
                 (*this)(i,j).setType(ROOM_BORDER);
@@ -141,10 +146,9 @@ void Map::showAround(int x, int y)
 
 void Map::generate(int requiredRooms)
 {
-    int n = 0;
+    unordered_map<string,Room>::iterator it;
     int roomID = 0;
     Room R,Q;
-    deque<Room> rooms;
     Graph dots;
 
     for(int i = 0; i < width; i++)        // Map initialization
@@ -154,50 +158,50 @@ void Map::generate(int requiredRooms)
             (*this)(i,j).setVisible(false);
         }
 
-    while(n < requiredRooms)
-    {
-        string id = "room" + to_string(roomID);
-        roomID++;
-        R = generateRoom(id);
-        while(overlaps(R))
-        {
-            R = generateRoom(id);
-        }
-        rooms.push_front(R);
-        addRoom(R,id);
-        place(R);
-        n++;
-    }
-
+    generateRooms(requiredRooms);
     populateGraph(dots);
     createLinks(dots);
 
-    R = *(rooms.begin());
-    rooms.pop_front();
-    Q = *(rooms.begin());
-    while(!rooms.empty())
+    it = rooms.begin();
+    R = (*it).second;
+    ++it;
+    while(it != rooms.end())
     {
-        link(R,Q,dots); // to add to map class
-        R = *(rooms.begin());
-        rooms.pop_front();
-        if(!rooms.empty())
-            Q = *(rooms.begin());
+        Q = (*it).second;
+        ++it;
+        link(R,Q,dots);
+        R = Q;
     }
 }
 
-Room Map::generateRoom(string id)
+Room Map::generateRoom(Area A,string id)
 {
     Point p;
-    int wLimit, hLimit;
+    int x = A.getCorner().x;
+    int y = A.getCorner().y;
+    int width = A.getWidth();
+    int height = A.getHeight();
+    int wMax, hMax;
     int w,h;
 
-    p.x = rand(2,width - 9);
-    p.y = rand(2,height - 9);
+    p.x = rand(x + 1, x + width - 2 - 7); // a room has a minimum size of 7x7 and a max size of 20x20
+    p.y = rand(y + 1, y + height - 2 - 7); 
+    
+    int freeXSpace = x + width - 2 - p.x;
+    int freeYSpace = y + height - 2 - p.y;
 
-    wLimit = width - 2 - p.x < 20 ? width - 2 - p.x : 20;
-    hLimit = height - 2 - p.y < 20 ? height - 2 - p.y : 20;
-    w = rand(7, wLimit);
-    h = rand(7, hLimit);
+    if(20 < freeXSpace)
+        wMax = 20;
+    else 
+        wMax = freeXSpace;
+
+    if(20 < freeYSpace)
+        hMax = 20;
+    else 
+        hMax = freeYSpace;
+
+    w = rand(7, wMax);
+    h = rand(7, hMax);
 
     return Room(p,w,h,id);
 }
@@ -348,3 +352,62 @@ void Map::placeMonster(Monster& m)
     Point p = m.getPosition();
     monstersLayer(p.y,p.x) = m;
 }
+
+void Map::generateRooms(int n)
+{
+    Area A({0,0},width,height);
+    unordered_set<Area> areas,toRemove,toInsert;
+    bool vertical = true;
+    int i = 1;
+    int roomId = 0;
+    string id;
+    int tries = 0;
+
+    areas.insert(A);
+    while(i < n && tries < 500)
+    {
+        toRemove.clear();
+        toInsert.clear();
+        for(Area A : areas)
+        {
+            if(i < n) 
+            {
+                bool split = false;
+                Area A1,A2;
+                if ((vertical && (A.getWidth()/3 > 10)) || (!vertical && (A.getHeight()/3 > 10)))
+                {
+                    A.split(A1,A2,vertical);
+                    split = true;
+                }
+                else if ((vertical && (A.getWidth()/2 > 10)) || (!vertical && (A.getHeight()/2 > 10)))
+                {
+                    A.splitInHalf(A1,A2,vertical);
+                    split = true;
+                }
+                if(split)
+                {
+                    toInsert.insert(A1);
+                    toInsert.insert(A2);
+                    i++;
+                    toRemove.insert(A);
+                }
+                tries++;
+            }
+        }
+        for(Area A : toRemove)
+            areas.erase(A);
+        for(Area A : toInsert)
+            areas.insert(A);
+        vertical = !vertical;
+    }
+    // Generate rooms for each area
+    for(Area A : areas)
+    {
+        id = "room" + to_string(roomId);
+        roomId++;
+        Room R = generateRoom(A,id);
+        addRoom(R,id);
+        place(R);
+    }
+}
+// Given a number n, it generates n rooms
