@@ -3,34 +3,14 @@
 
 using namespace std;
 
-Room::Room()
+Room::Room():Area()
 {
-    p = {-1,-1};
-    width = height = -1;
     visible = false;
     id = "";
 }
 
-Room::Room(Point position, int width, int height, string id) : p(position), width(width), height(height), visible(false), id(id)
+Room::Room(Point position, int width, int height, string id) : Area(position,width,height), visible(false), id(id)
 {}
-
-Point Room::getCorner()
-{
-    return p;
-}
-// Returns the upper left corner
-
-int Room::getWidth()
-{
-    return width;
-}
-// Returns the width of the room
-
-int Room::getHeight()
-{
-    return height;
-}
-// Returns the height of the room
 
 Point Room::pickPoint()
 {
