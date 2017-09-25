@@ -129,6 +129,8 @@ void Map::setVisible(string id)
     for(int i = p.x; i < p.x + width; i++)
         for(int j = p.y; j < p.y + height; j++)
             (*this)(i,j).setVisible(true);
+    // if (!monstersLayer.isEmpty(j,i))
+    //      monstersLayer(j,i).wakeUp();
 }
 
 void Map::showAround(int x, int y)

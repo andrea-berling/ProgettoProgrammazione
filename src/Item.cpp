@@ -87,7 +87,7 @@ namespace std
 {
     size_t hash<Item>::operator()(Item i) const
     {
-        return hash<string>()(i.getname());
+        return hash<string>()(i.getName());
     }
     // Hash function for the class Item
 }
