@@ -7,6 +7,7 @@
 #include <deque>
 #include <vector>
 #include "Graph.h"
+#include "Area.h"
 #include "Room.h"
 #include "Item.h"
 #include "Monster.h"
@@ -43,7 +44,7 @@ class Map
         void link(Room& R,Room& Q,Graph& G);
         // Links two rooms in the map making use of the graph of the map
         
-        Room generateRoom(std::string id);
+        Room generateRoom(Area A,std::string id);
         // Generates a room with the given an id 
 
 
@@ -69,6 +70,9 @@ class Map
 
         void generate(int requiredRooms);
         // Generates the map given a number of required rooms
+
+        void generateRooms(int n);
+        // Given a number n, it generates n rooms
 
         void setVisible(std::string id);
         // Given an id, it sets the corresponding room visible
