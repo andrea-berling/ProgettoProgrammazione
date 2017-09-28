@@ -16,6 +16,8 @@ class Level
         Map map;
         std::unordered_set<Monster> monsters;
         std::unordered_set<Item> items;
+        Point upStairs;
+        Point downStairs;
         int level;
 
     public:
@@ -26,13 +28,21 @@ class Level
         void printMap(PlayableCharacter& player);
         // Prints the map, the monsters, the items and the player
 
-        void placeCharacter(PlayableCharacter& player);
-        // Given a main character, places it in a random room in the map
+        void placeCharacter(PlayableCharacter& player, int playerPosition);
+        // Given a main character and a preference for the position, places the characeter accordingly
+        // if playerPosition == 0, the position is random
+        // if playerPosition == 1, the position is the same as the one of the down stairs
+        // if playerPosition == -1, the position is the same as the one of the up stairs
 
-        void handleMovement(Window& info, PlayableCharacter& player);
+        int handleMovement(Window& info, PlayableCharacter& player);
         // Handles the movement of the main character and the exploration of the map
         // and the printing of the stats
 
+        Point getUpStairs();
+        // Returns the coordinates of the up stairs
+
+        Point getDownStairs();
+        // Returns the coordinates of the down stairs
 };
 
 void writeInfo(Window& win,PlayableCharacter& pg);
