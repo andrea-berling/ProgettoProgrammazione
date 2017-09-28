@@ -54,58 +54,6 @@ void Map::place(Room& R)
         }
 }
 
-bool Map::overlaps(Room& R)
-{
-    Point p = R.getCorner();
-    int width = R.getWidth();
-    int height = R.getHeight();
-    tile_t type = (*this)(p.x,p.y).getType();
-    bool corner = type == PAVEMENT || type == ROOM_BORDER;  // the corner overlaps another room
-    if(p.x > 0)
-        corner = corner || (*this)(p.x - 1,p.y).getType() == ROOM_BORDER; // the corner is adjacent to a room which is to its left
-    if(p.y > 0)
-        corner = corner || (*this)(p.x,p.y - 1).getType() == ROOM_BORDER; // the corner is adjacent to a room which is above it
-    if(corner)
-        return true;
-    else
-    {
-        for(int i = p.x; i < p.x + width; i++)
-        {
-            bool up,down;
-            up = (*this)(i,p.y).getType() == PAVEMENT || (*this)(i,p.y).getType() == ROOM_BORDER; // The block overlaps another room
-            if(p.y > 0)
-                up = up || (*this)(i,p.y - 1).getType() == ROOM_BORDER;   // The block is adjacent to a room which is above it
-            down = (*this)(i,p.y + height - 1).getType() == PAVEMENT || (*this)(i,p.y + height - 1).getType() == ROOM_BORDER;
-            if(p.y + height < this->height)
-                down = down || (*this)(i,p.y + height).getType() == ROOM_BORDER; // The block is adjacent to a room which is under it
-            if(up || down)
-                return true;
-        }
-
-        for(int i = p.y; i < p.y + height; i++)
-        {
-            bool left,right;
-            left = (*this)(p.x,i).getType() == PAVEMENT || (*this)(p.x,i).getType() == ROOM_BORDER;
-            if(p.x > 0)
-                left = left || (*this)(p.x - 1,i).getType() == ROOM_BORDER; // The block is adjacent to a room which is to its left
-            right = (*this)(p.x + width - 1,i).getType() == PAVEMENT || (*this)(p.x + width - 1,i).getType() == ROOM_BORDER;
-            if(p.x + width < this->width)
-                right = right || (*this)(p.x + width,i).getType() == ROOM_BORDER; // The block is adjacent to a room which is to its right
-            if(left || right)
-                return true;
-        }
-
-        /*
-        for(int i = p.x; i < p.x + width; i++)
-            for(int j = p.y; j < p.y + height; j++)
-                if((*this)(i,j).getType() == PAVEMENT || (*this)(i,j).getType() == ROOM_BORDER)
-                    return true;
-                    */
-        return false;
-    }
-
-}
-
 void Map::addRoom(Room& R,string id)
 {
     rooms[id] = R;
@@ -249,13 +197,8 @@ void Map::link(Room& R,Room& Q,Graph& G)
     connectToMap(G,p,toRemove1);
     connectToMap(G,q,toRemove2);
 
-    if(p != q)
-    {
-        shortestPath(G,p,T);
-        retrievePath(steps,T,p,q);
-    }
-    else
-        steps.insert(steps.begin(),p);
+    shortestPath(G,p,T);
+    retrievePath(steps,T,p,q);
 
     for(Point p : steps)
     {
@@ -272,14 +215,14 @@ void Map::connectToMap(Graph& G, Point& p, Point& q)
     G.insertPoint(p);
     if((*this)(p).getType() == ROOM_BORDER)
     {
-        if((*this)(p.x - 1, p.y).getType() == WALL || (*this)(p.x - 1, p.y).getType() == HALLWAY)
-            q = {p.x - 1,p.y};
-        else if((*this)(p.x + 1, p.y).getType() == WALL || (*this)(p.x + 1, p.y).getType() == HALLWAY)
-            q = {p.x + 1,p.y};
-        else if((*this)(p.x, p.y - 1).getType() == WALL || (*this)(p.x, p.y - 1).getType() == HALLWAY)
-            q = {p.x,p.y - 1};
-        else if((*this)(p.x, p.y + 1).getType() == WALL || (*this)(p.x, p.y + 1).getType() == HALLWAY)
-            q = {p.x,p.y + 1};
+        if(isWalkable(p.x-1,p.y) && (*this)(p.x-1,p.y).getType() != HALLWAY) // The room is on the left of the point
+            q = {p.x+1,p.y};
+        else if(isWalkable(p.x+1,p.y) && (*this)(p.x+1,p.y).getType() != HALLWAY) // The room is on the right of the point
+            q = {p.x-1,p.y};
+        else if(isWalkable(p.x,p.y-1) && (*this)(p.x,p.y-1).getType() != HALLWAY) // And so on
+            q = {p.x,p.y+1};
+        else if(isWalkable(p.x,p.y+1) && (*this)(p.x,p.y+1).getType() != HALLWAY)
+            q = {p.x,p.y-1};
         G.insertPoint(q);
         G.insertEdge(p,q);
     }
@@ -306,19 +249,15 @@ void Map::freeSpots(int n,unordered_set<Point>& spots,int r)
 
         for(int k = 0; k < r; k++)
         {
-            int x = (*it).second.getCorner().x;
-            int y = (*it).second.getCorner().y;
-            int height = (*it).second.getHeight();
-            int width = (*it).second.getWidth();
             Point position;
 
             do
             {
-                position = Point(rand(x+1,x+width-2),rand(y+1,y+height-2)); // Rememeber to implement the printing of the
+                position = freeSpot((*it).second);
+                // Rememeber to implement the printing of the
                 // map to hide an object if a monster is on it
             }
-            while(!itemsLayer.isEmpty(position.y,position.x) && !monstersLayer.isEmpty(position.y,position.x) &&
-                    (spots.find(position) == spots.end()));
+            while(spots.find(position) != spots.end());
             spots.insert(position);
         }
     }
@@ -357,7 +296,7 @@ void Map::placeMonster(Monster& m)
 
 void Map::generateRooms(int n)
 {
-    Area A({0,0},width,height);
+    Area A({2,2},width-2,height-2);
     unordered_set<Area> areas,toRemove,toInsert;
     bool vertical = true;
     int i = 1;
@@ -413,3 +352,28 @@ void Map::generateRooms(int n)
     }
 }
 // Given a number n, it generates n rooms
+
+Point Map::freeSpot(Room R)
+{
+    int x = R.getCorner().x;
+    int y = R.getCorner().y;
+    int height = R.getHeight();
+    int width = R.getWidth();
+    Point position;
+
+    do
+    {
+        position = Point(rand(x+1,x+width-2),rand(y+1,y+height-2)); // Rememeber to implement the printing of the
+        // map to hide an object if a monster is on it
+    }
+    while(!(itemsLayer.isEmpty(position.y,position.x) && monstersLayer.isEmpty(position.y,position.x)));
+
+    return position;
+}
+
+bool Map::isWalkable(int x, int y)
+{
+    tile_t t = (*this)(x,y).getType();
+
+    return (t == HALLWAY || t == PAVEMENT || t == UP_STAIRS || t == DOWN_STAIRS);
+}

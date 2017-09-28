@@ -32,9 +32,6 @@ class Map
         void place(Room& R);
         // Places a room in the grid
 
-        bool overlaps(Room& R);
-        // Returns true if the given room overlaps with other rooms or is adjacent to another room
-
         void populateGraph(Graph& G);
         // Fills the graph with the points of the grid that are not rooms, borders excluded
 
@@ -95,6 +92,12 @@ class Map
 
         void placeMonster(Monster& m);
         // Given a monster it places it on the map
+
+        Point freeSpot(Room R);
+        // Given a room, returns a free spot in the room
+
+        bool isWalkable(int x, int y);
+        // Returns true if the tile in Map(x,y) is walkable, false otherwise
 };
 
 #endif
