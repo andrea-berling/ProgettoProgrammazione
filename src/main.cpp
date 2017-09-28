@@ -59,6 +59,9 @@ int main()
     else
     {
         Window infoWindow(101, 0, 37, 20);
+        int width = 100;
+        int height = 37;
+        int status = -1;
         clear();
         refresh();
         PlayableCharacter player;
@@ -76,12 +79,41 @@ int main()
         }
         list<Level> levels;
         list<Level>::iterator currentLevel;
-        levels.insert(levels.begin(),Level(1,100,37,30,10,3));
+        int n = 1;
+        levels.insert(levels.begin(),Level(n,width,height,5,2,2));
         currentLevel = levels.begin();
-        (*currentLevel).placeCharacter(player);
+        (*currentLevel).placeCharacter(player,0);
         (*currentLevel).printMap(player);
         writeInfo(infoWindow,player);
-        (*currentLevel).handleMovement(infoWindow,player);
+        while(status != 0)
+        {
+            int playerPosition;
+            status = (*currentLevel).handleMovement(infoWindow,player);
+            if(status == 1)
+            {
+                ++currentLevel;
+                if(currentLevel == levels.end())
+                {
+                    ++n;
+                    Level newLevel = Level(n,width,height,5,2,2);
+                    currentLevel = levels.insert(levels.end(),newLevel);
+                    playerPosition = 0;
+                }
+                else
+                {
+                    playerPosition = 1; // no need to increment, the increment was done in the if part
+                }
+            }
+            else if(status == -1)
+            {
+                currentLevel--;
+                playerPosition = -1;
+            }
+            (*currentLevel).placeCharacter(player,playerPosition);
+            (*currentLevel).printMap(player);
+            infoWindow.clear();
+            writeInfo(infoWindow,player);
+        }
         // Generate the map with the given character
     }
 
