@@ -20,7 +20,7 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
     map.freeSpots(_items,spots);
     for(Point p : spots)
     {
-        int index = rand(0,max(level*3,static_cast<int>(itemsSet.size())-1));
+        int index = rand(0,min(level*3,static_cast<int>(itemsSet.size())-1));
         itemsSet[index].setPosition(p.x,p.y);
         map.placeItem(itemsSet[index]);
         items.insert(itemsSet[index]);
@@ -36,6 +36,11 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
         monsters.insert(monstersSet[index]);
         // Spawn a monster
     }
+
+    Room R = map.pickRoom();
+    Point p = map.freeSpot(R);
+    map(p.x,p.y).setType(UP_STAIRS);
+    upStairs = {p.x,p.y};
 }
 
 void Level::printMap(PlayableCharacter& player)
@@ -69,51 +74,77 @@ void Level::printMap(PlayableCharacter& player)
     refresh();
 }
 
-void Level::placeCharacter(PlayableCharacter& player)
+void Level::placeCharacter(PlayableCharacter& player,int playerPosition)
 {
-    map.placeCharacter(player);
+    switch(playerPosition)
+    {
+        case 0:
+            map.placeCharacter(player);
+            if (level > 1)
+            {
+                int x = player.getPosition().x;
+                int y = player.getPosition().y;
+                map(x,y).setType(DOWN_STAIRS);
+                downStairs = {x,y};
+            }
+            break;
+            
+        case 1:
+            player.setPosition(downStairs.x,downStairs.y);
+            break;
+
+        case -1:
+            player.setPosition(upStairs.x,upStairs.y);
+            break;
+    }
 }
 
-void Level::handleMovement(Window& info,PlayableCharacter& player)
+int Level::handleMovement(Window& info,PlayableCharacter& player)
 {
     int x,y,c;
     Point pos = player.getPosition();
+    bool moved = false;
     x = pos.x;
     y = pos.y;
     map.showAround(x,y);
-    while((c = getch()) != 'q')
+    while(true)
     {
+        c = getch();
         switch(c)
         {
             case 'k':
             case KEY_UP:
-                if(map(x,y - 1).getType() == PAVEMENT || map(x,y - 1).getType() == HALLWAY) 
+                if(map.isWalkable(x,y-1))
                 {
                     y = y - 1;
+                    moved = true;
                 }
                 break;
 
             case 'j':
             case KEY_DOWN:
-                if(map(x,y + 1).getType() == PAVEMENT || map(x,y + 1).getType() == HALLWAY) 
+                if(map.isWalkable(x,y + 1)) 
                 {
                     y = y + 1;
+                    moved = true;
                 }
                 break;
 
             case 'h':
             case KEY_LEFT:
-                if(map(x - 1,y).getType() == PAVEMENT || map(x - 1,y).getType() == HALLWAY) 
+                if(map.isWalkable(x - 1,y)) 
                 {
                     x = x - 1;
+                    moved = true;
                 }
                 break;
 
             case 'l':
             case KEY_RIGHT:
-                if(map(x + 1,y).getType() == PAVEMENT || map(x + 1,y).getType() == HALLWAY) 
+                if(map.isWalkable(x + 1,y)) 
                 {
                     x = x + 1;
+                    moved = true;
                 }
                 break;
 #ifdef DEBUG
@@ -121,7 +152,11 @@ void Level::handleMovement(Window& info,PlayableCharacter& player)
                 for(int i = 0; i < map.getHeight(); i++)
                     for(int j = 0; j < map.getWidth(); j++)
                         map(j,i).setVisible(true);
+                break;
 #endif
+            case 'q':
+                return 0;
+                break;
         }
         player.setPosition(x,y);
         if(map(x,y).getId() != "")
@@ -131,6 +166,13 @@ void Level::handleMovement(Window& info,PlayableCharacter& player)
         else
         {
             map.showAround(x,y);
+        }
+        if(moved == true)
+        {
+            if(map(x,y).getType() == UP_STAIRS)
+                return 1;
+            else if(map(x,y).getType() == DOWN_STAIRS)
+                return -1;
         }
         printMap(player);
         info.clear();
@@ -145,4 +187,14 @@ void writeInfo(Window& win,PlayableCharacter& pg){
     win.printLine("MP: " + to_string(pg.getMP()) + '/' + to_string(pg.getMPMAX()));
     win.printLine("ATK: " + to_string(pg.getATK()));
     win.printLine("DEF: " + to_string(pg.getDEF()));
+}
+
+Point Level::getUpStairs()
+{
+    return upStairs;
+}
+
+Point Level::getDownStairs()
+{
+    return downStairs;
 }
