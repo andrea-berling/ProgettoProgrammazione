@@ -19,9 +19,6 @@ int mainMenu();
 // Sets up and handles the main menu of the game (New Game, Credits, etc) 
 // Returns an int corresponding to the choice made
 
-void freeMainMenu(int n_choices,ITEM** my_items,char** choices,MENU* my_menu,WINDOW* menuwin);
-// Frees up the memory used by the main menu parts
-
 int playerChoiceMenu();
 // Sets up the menu that lets the player choose the character
 // Returns an int corresponding to the choice made
@@ -80,7 +77,10 @@ int main()
         list<Level> levels;
         list<Level>::iterator currentLevel;
         int n = 1;
-        levels.insert(levels.begin(),Level(n,width,height,5,2,2));
+        int rooms = 10;
+        int items = 2;
+        int monsters = 2;
+        levels.insert(levels.begin(),Level(n,width,height,rooms,items,monsters));
         currentLevel = levels.begin();
         (*currentLevel).placeCharacter(player,0);
         (*currentLevel).printMap(player);
@@ -95,7 +95,7 @@ int main()
                 if(currentLevel == levels.end())
                 {
                     ++n;
-                    Level newLevel = Level(n,width,height,5,2,2);
+                    Level newLevel = Level(n,width,height,rooms,items,monsters);
                     currentLevel = levels.insert(levels.end(),newLevel);
                     playerPosition = 0;
                 }
@@ -106,7 +106,8 @@ int main()
             }
             else if(status == -1)
             {
-                currentLevel--;
+                if(currentLevel != levels.begin())
+                    currentLevel--;
                 playerPosition = -1;
             }
             (*currentLevel).placeCharacter(player,playerPosition);
