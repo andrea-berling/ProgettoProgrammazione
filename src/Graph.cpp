@@ -20,14 +20,6 @@ bool operator !=(Point p, Point q)
     return p.x != q.x || p.y != q.y;
 }
 
-#ifdef DEBUG
-void Point::print()
-{
-    cout << "(" << x << "," << y << ")";
-}
-
-#endif
-
 Point::Point():x(-1),y(-1)
 {}
 
@@ -94,6 +86,7 @@ bool Graph::deletePoint(Point p)
     if(p_it != Points.end())
     {
         bool done = false;
+        delete (*p_it).second;
         Points.erase(p_it);
         C--;
         for(auto q : Points) // removing node p from all the adjacency lists where it appears
@@ -166,26 +159,6 @@ int Graph::n()
     return C;
 }
 
-#ifdef DEBUG
-//void Graph::print()
-//{
-//    using namespace std;        
-//
-//    for(Hash::set_iterator<Edge> it = edges.begin(); it != edges.end(); it++)
-//    {
-//        (*it).print();
-//        cout << " , ";
-//    }
-//
-//    cout << endl;
-//}
-
-bool Graph::contains(Point p)
-{
-    return Points.find(p) != Points.end();
-}
-#endif
-
 void shortestPath(Graph& G, Point r,unordered_map<Point,Point>& T)
 {
     unordered_map<Point,int> d(2*G.n()+1);
@@ -236,15 +209,16 @@ void shortestPath(Graph& G, Point r,unordered_map<Point,Point>& T)
     }
 }
 
-void retrievePath(list<Point>& l,unordered_map<Point,Point>& T,Point& one,Point& two)
+void retrievePath(list<Point>& l,unordered_map<Point,Point>& T,Point p,Point q)
 {
-    Point p = two;
-
-    while(p != Point())
+    while(q != p)
     {
-        l.insert(l.begin(),p);
-        p = T[p];
+        if (q != Point())
+            l.insert(l.begin(),q);
+        q = T[q];
     }
+
+    l.insert(l.begin(),p);
 }
 
 int w(Point p, Point q)
