@@ -26,9 +26,6 @@ class Map
         void connectToMap(Graph& G, Point& p, Point& q);
         // Connects the given points to the graph
 
-        void disconnectFromMap(Graph& G, Point& p, Point& q);
-        // Removes the given points to the graph and the edege that connects them
-
         void place(Room& R);
         // Places a room in the grid
 

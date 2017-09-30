@@ -97,7 +97,6 @@ void Map::showAround(int x, int y)
 void Map::generate(int requiredRooms)
 {
     unordered_map<string,Room>::iterator it;
-    int roomID = 0;
     Room R,Q;
     Graph dots;
 
@@ -189,50 +188,38 @@ void Map::link(Room& R,Room& Q,Graph& G)
 {
     Point p = R.pickAPointAround();
     Point q = Q.pickAPointAround();
-    Point toRemove1;
-    Point toRemove2;
+    Point p2;   // A point adjacent to p in the map and which is in the graph
+    Point q2;
     list<Point> steps;
     unordered_map<Point,Point> T(6143);
 
-    connectToMap(G,p,toRemove1);
-    connectToMap(G,q,toRemove2);
+    connectToMap(G,p,p2);
+    connectToMap(G,q,q2);
 
     shortestPath(G,p,T);
     retrievePath(steps,T,p,q);
 
     for(Point p : steps)
     {
-        if(p != Point())
-            (*this)(p).setType(HALLWAY);
+        (*this)(p).setType(HALLWAY);
     }
 
-    disconnectFromMap(G,p,toRemove1);
-    disconnectFromMap(G,q,toRemove2);
+    G.deletePoint(p);
+    G.deletePoint(q);
 }
 
 void Map::connectToMap(Graph& G, Point& p, Point& q)
 {
     G.insertPoint(p);
-    if((*this)(p).getType() == ROOM_BORDER)
-    {
-        if(isWalkable(p.x-1,p.y) && (*this)(p.x-1,p.y).getType() != HALLWAY) // The room is on the left of the point
-            q = {p.x+1,p.y};
-        else if(isWalkable(p.x+1,p.y) && (*this)(p.x+1,p.y).getType() != HALLWAY) // The room is on the right of the point
-            q = {p.x-1,p.y};
-        else if(isWalkable(p.x,p.y-1) && (*this)(p.x,p.y-1).getType() != HALLWAY) // And so on
-            q = {p.x,p.y+1};
-        else if(isWalkable(p.x,p.y+1) && (*this)(p.x,p.y+1).getType() != HALLWAY)
-            q = {p.x,p.y-1};
-        G.insertPoint(q);
-        G.insertEdge(p,q);
-    }
-}
-
-void Map::disconnectFromMap(Graph& G, Point& p, Point& q)
-{
-    G.deleteEdge(p,q);
-    G.deletePoint(p);
-    G.deletePoint(q);
+    if(isWalkable(p.x-1,p.y) && (*this)(p.x-1,p.y).getType() != HALLWAY) // The room is on the left of the point
+        q = {p.x+1,p.y};
+    else if(isWalkable(p.x+1,p.y) && (*this)(p.x+1,p.y).getType() != HALLWAY) // The room is on the right of the point
+        q = {p.x-1,p.y};
+    else if(isWalkable(p.x,p.y-1) && (*this)(p.x,p.y-1).getType() != HALLWAY) // And so on
+        q = {p.x,p.y+1};
+    else if(isWalkable(p.x,p.y+1) && (*this)(p.x,p.y+1).getType() != HALLWAY)
+        q = {p.x,p.y-1};
+    G.insertEdge(p,q);
 }
 
 void Map::freeSpots(int n,unordered_set<Point>& spots,int r)
@@ -296,7 +283,7 @@ void Map::placeMonster(Monster& m)
 
 void Map::generateRooms(int n)
 {
-    Area A({2,2},width-2,height-2);
+    Area A({1,1},width-1,height-1);
     unordered_set<Area> areas,toRemove,toInsert;
     bool vertical = true;
     int i = 1;
