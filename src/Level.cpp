@@ -153,6 +153,12 @@ int Level::handleMovement(Window& info,PlayableCharacter& player)
                     for(int j = 0; j < map.getWidth(); j++)
                         map(j,i).setVisible(true);
                 break;
+            case 'n':
+                return 1;
+                break;
+            case 'N':
+                return -1;
+                break;
 #endif
             case 'q':
                 return 0;
