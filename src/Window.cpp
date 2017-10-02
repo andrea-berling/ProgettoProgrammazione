@@ -22,13 +22,13 @@ Window::~Window()
 
 void Window::readFromFile(string filename)
 {
-    werase(win);
-    wrefresh(win);
     ifstream file(filename);
     string line;
     string description = "";
-    int length = 0;
     string title;
+    
+    werase(win);
+    wrefresh(win);
     getline(file,title);
     title = wrap(title,ncols);
     while(file)
