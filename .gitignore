@@ -34,3 +34,5 @@
 logfile
 Test
 tags
+.idea
+cmake-build-debug
