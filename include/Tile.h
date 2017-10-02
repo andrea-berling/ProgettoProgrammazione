@@ -2,7 +2,7 @@
 #define TILE_H
 #include <string>
 
-enum tile_t { VOID, PAVEMENT, WALL, ROOM_BORDER, HALLWAY};
+enum tile_t { VOID, PAVEMENT, WALL, ROOM_BORDER, HALLWAY, UP_STAIRS, DOWN_STAIRS};
 
 class Tile
 {

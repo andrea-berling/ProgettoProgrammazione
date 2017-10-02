@@ -1,6 +1,11 @@
 #include "../include/Map.h"
 #include "../include/utility.h"
+#include <unordered_set>
+#ifdef DEBUG
+#include <cstdlib>
 #include <iostream>
+#include <fstream>
+#endif
 
 using namespace std;
 
@@ -34,71 +39,19 @@ int Map::getHeight()
 void Map::place(Room& R)
 {
     Point p = R.getCorner();
-    int width = R.getWidth();
-    int height = R.getHeight();
+    int RWidth = R.getWidth();
+    int RHeight = R.getHeight();
 
-    for(int i = p.x; i < p.x + width; i++)
-        for(int j = p.y; j < p.y + height; j++)
+    for(int i = p.x; i < p.x + RWidth; i++)
+        for(int j = p.y; j < p.y + RHeight; j++)
         {
-            if((i != p.x && i != p.x + width - 1) && (j != p.y && j != p.y + height - 1))
+            if((i != p.x && i != p.x + RWidth - 1) && (j != p.y && j != p.y + RHeight - 1))
                 (*this)(i,j).setType(PAVEMENT);
             else
                 (*this)(i,j).setType(ROOM_BORDER);
             (*this)(i,j).setId(R.getId());
             (*this)(i,j).setVisible(R.isVisible());
         }
-}
-
-bool Map::overlaps(Room& R)
-{
-    Point p = R.getCorner();
-    int width = R.getWidth();
-    int height = R.getHeight();
-    tile_t type = (*this)(p.x,p.y).getType();
-    bool corner = type == PAVEMENT || type == ROOM_BORDER;  // the corner overlaps another room
-    if(p.x > 0)
-        corner = corner || (*this)(p.x - 1,p.y).getType() == ROOM_BORDER; // the corner is adjacent to a room which is to its left
-    if(p.y > 0)
-        corner = corner || (*this)(p.x,p.y - 1).getType() == ROOM_BORDER; // the corner is adjacent to a room which is above it
-    if(corner)
-        return true;
-    else
-    {
-        for(int i = p.x; i < p.x + width; i++)
-        {
-            bool up,down;
-            up = (*this)(i,p.y).getType() == PAVEMENT || (*this)(i,p.y).getType() == ROOM_BORDER; // The block overlaps another room
-            if(p.y > 0)
-                up = up || (*this)(i,p.y - 1).getType() == ROOM_BORDER;   // The block is adjacent to a room which is above it
-            down = (*this)(i,p.y + height - 1).getType() == PAVEMENT || (*this)(i,p.y + height - 1).getType() == ROOM_BORDER;
-            if(p.y + height < this->height)
-                down = down || (*this)(i,p.y + height).getType() == ROOM_BORDER; // The block is adjacent to a room which is under it
-            if(up || down)
-                return true;
-        }
-
-        for(int i = p.y; i < p.y + height; i++)
-        {
-            bool left,right;
-            left = (*this)(p.x,i).getType() == PAVEMENT || (*this)(p.x,i).getType() == ROOM_BORDER;
-            if(p.x > 0)
-                left = left || (*this)(p.x - 1,i).getType() == ROOM_BORDER; // The block is adjacent to a room which is to its left
-            right = (*this)(p.x + width - 1,i).getType() == PAVEMENT || (*this)(p.x + width - 1,i).getType() == ROOM_BORDER;
-            if(p.x + width < this->width)
-                right = right || (*this)(p.x + width,i).getType() == ROOM_BORDER; // The block is adjacent to a room which is to its right
-            if(left || right)
-                return true;
-        }
-
-        /*
-        for(int i = p.x; i < p.x + width; i++)
-            for(int j = p.y; j < p.y + height; j++)
-                if((*this)(i,j).getType() == PAVEMENT || (*this)(i,j).getType() == ROOM_BORDER)
-                    return true;
-                    */
-        return false;
-    }
-
 }
 
 void Map::addRoom(Room& R,string id)
@@ -143,10 +96,8 @@ void Map::showAround(int x, int y)
 
 void Map::generate(int requiredRooms)
 {
-    int n = 0;
-    int roomID = 0;
+    unordered_map<string,Room>::iterator it;
     Room R,Q;
-    deque<Room> rooms;
     Graph dots;
 
     for(int i = 0; i < width; i++)        // Map initialization
@@ -156,50 +107,50 @@ void Map::generate(int requiredRooms)
             (*this)(i,j).setVisible(false);
         }
 
-    while(n < requiredRooms)
-    {
-        string id = "room" + to_string(roomID);
-        roomID++;
-        R = generateRoom(id);
-        while(overlaps(R))
-        {
-            R = generateRoom(id);
-        }
-        rooms.push_front(R);
-        addRoom(R,id);
-        place(R);
-        n++;
-    }
-
+    generateRooms(requiredRooms);
     populateGraph(dots);
     createLinks(dots);
 
-    R = *(rooms.begin());
-    rooms.pop_front();
-    Q = *(rooms.begin());
-    while(!rooms.empty())
+    it = rooms.begin();
+    R = (*it).second;
+    ++it;
+    while(it != rooms.end())
     {
-        link(R,Q,dots); // to add to map class
-        R = *(rooms.begin());
-        rooms.pop_front();
-        if(!rooms.empty())
-            Q = *(rooms.begin());
+        Q = (*it).second;
+        ++it;
+        link(R,Q,dots);
+        R = Q;
     }
 }
 
-Room Map::generateRoom(string id)
+Room Map::generateRoom(Area A,string id)
 {
     Point p;
-    int wLimit, hLimit;
+    int x = A.getCorner().x;
+    int y = A.getCorner().y;
+    int width = A.getWidth();
+    int height = A.getHeight();
+    int wMax, hMax;
     int w,h;
 
-    p.x = rand(2,width - 9);
-    p.y = rand(2,height - 9);
+    p.x = rand(x + 1, x + width - 2 - 7); // a room has a minimum size of 7x7 and a max size of 20x20
+    p.y = rand(y + 1, y + height - 2 - 7); 
+    
+    int freeXSpace = x + width - 2 - p.x;
+    int freeYSpace = y + height - 2 - p.y;
 
-    wLimit = width - 2 - p.x < 20 ? width - 2 - p.x : 20;
-    hLimit = height - 2 - p.y < 20 ? height - 2 - p.y : 20;
-    w = rand(7, wLimit);
-    h = rand(7, hLimit);
+    if(20 < freeXSpace)
+        wMax = 20;
+    else 
+        wMax = freeXSpace;
+
+    if(20 < freeYSpace)
+        hMax = 20;
+    else 
+        hMax = freeYSpace;
+
+    w = rand(7, wMax);
+    h = rand(7, hMax);
 
     return Room(p,w,h,id);
 }
@@ -237,55 +188,38 @@ void Map::link(Room& R,Room& Q,Graph& G)
 {
     Point p = R.pickAPointAround();
     Point q = Q.pickAPointAround();
-    Point toRemove1;
-    Point toRemove2;
+    Point p2;   // A point adjacent to p in the map and which is in the graph
+    Point q2;
     list<Point> steps;
     unordered_map<Point,Point> T(6143);
 
-    connectToMap(G,p,toRemove1);
-    connectToMap(G,q,toRemove2);
+    connectToMap(G,p,p2);
+    connectToMap(G,q,q2);
 
-    if(p != q)
-    {
-        shortestPath(G,p,T);
-        retrievePath(steps,T,p,q);
-    }
-    else
-        steps.insert(steps.begin(),p);
+    shortestPath(G,p,T);
+    retrievePath(steps,T,p,q);
 
     for(Point p : steps)
     {
-        if(p != Point())
-            (*this)(p).setType(HALLWAY);
+        (*this)(p).setType(HALLWAY);
     }
 
-    disconnectFromMap(G,p,toRemove1);
-    disconnectFromMap(G,q,toRemove2);
+    G.deletePoint(p);
+    G.deletePoint(q);
 }
 
 void Map::connectToMap(Graph& G, Point& p, Point& q)
 {
     G.insertPoint(p);
-    if((*this)(p).getType() == ROOM_BORDER)
-    {
-        if((*this)(p.x - 1, p.y).getType() == WALL || (*this)(p.x - 1, p.y).getType() == HALLWAY)
-            q = {p.x - 1,p.y};
-        else if((*this)(p.x + 1, p.y).getType() == WALL || (*this)(p.x + 1, p.y).getType() == HALLWAY)
-            q = {p.x + 1,p.y};
-        else if((*this)(p.x, p.y - 1).getType() == WALL || (*this)(p.x, p.y - 1).getType() == HALLWAY)
-            q = {p.x,p.y - 1};
-        else if((*this)(p.x, p.y + 1).getType() == WALL || (*this)(p.x, p.y + 1).getType() == HALLWAY)
-            q = {p.x,p.y + 1};
-        G.insertPoint(q);
-        G.insertEdge(p,q);
-    }
-}
-
-void Map::disconnectFromMap(Graph& G, Point& p, Point& q)
-{
-    G.deleteEdge(p,q);
-    G.deletePoint(p);
-    G.deletePoint(q);
+    if(isWalkable(p.x-1,p.y) && (*this)(p.x-1,p.y).getType() != HALLWAY) // The room is on the left of the point
+        q = {p.x+1,p.y};
+    else if(isWalkable(p.x+1,p.y) && (*this)(p.x+1,p.y).getType() != HALLWAY) // The room is on the right of the point
+        q = {p.x-1,p.y};
+    else if(isWalkable(p.x,p.y-1) && (*this)(p.x,p.y-1).getType() != HALLWAY) // And so on
+        q = {p.x,p.y+1};
+    else if(isWalkable(p.x,p.y+1) && (*this)(p.x,p.y+1).getType() != HALLWAY)
+        q = {p.x,p.y-1};
+    G.insertEdge(p,q);
 }
 
 void Map::freeSpots(int n,unordered_set<Point>& spots,int r)
@@ -302,19 +236,15 @@ void Map::freeSpots(int n,unordered_set<Point>& spots,int r)
 
         for(int k = 0; k < r; k++)
         {
-            int x = (*it).second.getCorner().x;
-            int y = (*it).second.getCorner().y;
-            int height = (*it).second.getHeight();
-            int width = (*it).second.getWidth();
             Point position;
 
             do
             {
-                position = Point(rand(x+1,x+width-2),rand(y+1,y+height-2)); // Rememeber to implement the printing of the
+                position = freeSpot((*it).second);
+                // Rememeber to implement the printing of the
                 // map to hide an object if a monster is on it
             }
-            while(!itemsLayer.isEmpty(position.y,position.x) && !monstersLayer.isEmpty(position.y,position.x) &&
-                    (spots.find(position) == spots.end()));
+            while(spots.find(position) != spots.end());
             spots.insert(position);
         }
     }
@@ -349,4 +279,88 @@ void Map::placeMonster(Monster& m)
 {
     Point p = m.getPosition();
     monstersLayer(p.y,p.x) = m;
+}
+
+void Map::generateRooms(int n)
+{
+    Area A({1,1},width-1,height-1);
+    unordered_set<Area> areas,toRemove,toInsert;
+    bool vertical = true;
+    int i = 1;
+    int roomId = 0;
+    string id;
+    int tries = 0;
+
+    areas.insert(A);
+    while(i < n && tries < 500)
+    {
+        toRemove.clear();
+        toInsert.clear();
+        for(Area A : areas)
+        {
+            if(i < n) 
+            {
+                bool split = false;
+                Area A1,A2;
+                if ((vertical && (A.getWidth()/3 > 10)) || (!vertical && (A.getHeight()/3 > 10)))
+                {
+                    A.split(A1,A2,vertical);
+                    split = true;
+                }
+                else if ((vertical && (A.getWidth()/2 > 10)) || (!vertical && (A.getHeight()/2 > 10)))
+                {
+                    A.splitInHalf(A1,A2,vertical);
+                    split = true;
+                }
+                if(split)
+                {
+                    toInsert.insert(A1);
+                    toInsert.insert(A2);
+                    i++;
+                    toRemove.insert(A);
+                }
+                tries++;
+            }
+        }
+        for(Area A : toRemove)
+            areas.erase(A);
+        for(Area A : toInsert)
+            areas.insert(A);
+        vertical = !vertical;
+    }
+    // Generate rooms for each area
+    for(Area A : areas)
+    {
+        id = "room" + to_string(roomId);
+        roomId++;
+        Room R = generateRoom(A,id);
+        addRoom(R,id);
+        place(R);
+    }
+}
+// Given a number n, it generates n rooms
+
+Point Map::freeSpot(Room R)
+{
+    int x = R.getCorner().x;
+    int y = R.getCorner().y;
+    int height = R.getHeight();
+    int width = R.getWidth();
+    Point position;
+
+    do
+    {
+        position = Point(rand(x+1,x+width-2),rand(y+1,y+height-2)); // Rememeber to implement the printing of the
+        // map to hide an object if a monster is on it
+    }
+    while(!(itemsLayer.isEmpty(position.y,position.x) && monstersLayer.isEmpty(position.y,position.x)));
+
+    return position;
+}
+
+bool Map::isWalkable(int x, int y)
+{
+    tile_t t = (*this)(x,y).getType();
+
+    return (t == HALLWAY || t == PAVEMENT || t == UP_STAIRS || t == DOWN_STAIRS);
 }

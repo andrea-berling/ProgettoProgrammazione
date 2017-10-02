@@ -5,7 +5,7 @@ CURSES=-lncurses -lmenu
 BUILD=build
 DEPS=utility.h
 
-all: $(BUILD)/Graph.o $(BUILD)/main.o $(BUILD)/Map.o $(BUILD)/Matrix.o $(BUILD)/Room.o $(BUILD)/Tile.o $(BUILD)/main.o $(BUILD)/Menu.o $(BUILD)/Window.o $(BUILD)/Item.o $(BUILD)/Level.o $(BUILD)/Monster.o $(BUILD)/personaggiGiocabili.o $(BUILD)/utility.o
+all: $(BUILD)/Graph.o $(BUILD)/main.o $(BUILD)/Map.o $(BUILD)/Matrix.o $(BUILD)/Room.o $(BUILD)/Tile.o $(BUILD)/main.o $(BUILD)/Menu.o $(BUILD)/Window.o $(BUILD)/Item.o $(BUILD)/Level.o $(BUILD)/Monster.o $(BUILD)/personaggiGiocabili.o $(BUILD)/utility.o $(BUILD)/Area.o
 	$(CC) build/*.o -o Test $(CFLAGS) $(CURSES)
 $(BUILD)/main.o: src/main.cpp
 	g++ -c $(CFLAGS) src/main.cpp -o $(BUILD)/main.o -g $(CURSES)
@@ -23,6 +23,8 @@ $(BUILD)/Matrix.o: src/Matrix.cpp include/Matrix.h
 	$(CC) -c $(SRC)/Matrix.cpp $(CFLAGS) -o $(BUILD)/Matrix.o
 $(BUILD)/Room.o: src/Room.cpp include/Room.h include/utility.h
 	$(CC) -c $(SRC)/Room.cpp $(CFLAGS) -o $(BUILD)/Room.o
+$(BUILD)/Area.o: src/Area.cpp include/Area.h include/utility.h
+	$(CC) -c $(SRC)/Area.cpp $(CFLAGS) -o $(BUILD)/Area.o
 $(BUILD)/Item.o: src/Item.cpp include/Item.h
 	$(CC) -c $(SRC)/Item.cpp $(CFLAGS) -o $(BUILD)/Item.o
 $(BUILD)/Level.o: src/Level.cpp include/Level.h
