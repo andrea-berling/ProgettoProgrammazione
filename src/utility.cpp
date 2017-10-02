@@ -19,8 +19,7 @@ void generateKPermutation(int array[], int first, int last, int k)
         int index;
 
         for(int i = 0; i < d; i++)
-            numbers[i] = i;
-
+            numbers[i] = first + i;
 
         while(i < k)
         {

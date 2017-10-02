@@ -78,8 +78,8 @@ int main()
         list<Level>::iterator currentLevel;
         int n = 1;
         int rooms = 10;
-        int items = 2;
-        int monsters = 2;
+        int items = 5;
+        int monsters = 5;
         levels.insert(levels.begin(),Level(n,width,height,rooms,items,monsters));
         currentLevel = levels.begin();
         (*currentLevel).placeCharacter(player,0);
