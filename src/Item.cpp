@@ -63,11 +63,11 @@ int Item::getATK() {
 }
 
 bool operator==(Item i1, Item i2) {
-    return i1.name == i2.name;
+    return i1.name == i2.name && i1.position == i2.position;
 }
 
 bool operator!=(Item i1, Item i2) {
-    return i1.name != i2.name;
+    return i1.name != i2.name || i1.position != i2.position;
 }
 
 char Item::getSymbol(){
