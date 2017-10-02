@@ -15,6 +15,7 @@ class Monster {
         Point POS;
         std::string Name;
         char symbol;
+        bool awake;
 
     public:
 
@@ -56,6 +57,12 @@ class Monster {
 
     char getSymbol();
     //  Restituisce il simbolo che indica il mostro
+
+    bool isAwake();
+    //  Restituisce true se il mostro è sveglio, false altrimenti
+
+    void wakeUp();
+    //  Setta il campo awake a true (sveglia il mostro)
 
     friend bool operator==(Monster m1,Monster m2);
     //  Definisce l'operatore "==" per la classe Monster
