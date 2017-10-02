@@ -84,7 +84,7 @@ int main()
         currentLevel = levels.begin();
         (*currentLevel).placeCharacter(player,0);
         (*currentLevel).printMap(player);
-        writeInfo(infoWindow,player);
+        writeInfo(infoWindow,player,(*currentLevel).getLevel());
         while(status != 0)
         {
             int playerPosition;
@@ -113,7 +113,7 @@ int main()
             (*currentLevel).placeCharacter(player,playerPosition);
             (*currentLevel).printMap(player);
             infoWindow.clear();
-            writeInfo(infoWindow,player);
+            writeInfo(infoWindow,player,(*currentLevel).getLevel());
         }
         // Generate the map with the given character
     }
