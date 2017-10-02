@@ -58,7 +58,7 @@ int main()
         endCurses();
     else
     {
-        Window infoWindow(101, 0, 37, 20);
+        Window infoWindow(101, 0, 37, 30);
         clear();
         refresh();
         PlayableCharacter player;
@@ -80,7 +80,7 @@ int main()
         currentLevel = levels.begin();
         (*currentLevel).placeCharacter(player);
         (*currentLevel).printMap(player);
-        writeInfo(infoWindow,player);
+        writeInfo(infoWindow,player, (*currentLevel).getLevel());
         (*currentLevel).handleMovement(infoWindow,player);
         // Generate the map with the given character
     }

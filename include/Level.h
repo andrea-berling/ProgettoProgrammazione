@@ -33,9 +33,15 @@ class Level
         // Handles the movement of the main character and the exploration of the map
         // and the printing of the stats
 
+        int getLevel();
+        //  Restituisce il numero del livello
+
 };
 
-void writeInfo(Window& win,PlayableCharacter& pg);
-//  Finestra che fornisce i dati su oggetti posseduti e statistiche del PG
+void writeInfo(Window& win,PlayableCharacter& pg, int level);
+//  Scrive le informazioni sulla finestra che fornisce i dati su oggetti posseduti e statistiche del PG
+
+void writeEquipment(Window& win, PlayableCharacter& pg);
+//  Scrive gli oggetti equipaggiati
 
 #endif

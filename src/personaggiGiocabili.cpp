@@ -11,8 +11,17 @@
 #include "../include/personaggiGiocabili.h"
 
 
-    PlayableCharacter::PlayableCharacter():LP(-1),MP(-1),DEF(-1),ATK(-1),Name("")
-    {}
+    PlayableCharacter::PlayableCharacter(){
+
+        this->LP = -1;
+        this->MP = -1;
+        this->DEF = -1;
+        this->ATK = -1;
+        this->Name = "";
+
+        for (int i = 0; i < 5; i++)
+            equipment[i] = Item();
+    }
 
     PlayableCharacter::PlayableCharacter(int LP, int MP, int DEF, int ATK, std::string Name){
         this->LP = LP;
@@ -24,7 +33,7 @@
         this->LV = 0;
         this->Coins = 0;
         this->Name = Name;
-        for (int i = 0; i<6; i++){
+        for (int i = 0; i<5; i++){
             equipment [i] = Item();      //Inizializza il vettore di Item "equipment"
         }
     }
@@ -95,7 +104,7 @@
     }
 
     bool PlayableCharacter::useConsumable(Item sbobba){
-        if (sbobba.getType() == 6){ //  I consumabili sono item con campo Type pari a 6
+        if (sbobba.getType() == 5){ //  I consumabili sono item con campo Type pari a 6
             if (LPMAX >= LP + sbobba.getLP())
                 LP = LP + sbobba.getLP();
             else
@@ -116,7 +125,7 @@
     }
 
     bool PlayableCharacter::equip(Item ferraglia){  //  Item equipaggiabili hanno Type da 0 a 5 compresi
-        if ((ferraglia.getType() > -1 && ferraglia.getType() < 6) && (equipment[ferraglia.getType()] == Item())){
+        if ((ferraglia.getType() > -1 && ferraglia.getType() < 5) && (equipment[ferraglia.getType()] == Item())){
 
             equipment[ferraglia.getType()] = ferraglia; //  L'Item va ad occupare la sua posizione nel vettore equip.
             DEF = DEF + ferraglia.getDEF();
@@ -184,6 +193,10 @@
         this->LP = LPMAX;   //  Quando il PG sale di livello LP e MP vengono portati al loro valore massimo.
         this->MP = MPMAX;
 };
+
+Item PlayableCharacter::getEquipmentAt(int index) {
+    return equipment[index];
+}
 
 
 

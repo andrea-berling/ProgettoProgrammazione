@@ -134,15 +134,93 @@ void Level::handleMovement(Window& info,PlayableCharacter& player)
         }
         printMap(player);
         info.clear();
-        writeInfo(info,player);
+        writeInfo(info,player,level);
+
     }
 }
 
-void writeInfo(Window& win,PlayableCharacter& pg){
+int Level::getLevel() {
+    return level;
+}
+
+void writeEquipment(Window& win, PlayableCharacter& pg){
+    string msg1 = "";
+    string msg2 = "";
+    for (int i = 0; i < 5; i++) {
+        switch (i) {
+            case 0:
+                msg1 = "Elmo: ";
+                if (pg.getEquipmentAt(0) == Item()) {
+                    msg2 = "Non equipaggiato";
+                }
+                else {
+                    msg2 = pg.getEquipmentAt(0).getName();
+                }
+                msg1 = msg1 + msg2;
+                win.printLine(msg1);
+                break;
+
+            case 1:
+                msg1 = "Corazza: ";
+                if (pg.getEquipmentAt(1) == Item())
+                    msg2 = "Non equipaggiata";
+                else
+                    msg2 = (pg.getEquipmentAt(1)).getName();
+
+                msg1 = msg1 + msg2;
+                win.printLine(msg1);
+                break;
+
+            case 2:
+                msg1 = "Stivali: ";
+                if (pg.getEquipmentAt(2) == Item())
+                    msg2 = "Non equipaggiati";
+                else
+                    msg2 = (pg.getEquipmentAt(2)).getName();
+
+                msg1 = msg1 + msg2;
+                win.printLine(msg1);
+                break;
+
+            case 3:
+                msg1 = "Spada: ";
+                if (pg.getEquipmentAt(3) == Item())
+                    msg2 = "Non equipaggiata";
+                else
+                    msg2 = (pg.getEquipmentAt(3)).getName();
+
+                msg1 = msg1 + msg2;
+                win.printLine(msg1);
+                break;
+
+            case 4:
+                msg1 = "Scudo: ";
+                if (pg.getEquipmentAt(4) == Item())
+                    msg2 = "Non equipaggiato";
+                else
+                    msg2 = (pg.getEquipmentAt(4)).getName();
+
+                msg1 = msg1 + msg2;
+                win.printLine(msg1);
+                break;
+        }
+    }
+}
+
+void writeInfo(Window& win,PlayableCharacter& pg, int level){
     win.box();
     win.printLine(pg.getName());
+    win.printLine("");
     win.printLine("LP: " + to_string(pg.getLP()) + '/' + to_string(pg.getLPMAX()));
     win.printLine("MP: " + to_string(pg.getMP()) + '/' + to_string(pg.getMPMAX()));
     win.printLine("ATK: " + to_string(pg.getATK()));
     win.printLine("DEF: " + to_string(pg.getDEF()));
+    win.printLine("LV: " + to_string(pg.getLV()));
+    win.printLine("");
+    win.printLine("Livello attuale: " + to_string(level));
+
+    win.separator();
+
+    writeEquipment(win, pg);
+
 }
