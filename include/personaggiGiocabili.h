@@ -18,7 +18,7 @@ private:
     Point POS;
     std::string Name;
     std::unordered_multiset<Item> Inventory;
-    Item equipment [6];
+    Item equipment [5];
 
 public:
 
@@ -103,6 +103,9 @@ public:
     void LVLup();
     //  Increment il livello del PG di 1, modificando le statistiche
     // (LP, LPMAX, MP, MPMAX, etc..) di conseguenza
+
+    Item getEquipmentAt(int index);
+    //  Dato un indice restituisce il contenuto del vettore equipment a quell'indice
 };
 
 #endif //PERSONAGGI_GIOCABILI_H

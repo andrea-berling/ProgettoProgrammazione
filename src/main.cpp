@@ -55,7 +55,7 @@ int main()
         endCurses();
     else
     {
-        Window infoWindow(101, 0, 37, 20);
+        Window infoWindow(101, 0, 37, 30);
         int width = 100;
         int height = 37;
         int status = -1;

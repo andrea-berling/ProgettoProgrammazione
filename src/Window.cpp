@@ -77,6 +77,14 @@ void Window::printLine(string line) {
     }
 }
 
+void Window::separator(){
+    for (int i = 1; i < ncols - 1; i++) {
+        mvwaddch(win, firstAvailableLine, i, '-');
+    }
+    firstAvailableLine++;
+    wrefresh(win);
+}
+
 void Window::box()
 {
     wborder(win, '|', '|', '-', '-', '+', '+', '+', '+');
