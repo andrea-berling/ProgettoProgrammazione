@@ -24,6 +24,10 @@ class Window
         // Given a filename, it writes its contents in the window
 
         void printLine(std::string);
+        //  Stampa una stringa e poi va a capo
+
+        void separator();
+        //  Stampa una riga di trattini
 
         void box();
         // Prints a box around the window
