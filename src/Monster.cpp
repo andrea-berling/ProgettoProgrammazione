@@ -105,8 +105,8 @@ bool Monster::isAwake(){
     return this->awake;
 }
 
-void Monster::wakeUp(){
-    this->awake = true;
+void Monster::wakeUp(bool b){
+    this->awake = b;
 }
 
 bool operator==(Monster m1,Monster m2){

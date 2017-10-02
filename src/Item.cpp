@@ -89,8 +89,8 @@ bool Item::isVisible() {
     return this->visible;
 }
 
-void Item::setVisible() {
-    this->visible = true;
+void Item::setVisible(bool b) {
+    this->visible = b;
 }
 
 namespace std

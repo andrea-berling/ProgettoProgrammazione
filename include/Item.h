@@ -54,8 +54,8 @@ class Item {
         bool isVisible();
         //  Restituisce true se l'item è visibile, false altrimenti
 
-        void setVisible();
-        //  Setta l'item come visibile
+        void setVisible(bool b);
+        //  Dato un booleano setta l'item di conseguenza (visibile o non visibile)
 
         friend bool operator ==(Item i1, Item i2);
         //  Definisce l'operatore '==' per la classe Item
