@@ -70,6 +70,12 @@ void Tile::setSymbol()
         case HALLWAY:
             symbol = ' ';
             break;
+        case UP_STAIRS:
+            symbol = '/';
+            break;
+        case DOWN_STAIRS:
+            symbol = '\\';
+            break;
     }
 }
 

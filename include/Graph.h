@@ -17,11 +17,6 @@ class Point
         int x,y;
         Point();
         Point(int x,int y);
-
-#ifdef DEBUG
-        void print();
-        // debug method
-#endif
 };
 
 bool operator ==(Point p, Point q);
@@ -81,16 +76,12 @@ class Graph
         int n();
         // Retuns the size of the nodes set
         
-#ifdef DEBUG
-        void print();
-        bool contains(Point n);
-#endif
 };
 
 void shortestPath(Graph& G, Point r,std::unordered_map<Point,Point>& T);
 // Find the shortest path between point r and all other points in the graph G
 
-void retrievePath(std::list<Point>& l,std::unordered_map<Point,Point>& T,Point& one,Point& two);
+void retrievePath(std::list<Point>& l,std::unordered_map<Point,Point>& T,Point p,Point q);
 // Retrieves the path between one and two, saved in the map T and stores it in l
 
 int w(Point p, Point q);

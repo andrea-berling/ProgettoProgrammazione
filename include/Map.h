@@ -7,6 +7,7 @@
 #include <deque>
 #include <vector>
 #include "Graph.h"
+#include "Area.h"
 #include "Room.h"
 #include "Item.h"
 #include "Monster.h"
@@ -25,14 +26,8 @@ class Map
         void connectToMap(Graph& G, Point& p, Point& q);
         // Connects the given points to the graph
 
-        void disconnectFromMap(Graph& G, Point& p, Point& q);
-        // Removes the given points to the graph and the edege that connects them
-
         void place(Room& R);
         // Places a room in the grid
-
-        bool overlaps(Room& R);
-        // Returns true if the given room overlaps with other rooms or is adjacent to another room
 
         void populateGraph(Graph& G);
         // Fills the graph with the points of the grid that are not rooms, borders excluded
@@ -43,7 +38,7 @@ class Map
         void link(Room& R,Room& Q,Graph& G);
         // Links two rooms in the map making use of the graph of the map
         
-        Room generateRoom(std::string id);
+        Room generateRoom(Area A,std::string id);
         // Generates a room with the given an id 
 
 
@@ -70,6 +65,9 @@ class Map
         void generate(int requiredRooms);
         // Generates the map given a number of required rooms
 
+        void generateRooms(int n);
+        // Given a number n, it generates n rooms
+
         void setVisible(std::string id);
         // Given an id, it sets the corresponding room visible
 
@@ -91,6 +89,12 @@ class Map
 
         void placeMonster(Monster& m);
         // Given a monster it places it on the map
+
+        Point freeSpot(Room R);
+        // Given a room, returns a free spot in the room
+
+        bool isWalkable(int x, int y);
+        // Returns true if the tile in Map(x,y) is walkable, false otherwise
 };
 
 #endif

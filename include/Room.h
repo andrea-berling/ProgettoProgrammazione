@@ -1,15 +1,12 @@
 #ifndef ROOM_H
 #define ROOM_H
-#include "../include/Graph.h"
+#include "Area.h"
 #include <string>
 
-class Room 
+class Room : public Area
 {
     protected:
 
-        Point p;
-        int width;
-        int height;
         std::string id;
         bool visible;
 
@@ -33,15 +30,6 @@ class Room
         Point pickAPointAround();
         // Returns a randomly picked Point around the room border (not the corners)
         
-        Point getCorner();
-        // Returns the upper left corner
-
-        int getWidth();
-        // Returns the width of the room
-
-        int getHeight();
-        // Returns the height of the room
-
         std::string getId();
         // Returns the id of the room
 
