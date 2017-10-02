@@ -110,11 +110,11 @@ void Monster::wakeUp(){
 }
 
 bool operator==(Monster m1,Monster m2){
-    m1.Name == m2.Name;
+    m1.Name == m2.Name && m1.POS == m2.POS;
 }
 
 bool operator!=(Monster m1,Monster m2){
-    m1.Name == m2.Name;
+    m1.Name != m2.Name || m1.POS != m2.POS;
 }
 
 namespace std
