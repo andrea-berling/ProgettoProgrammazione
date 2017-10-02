@@ -20,6 +20,7 @@ Item::Item() {
     position.x = -1;
     position.y = -1;
     symbol = '?';
+    visible = false;
 }
 
 Item::Item(string name, int type, int LP, int MP, int DEF, int ATK) {
@@ -35,6 +36,7 @@ Item::Item(string name, int type, int LP, int MP, int DEF, int ATK) {
     position.x = -1;
     position.y = -1;
     symbol = '?';   //  E' il simbolo che indica un Item sulla mappa
+    visible = false;
 
 }
 
@@ -81,6 +83,14 @@ Point Item::getPosition() {
 Point Item::setPosition(int x, int y) {
     this->position.x = x;
     this->position.y = y;
+}
+
+bool Item::isVisible() {
+    return this->visible;
+}
+
+void Item::setVisible() {
+    this->visible = true;
 }
 
 namespace std

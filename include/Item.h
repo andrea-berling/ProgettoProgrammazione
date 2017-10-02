@@ -16,6 +16,7 @@ class Item {
         int LP,MP,DEF,ATK;
         char symbol;
         Point position;
+        bool visible;
     public:
         Item();
         //  Costruttore di default
@@ -49,6 +50,12 @@ class Item {
 
         Point setPosition(int x, int y);
         //  Modifica la posizione dell'Item
+
+        bool isVisible();
+        //  Restituisce true se l'item è visibile, false altrimenti
+
+        void setVisible();
+        //  Setta l'item come visibile
 
         friend bool operator ==(Item i1, Item i2);
         //  Definisce l'operatore '==' per la classe Item
