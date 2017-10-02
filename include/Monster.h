@@ -61,8 +61,8 @@ class Monster {
     bool isAwake();
     //  Restituisce true se il mostro è sveglio, false altrimenti
 
-    void wakeUp();
-    //  Setta il campo awake a true (sveglia il mostro)
+    void wakeUp(bool b);
+    //  Dato un booleano setta il campo awake di conseguenza (sveglia o fa dormire il mostro)
 
     friend bool operator==(Monster m1,Monster m2);
     //  Definisce l'operatore "==" per la classe Monster
@@ -77,7 +77,8 @@ namespace std
     {
         size_t operator()(Monster m) const;
         // Hash function for the class Monster
-    };
+    }
+
 }
 
 
