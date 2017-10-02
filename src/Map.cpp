@@ -54,11 +54,6 @@ void Map::place(Room& R)
         }
 }
 
-void Map::addRoom(Room& R,string id)
-{
-    rooms[id] = R;
-}
-
 Room Map::pickRoom()
 {
     int index = rand(0,rooms.size()-1);
@@ -263,7 +258,7 @@ void Map::placeCharacter(PlayableCharacter& player)
     {
                 p = Point(rand(x+1,x+width-2),rand(y+1,y+height-2)); // Rememeber to implement the printing of the
     }
-    while(!itemsLayer.isEmpty(p.y,p.x) && !monstersLayer.isEmpty(p.y,p.x));
+    while(!itemsLayer.isEmpty(p.y,p.x) || !monstersLayer.isEmpty(p.y,p.x));
 
     player.setPosition(p.x,p.y);
 }
@@ -334,7 +329,7 @@ void Map::generateRooms(int n)
         id = "room" + to_string(roomId);
         roomId++;
         Room R = generateRoom(A,id);
-        addRoom(R,id);
+        rooms[id] = R;
         place(R);
     }
 }
@@ -353,7 +348,7 @@ Point Map::freeSpot(Room R)
         position = Point(rand(x+1,x+width-2),rand(y+1,y+height-2)); // Rememeber to implement the printing of the
         // map to hide an object if a monster is on it
     }
-    while(!(itemsLayer.isEmpty(position.y,position.x) && monstersLayer.isEmpty(position.y,position.x)));
+    while(!itemsLayer.isEmpty(position.y,position.x) || !monstersLayer.isEmpty(position.y,position.x));
 
     return position;
 }
