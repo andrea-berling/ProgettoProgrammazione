@@ -7,6 +7,7 @@
 using namespace std;
 
 Monster::Monster() {
+    awake = false;
     this->LP = -1;
     this->DEF = -1;
     this->ATK = -1;
@@ -20,6 +21,7 @@ Monster::Monster(string Name, int LV) {
     this->LV = LV;
     this->Name = Name;
     int atk = 0, def = 0, lp = 1;
+    awake = false;
 
     if (Name == "Goblin"){  //  Mostri diversi statistiche e simboli diversi
         atk = 2 * (LV +1 );
@@ -91,12 +93,20 @@ void Monster::setPosition(int x, int y){
     this->POS.y = y;
 }
 
-char Monster:: getSymbol(){
+char Monster::getSymbol(){
     return this->symbol;
 }
 
 std::string Monster::getName(){
     return this->Name;
+}
+
+bool Monster::isAwake(){
+    return this->awake;
+}
+
+void Monster::wakeUp(){
+    this->awake = true;
 }
 
 bool operator==(Monster m1,Monster m2){
