@@ -41,6 +41,9 @@ class Map
         Room generateRoom(Area A,std::string id);
         // Generates a room with the given an id 
 
+        void generateRooms(int n);
+        // Given a number n, it generates n rooms
+
 
     public:
 
@@ -59,14 +62,8 @@ class Map
         int getHeight();
         // getter for height
 
-        void addRoom(Room& R, std::string id);
-        // Adds the given room with the given id to the map
-
         void generate(int requiredRooms);
         // Generates the map given a number of required rooms
-
-        void generateRooms(int n);
-        // Given a number n, it generates n rooms
 
         void setVisible(std::string id);
         // Given an id, it sets the corresponding room visible
