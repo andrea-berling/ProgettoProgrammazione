@@ -12,6 +12,7 @@ Monster::Monster() {
     this->DEF = -1;
     this->ATK = -1;
     Name = "";
+    awake = false;
 }
 
 Monster::Monster(string Name, int LV) {
