@@ -13,7 +13,7 @@ class Monster {
         int LP, DEF, ATK;
         int LV;
         Point POS;
-        std::string Name;
+        std::string Name, id;
         char symbol;
         bool awake;
 
@@ -40,6 +40,9 @@ class Monster {
     int getLV();
     //  Restituisce il livello del mostro
 
+    std::string getId();
+    //  Restituisce l'ID del mostro
+
     void setLP(int LP);
     //  Modifica i punti vita del mostro
 
@@ -51,6 +54,9 @@ class Monster {
 
     void setPosition(int x, int y);
     //  Date due coordinate x y, modifica la posizione del mostro
+
+    void setId(std::string id);
+    //  Dato una stringa questa viene assegnata come ID del mostro
 
     std::string getName();
     //  Restituisce il nome del mostro
