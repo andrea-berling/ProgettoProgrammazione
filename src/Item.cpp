@@ -64,12 +64,16 @@ int Item::getATK() {
     return this->ATK;
 }
 
+string Item::getId() {
+    return this->id;
+}
+
 bool operator==(Item i1, Item i2) {
-    return i1.name == i2.name && i1.position == i2.position;
+    return i1.id == i2.id;
 }
 
 bool operator!=(Item i1, Item i2) {
-    return i1.name != i2.name || i1.position != i2.position;
+    return i1.id != i2.id;
 }
 
 char Item::getSymbol(){
@@ -91,6 +95,10 @@ bool Item::isVisible() {
 
 void Item::setVisible(bool b) {
     this->visible = b;
+}
+
+void Item::setId(string id) {
+    this->id = id;
 }
 
 namespace std
