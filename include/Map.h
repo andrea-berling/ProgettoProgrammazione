@@ -18,8 +18,9 @@ class Map
     private:
 
         Matrix<Tile> grid;
-        Matrix<Item> itemsLayer;
-        Matrix<Monster> monstersLayer;
+        Matrix<std::string> upperLayer;
+        //Matrix<Item> itemsLayer;
+        //Matrix<Monster> monstersLayer;
         std::unordered_map<std::string,Room> rooms;
         int width, height;
 
@@ -65,8 +66,9 @@ class Map
         void generate(int requiredRooms);
         // Generates the map given a number of required rooms
 
-        void setVisible(std::string id);
+        void setVisible(std::string id,std::unordered_map<std::string,Monster>& monsters,std::unordered_map<std::string,Item>& items);
         // Given an id, it sets the corresponding room visible
+        // Every monster and item in the room is set visible as well
 
         Room pickRoom();
         // Picks a random room in the Rooms map
@@ -78,14 +80,12 @@ class Map
         // Given a number of rooms n, a number of repetitions r and a vector of points, it stores n*r free spots in the
         // map in the vector, with r spots per room
 
-        void placeCharacter(PlayableCharacter& player);
+        std::string placeCharacter(PlayableCharacter& player);
         // Given a main character, places it in a random room in the map
+        // Returns the id of the room the player was placed in
 
-        void placeItem(Item& i);
-        // Given an item it places it on the map
-
-        void placeMonster(Monster& m);
-        // Given a monster it places it on the map
+        void place(std::string id,int x, int y);
+        // Given an id and a position, it places the item/monster on the map
 
         Point freeSpot(Room R);
         // Given a room, returns a free spot in the room
@@ -93,11 +93,6 @@ class Map
         bool isWalkable(int x, int y);
         // Returns true if the tile in Map(x,y) is walkable, false otherwise
 
-        void wakeUpMonsters(std::string id, std::unordered_map<std::string,Monster>& monsters);
-        // Wakes up all the monsters in room[id]. The changes in the state of the monsters are saved in the monsters map
-
-        void showItems(std::string id, std::unordered_map<std::string,Item>& items);
-        // Shows the items in room[id]. The changes in the state of the items are saved in the items map
 };
 
 #endif

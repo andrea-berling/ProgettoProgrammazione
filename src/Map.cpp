@@ -10,7 +10,7 @@
 using namespace std;
 
 Map::Map(int width, int height) : grid(height, width), width(width), height(height),
-    rooms(47),itemsLayer(height,width),monstersLayer(height,width)
+    rooms(47),upperLayer(height,width)
 {}
 // Creates a new map with the given # of rows and columns
 
@@ -68,7 +68,7 @@ Room Map::pickRoom()
     return (*it).second;
 }
 
-void Map::setVisible(string id)
+void Map::setVisible(string id,std::unordered_map<std::string,Monster>& monsters,std::unordered_map<std::string,Item>& items)
 {
     rooms[id].setVisible(true);
     Point p = rooms[id].getCorner();    
@@ -78,6 +78,13 @@ void Map::setVisible(string id)
         for(int j = p.y; j < p.y + height; j++)
         {
             (*this)(i,j).setVisible(true);
+            if(upperLayer(j,i) != "")   // Wake up monsters and show items
+            {
+                if(upperLayer(j,i)[0] == 'm')
+                    monsters[upperLayer(j,i)].wakeUp(true);
+                else
+                    items[upperLayer(j,i)].setVisible(true);
+            }
         }
 }
 
@@ -245,10 +252,9 @@ void Map::freeSpots(int n,unordered_set<Point>& spots,int r)
     }
 }
 
-void Map::placeCharacter(PlayableCharacter& player)
+std::string Map::placeCharacter(PlayableCharacter& player)
 {
     Room R = pickRoom();
-    setVisible(R.getId());
     Point p;
     int x = R.getCorner().x;
     int y = R.getCorner().y;
@@ -258,23 +264,18 @@ void Map::placeCharacter(PlayableCharacter& player)
     {
                 p = Point(rand(x+1,x+width-2),rand(y+1,y+height-2)); // Rememeber to implement the printing of the
     }
-    while(!itemsLayer.isEmpty(p.y,p.x) || !monstersLayer.isEmpty(p.y,p.x));
+    while(!upperLayer.isEmpty(p.y,p.x));
 
     player.setPosition(p.x,p.y);
+
+    return R.getId();
 }
 
-void Map::placeItem(Item& i)
+void Map::place(std::string id,int x, int y)
 {
-    Point p = i.getPosition();
-    itemsLayer(p.y,p.x) = i;
+    upperLayer(y,x) = id;
 }
 // Given an items and its position
-
-void Map::placeMonster(Monster& m)
-{
-    Point p = m.getPosition();
-    monstersLayer(p.y,p.x) = m;
-}
 
 void Map::generateRooms(int n)
 {
@@ -348,7 +349,7 @@ Point Map::freeSpot(Room R)
         position = Point(rand(x+1,x+width-2),rand(y+1,y+height-2)); // Rememeber to implement the printing of the
         // map to hide an object if a monster is on it
     }
-    while(!itemsLayer.isEmpty(position.y,position.x) || !monstersLayer.isEmpty(position.y,position.x));
+    while(!upperLayer.isEmpty(position.y,position.x));
 
     return position;
 }
@@ -358,30 +359,4 @@ bool Map::isWalkable(int x, int y)
     tile_t t = (*this)(x,y).getType();
 
     return (t == HALLWAY || t == PAVEMENT || t == UP_STAIRS || t == DOWN_STAIRS);
-}
-
-void Map::wakeUpMonsters(std::string id, std::unordered_map<std::string,Monster>& monsters)
-{
-    Room R = rooms[id];
-    Point p = R.getCorner();
-    for(int i = p.y + 1; i < p.y + R.getHeight() - 1; i++)
-        for(int j = p.x + 1; j < p.x + R.getWidth() - 1; j++)
-            if(!monstersLayer.isEmpty(i,j))
-            {
-                monstersLayer(i,j).wakeUp(true);
-                monsters[monstersLayer(i,j).getId()].wakeUp(true);
-            }
-}
-
-void Map::showItems(std::string id, std::unordered_map<std::string,Item>& items)
-{
-    Room R = rooms[id];
-    Point p = R.getCorner();
-    for(int i = p.y + 1; i < p.y + R.getHeight() - 1; i++)
-        for(int j = p.x + 1; j < p.x + R.getWidth() - 1; j++)
-            if(!itemsLayer.isEmpty(i,j))
-            {
-                itemsLayer(i,j).setVisible(true);
-                items[itemsLayer(i,j).getId()].setVisible(true);
-            }
 }
