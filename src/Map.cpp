@@ -76,9 +76,9 @@ void Map::setVisible(string id)
     int height = rooms[id].getHeight();
     for(int i = p.x; i < p.x + width; i++)
         for(int j = p.y; j < p.y + height; j++)
+        {
             (*this)(i,j).setVisible(true);
-    // if (!monstersLayer.isEmpty(j,i))
-    //      monstersLayer(j,i).wakeUp();
+        }
 }
 
 void Map::showAround(int x, int y)
@@ -358,4 +358,32 @@ bool Map::isWalkable(int x, int y)
     tile_t t = (*this)(x,y).getType();
 
     return (t == HALLWAY || t == PAVEMENT || t == UP_STAIRS || t == DOWN_STAIRS);
+}
+
+void Map::wakeUpMonsters(std::string id, std::unordered_map<std::string,Monster>& monsters)
+{
+    Room R = rooms[id];
+    Point p = R.getCorner();
+    Point p = Rooms
+    for(int i = p.y; i < p.y + R.getHeight(); i++)
+        for(int j = p.x; j < p.x + R.getWidth(); j++)
+            if(!monstersLayer.isEmpty(j,i))
+            {
+                monstersLayer(j,i).wakeUp(true);
+                monsters[monstersLayer(j,i).getId()].wakeUp(true);
+            }
+}
+
+void Map::showItems(std::string id, std::unordered_map<std::string,Item>& items)
+{
+    Room R = rooms[id];
+    Point p = R.getCorner();
+    Point p = Rooms
+    for(int i = p.y; i < p.y + R.getHeight(); i++)
+        for(int j = p.x; j < p.x + R.getWidth(); j++)
+            if(!itemsLayer.isEmpty(j,i))
+            {
+                itemsLayer(j,i).setVisible(true);
+                items[itemsLayer(j,i).getId()].setVisible(true);
+            }
 }
