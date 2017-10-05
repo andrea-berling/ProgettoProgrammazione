@@ -11,7 +11,7 @@
 
 class Item {
     protected:
-        std::string name;
+        std::string name, id;
         int type;           //0-3 Armatura 4-5 Arma/Scudo 6 Consumabile
         int LP,MP,DEF,ATK;
         char symbol;
@@ -48,6 +48,9 @@ class Item {
         Point getPosition();
         //  Restituisce la posizione dell'Item
 
+        std::string getId();
+        //  Restituisce l'ID dell'Item
+
         Point setPosition(int x, int y);
         //  Modifica la posizione dell'Item
 
@@ -56,6 +59,9 @@ class Item {
 
         void setVisible(bool b);
         //  Dato un booleano setta l'item di conseguenza (visibile o non visibile)
+
+        void setId(std::string id);
+        //  Data una stringa questa viene assegnata come ID dell'Item
 
         friend bool operator ==(Item i1, Item i2);
         //  Definisce l'operatore '==' per la classe Item

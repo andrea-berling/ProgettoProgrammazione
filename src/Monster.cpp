@@ -77,6 +77,10 @@ int Monster::getLV(){
     return this->LV;
 }
 
+string Monster::getId(){
+    return this->id;
+}
+
 void Monster::setLP(int LP){
     this->LP = LP;
 }
@@ -98,7 +102,11 @@ char Monster::getSymbol(){
     return this->symbol;
 }
 
-std::string Monster::getName(){
+void Monster::setId(string id){
+    this->id = id;
+}
+
+string Monster::getName(){
     return this->Name;
 }
 
@@ -111,11 +119,11 @@ void Monster::wakeUp(bool b){
 }
 
 bool operator==(Monster m1,Monster m2){
-    m1.Name == m2.Name && m1.POS == m2.POS;
+    m1.id == m2.id;
 }
 
 bool operator!=(Monster m1,Monster m2){
-    m1.Name != m2.Name || m1.POS != m2.POS;
+    m1.id != m2.id;
 }
 
 namespace std
