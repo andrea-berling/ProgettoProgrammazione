@@ -27,7 +27,7 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
         string ID = "item" + to_string(id);
         i.setId(ID);
         id++;
-        map.placeItem(i);
+        map.place(ID,p.x,p.y);
         items[ID] = i;
         // Place an object
     }
@@ -42,7 +42,7 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
         string ID = "monster" + to_string(id);
         m.setId(ID);
         id++;
-        map.placeMonster(m);
+        map.place(ID,p.x,p.y);
         monsters[ID] = m;
         // Spawn a monster
     }
@@ -91,13 +91,16 @@ void Level::placeCharacter(PlayableCharacter& player,int playerPosition)
     switch(playerPosition)
     {
         case 0:
-            map.placeCharacter(player);
-            if (level > 1)
             {
-                int x = player.getPosition().x;
-                int y = player.getPosition().y;
-                map(x,y).setType(DOWN_STAIRS);
-                downStairs = {x,y};
+                string room = map.placeCharacter(player);
+                map.setVisible(room,monsters,items);
+                if (level > 1)
+                {
+                    int x = player.getPosition().x;
+                    int y = player.getPosition().y;
+                    map(x,y).setType(DOWN_STAIRS);
+                    downStairs = {x,y};
+                }
             }
             break;
             
@@ -164,6 +167,10 @@ int Level::handleMovement(Window& info,PlayableCharacter& player)
                 for(int i = 0; i < map.getHeight(); i++)
                     for(int j = 0; j < map.getWidth(); j++)
                         map(j,i).setVisible(true);
+                for(auto& m : monsters)
+                    m.second.wakeUp(true);
+                for(auto& i : items)
+                    i.second.setVisible(true);
                 break;
             case 'n':
                 return 1;
@@ -179,10 +186,7 @@ int Level::handleMovement(Window& info,PlayableCharacter& player)
         player.setPosition(x,y);
         if(map(x,y).getId() != "")
         {
-            string id = map(x,y).getId();
-            map.setVisible(id);
-            map.wakeUpMonsters(id,monsters);
-            map.showItems(id,items);
+            map.setVisible(map(x,y).getId(),monsters,items);
         }
         else
         {
