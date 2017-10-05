@@ -263,7 +263,7 @@ void Map::placeCharacter(PlayableCharacter& player)
     player.setPosition(p.x,p.y);
 }
 
-void Map::placeItem(Item i)
+void Map::placeItem(Item& i)
 {
     Point p = i.getPosition();
     itemsLayer(p.y,p.x) = i;
@@ -364,13 +364,12 @@ void Map::wakeUpMonsters(std::string id, std::unordered_map<std::string,Monster>
 {
     Room R = rooms[id];
     Point p = R.getCorner();
-    Point p = Rooms
-    for(int i = p.y; i < p.y + R.getHeight(); i++)
-        for(int j = p.x; j < p.x + R.getWidth(); j++)
-            if(!monstersLayer.isEmpty(j,i))
+    for(int i = p.y + 1; i < p.y + R.getHeight() - 1; i++)
+        for(int j = p.x + 1; j < p.x + R.getWidth() - 1; j++)
+            if(!monstersLayer.isEmpty(i,j))
             {
-                monstersLayer(j,i).wakeUp(true);
-                monsters[monstersLayer(j,i).getId()].wakeUp(true);
+                monstersLayer(i,j).wakeUp(true);
+                monsters[monstersLayer(i,j).getId()].wakeUp(true);
             }
 }
 
@@ -378,12 +377,11 @@ void Map::showItems(std::string id, std::unordered_map<std::string,Item>& items)
 {
     Room R = rooms[id];
     Point p = R.getCorner();
-    Point p = Rooms
-    for(int i = p.y; i < p.y + R.getHeight(); i++)
-        for(int j = p.x; j < p.x + R.getWidth(); j++)
-            if(!itemsLayer.isEmpty(j,i))
+    for(int i = p.y + 1; i < p.y + R.getHeight() - 1; i++)
+        for(int j = p.x + 1; j < p.x + R.getWidth() - 1; j++)
+            if(!itemsLayer.isEmpty(i,j))
             {
-                itemsLayer(j,i).setVisible(true);
-                items[itemsLayer(j,i).getId()].setVisible(true);
+                itemsLayer(i,j).setVisible(true);
+                items[itemsLayer(i,j).getId()].setVisible(true);
             }
 }
