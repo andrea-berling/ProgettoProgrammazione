@@ -81,7 +81,7 @@ class Map
         void placeCharacter(PlayableCharacter& player);
         // Given a main character, places it in a random room in the map
 
-        void placeItem(Item i);
+        void placeItem(Item& i);
         // Given an item it places it on the map
 
         void placeMonster(Monster& m);
