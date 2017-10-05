@@ -12,6 +12,7 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
     unordered_set<Point> spots;
     vector<Item> itemsSet;
     vector<Monster> monstersSet;
+    int id = 0;
     ifstream itemsFile("resources/items.txt");
     retrieveItems(itemsFile,itemsSet);
     monstersSet = {Monster("Goblin",level),Monster("Troll",level),Monster("Golem",level),Monster("Gineppino",level)};
@@ -21,19 +22,26 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
     for(Point p : spots)
     {
         int index = rand(0,min(level*3,static_cast<int>(itemsSet.size())-1));
-        itemsSet[index].setPosition(p.x,p.y);
-        map.placeItem(itemsSet[index]);
-        items.insert(itemsSet[index]);
+        Item i = itemsSet[index];
+        i.setPosition(p.x,p.y);
+        i.setId("item" + to_string(id));
+        id++;
+        map.placeItem(i);
+        items[id] = i;
         // Place an object
     }
     spots.clear();
+    id = 0;
     map.freeSpots(_monsters,spots);
     for(Point p : spots)
     {
         int index = rand(0,monstersSet.size()-1);
-        monstersSet[index].setPosition(p.x,p.y);
-        map.placeMonster(monstersSet[index]);
-        monsters.insert(monstersSet[index]);
+        Monster m = monstersSet[index];
+        m.setPosition(p.x,p.y);
+        m.setId("monster" + to_string(id));
+        id++;
+        map.placeMonster(m);
+        monsters[id] = m;
         // Spawn a monster
     }
 
@@ -58,15 +66,15 @@ void Level::printMap(PlayableCharacter& player)
         }
         addch('\n');
     }
-    for(Monster m : monsters)
+    for(auto m : monsters)
     {
-        Point position = m.getPosition();
-        mvaddch(position.y,position.x,m.getSymbol());
+        Point position = (*m).second.getPosition();
+        mvaddch(position.y,position.x,(*m).second.getSymbol());
     }
-    for(Item i : items)
+    for(auto i : items)
     {
-        Point position = i.getPosition();
-        mvaddch(position.y,position.x,i.getSymbol());
+        Point position = (*i).second.getPosition();
+        mvaddch(position.y,position.x,(*i).second.getSymbol());
     }
     Point p = player.getPosition();
     mvaddch(p.y,p.x,'@');
@@ -167,7 +175,10 @@ int Level::handleMovement(Window& info,PlayableCharacter& player)
         player.setPosition(x,y);
         if(map(x,y).getId() != "")
         {
-            map.setVisible(map(x,y).getId());
+            string id = map(x,y).getId();
+            map.setVisible(id);
+            map.wakeUpMonsters(id,monsters);
+            map.showItems(id,items);
         }
         else
         {

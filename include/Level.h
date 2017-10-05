@@ -14,8 +14,8 @@ class Level
     private:
 
         Map map;
-        std::unordered_set<Monster> monsters;
-        std::unordered_set<Item> items;
+        std::unordered_map<std::string,Monster> monsters;
+        std::unordered_map<std::string,Item> items;
         Point upStairs;
         Point downStairs;
         int level;

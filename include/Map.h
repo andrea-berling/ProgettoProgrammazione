@@ -92,6 +92,12 @@ class Map
 
         bool isWalkable(int x, int y);
         // Returns true if the tile in Map(x,y) is walkable, false otherwise
+
+        void wakeUpMonsters(std::string id, std::unordered_map<std::string,Monster>& monsters);
+        // Wakes up all the monsters in room[id]. The changes in the state of the monsters are saved in the monsters map
+
+        void showItems(std::string id, std::unordered_map<std::string,Item>& items);
+        // Shows the items in room[id]. The changes in the state of the items are saved in the items map
 };
 
 #endif
