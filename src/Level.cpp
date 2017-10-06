@@ -301,3 +301,13 @@ Point Level::getDownStairs()
 {
     return downStairs;
 }
+
+void Level::monstersAround(PlayableCharacter& player, std::list<Monster>& list)
+{
+    std::list<std::string> ids;
+    map.monstersAround(player,ids);
+    for(string id : ids)
+    {
+        list.push_back(monsters[id]);
+    }
+}

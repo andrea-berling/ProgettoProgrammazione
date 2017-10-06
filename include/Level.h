@@ -3,6 +3,7 @@
 #include "Map.h"
 #include <unordered_map>
 #include <string>
+#include <list>
 #include "Graph.h"
 #include "personaggiGiocabili.h"
 #include "Monster.h"
@@ -46,6 +47,9 @@ class Level
 
         Point getDownStairs();
         // Returns the coordinates of the down stairs
+
+        void monstersAround(PlayableCharacter& player, std::list<Monster>& list);
+        // Given a player and an empty list, it fills the list with the the monsters around player
 };
 
 void writeInfo(Window& win,PlayableCharacter& pg, int level);
