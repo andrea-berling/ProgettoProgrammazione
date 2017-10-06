@@ -93,6 +93,9 @@ class Map
         bool isWalkable(int x, int y);
         // Returns true if the tile in Map(x,y) is walkable, false otherwise
 
+        void monstersAround(PlayableCharacter& player, std::list<std::string>& list);
+        // Given a player and an empty list, it fills the list with the ids of the monsters around player
+
 };
 
 #endif

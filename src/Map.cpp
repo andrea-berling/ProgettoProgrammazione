@@ -360,3 +360,12 @@ bool Map::isWalkable(int x, int y)
 
     return (t == HALLWAY || t == PAVEMENT || t == UP_STAIRS || t == DOWN_STAIRS);
 }
+
+void Map::monstersAround(PlayableCharacter& player, std::list<std::string>& list)
+{
+    Point p = player.getPosition();
+    for(int i = p.y - 1; i < p.y + 2; i++)
+        for(int j = p.x - 1; j < p.x + 2; j++)
+            if((*this).isWalkable(j,i) && upperLayer(i,j) != "" && upperLayer(i,j)[0] == 'm')
+                list.push_back(upperLayer(i,j));
+}
