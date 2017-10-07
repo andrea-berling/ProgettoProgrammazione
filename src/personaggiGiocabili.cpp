@@ -58,6 +58,10 @@
         return this->DEF;
     }
 
+    int PlayableCharacter::getDEFMAX() {
+        return this->DEFMAX;
+    }
+
     int PlayableCharacter::getATK(){
         return this->ATK;
     }
@@ -186,8 +190,14 @@
             mp = 1;
             lp = 1;
         }
+
+        if ((this->DEFMAX += def) > 90)     //La Difesa massima può arrivare fino a 90 (a 100 il pg è invincibile)
+            this->DEFMAX = 90;
+        else
+            this->DEFMAX += def;
+
         this->ATK += atk;
-        this->DEF += def;
+        this->DEF = DEFMAX;
         this->MPMAX += mp ;
         this->LPMAX += lp ;
         this->LP = LPMAX;   //  Quando il PG sale di livello LP e MP vengono portati al loro valore massimo.

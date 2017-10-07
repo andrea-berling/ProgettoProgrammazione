@@ -11,6 +11,7 @@
 class Monster {
     private:
         int LP, DEF, ATK;
+        int DEFMAX;
         int LV;
         Point POS;
         std::string Name, id;
@@ -30,6 +31,9 @@ class Monster {
 
     int getDEF();
     //  Restituisce i punti difesa del mostro
+
+    int getDEFMAX();
+    //  Restituisce i punti difesa massimi del mostro
 
     int getATK();
     //  Restituisce i punti di attacco del mostro

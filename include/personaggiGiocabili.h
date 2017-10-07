@@ -13,7 +13,7 @@
 class PlayableCharacter{
 private:
     int LP, MP, DEF, ATK;
-    int LPMAX, MPMAX;
+    int LPMAX, MPMAX, DEFMAX;
     int LV, Coins;
     Point POS;
     std::string Name;
@@ -42,6 +42,9 @@ public:
     
     int getDEF();
     //  Restituisce i punti difesa
+
+    int getDEFMAX();
+    //  Restituisce i punti difesa massimi
     
     int getATK();
     //  Restituisce i punti attacco
