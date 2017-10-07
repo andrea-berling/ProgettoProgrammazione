@@ -30,6 +30,7 @@
         this->MP = MP;
         this->MPMAX = MP;
         this->DEF = DEF;
+        this->DEFMAX = DEF;
         this->ATK = ATK;
         this->LUCK = LUCK;
         this->LV = 0;
@@ -72,8 +73,12 @@
         return this->POS;
     }
 
-    int getLuck(){
+    int PlayableCharacter::getLuck(){
         return this->LUCK;
+    }
+
+    int PlayableCharacter::getLuckMAX() {
+        return this->LUCKMAX;
     }
 
     int PlayableCharacter::getLV(){
@@ -126,11 +131,15 @@
                 MP = MPMAX;
 
             if (DEFMAX >= DEF + sbobba.getDEF())
-                DEF = DEF + sbobba.getDEF();
-            else
                 DEF = DEFMAX;
+            else
+                DEF = DEF + sbobba.getDEF();
 
-            LUCK = LUCK + sbobba.getLUCK;
+            if (LUCKMAX >= LUCK + sbobba.getLuck())
+                LUCK = LUCKMAX;
+            else
+                LUCK = LUCK + sbobba.getLUCK;
+
             ATK = ATK + sbobba.getATK();
             Inventory.erase(Inventory.find(sbobba));    //  Consumabile utilizzabile una sola volta, quindi rimosso poi
 
@@ -186,7 +195,7 @@
 
     void PlayableCharacter::LVLup() {
         this->LV++;
-        int atk = 0, def = 0, lp = 0, mp = 0;
+        int atk = 0, def = 0, lp = 0, mp = 0, luck = 0;
         if (this->Name == "Gaudenzio"){ //  Ogni PG Incrementa le statistiche in modo diverso
             atk = 2;
             def = 3;
@@ -213,19 +222,20 @@
         else
             this->DEFMAX += def;
 
+        if ((this->LUCKMAX += luck) > 30)    //La fortuna masssima può arrivare fino a 30
+            this->LUCKMAX = 30;
+        else
+            this->LUCKMAX += luck;
+
         this->ATK += atk;
         this->DEF = DEFMAX;
         this->MPMAX += mp ;
         this->LPMAX += lp ;
-        this->LP = LPMAX;   //  Quando il PG sale di livello LP e MP vengono portati al loro valore massimo.
+        this->LP = LPMAX;   //  Quando il PG sale di livello LP, MP, DEF e LUCK vengono portati al loro valore massimo.
         this->MP = MPMAX;
-        this->LUCK += luck;
+        this->LUCK = LUCKMAX;
 };
 
 Item PlayableCharacter::getEquipmentAt(int index) {
     return equipment[index];
 }
-
-
-
-
