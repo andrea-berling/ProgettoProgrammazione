@@ -27,7 +27,7 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
         string ID = "item" + to_string(id);
         i.setId(ID);
         id++;
-        map.place(ID,p.x,p.y);
+        map(p.x,p.y).setUpperLayer(ID);
         items[ID] = i;
         // Place an object
     }
@@ -42,7 +42,7 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
         string ID = "monster" + to_string(id);
         m.setId(ID);
         id++;
-        map.place(ID,p.x,p.y);
+        map(p.x,p.y).setUpperLayer(ID);
         monsters[ID] = m;
         // Spawn a monster
     }
@@ -129,7 +129,7 @@ int Level::handleMovement(Window& info,PlayableCharacter& player)
         {
             case 'k':
             case KEY_UP:
-                if(map.isWalkable(x,y-1))
+                if(map(x,y-1).isWalkable())
                 {
                     y = y - 1;
                     moved = true;
@@ -138,7 +138,7 @@ int Level::handleMovement(Window& info,PlayableCharacter& player)
 
             case 'j':
             case KEY_DOWN:
-                if(map.isWalkable(x,y + 1)) 
+                if(map(x,y + 1).isWalkable()) 
                 {
                     y = y + 1;
                     moved = true;
@@ -147,7 +147,7 @@ int Level::handleMovement(Window& info,PlayableCharacter& player)
 
             case 'h':
             case KEY_LEFT:
-                if(map.isWalkable(x - 1,y)) 
+                if(map(x - 1,y).isWalkable()) 
                 {
                     x = x - 1;
                     moved = true;
@@ -156,7 +156,7 @@ int Level::handleMovement(Window& info,PlayableCharacter& player)
 
             case 'l':
             case KEY_RIGHT:
-                if(map.isWalkable(x + 1,y)) 
+                if(map(x + 1,y).isWalkable()) 
                 {
                     x = x + 1;
                     moved = true;
@@ -305,7 +305,14 @@ Point Level::getDownStairs()
 void Level::monstersAround(PlayableCharacter& player, std::list<Monster>& list)
 {
     std::list<std::string> ids;
-    map.monstersAround(player,ids);
+    Point p = player.getPosition();
+
+    for(int i = p.y - 1; i < p.y + 2; i++)
+        for(int j = p.x - 1; j < p.x + 2; j++)
+            if(!map(j,i).isWalkable() && map(j,i).getUpperLayer() != "" && map(j,i).getUpperLayer()[0] == 'm') 
+                // Map(j,i) is not walkable as there is a monster on it
+                ids.push_back(map(j,i).getUpperLayer());
+
     for(string id : ids)
     {
         list.push_back(monsters[id]);
