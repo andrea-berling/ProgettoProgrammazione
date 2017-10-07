@@ -12,8 +12,8 @@
 class Item {
     protected:
         std::string name, id;
-        int type;           //0-3 Armatura 4-5 Arma/Scudo 6 Consumabile
-        int LP,MP,DEF,ATK;
+        int type;           //0-2 Armatura 3-4 Arma/Scudo 5 Consumabile
+        int LP, MP, DEF, ATK, LUCK;
         char symbol;
         Point position;
         bool visible;
@@ -44,6 +44,9 @@ class Item {
 
         char getSymbol();
         //  Restituisce il simbolo che indica l'Item ('?')
+
+        int getLuck();
+        //  Restituisce i punti fortuna dell'Item
 
         Point getPosition();
         //  Restituisce la posizione dell'Item

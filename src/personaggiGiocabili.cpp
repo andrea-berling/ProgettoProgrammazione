@@ -18,18 +18,20 @@
         this->DEF = -1;
         this->ATK = -1;
         this->Name = "";
+        this->LUCK = -1;
 
         for (int i = 0; i < 5; i++)
             equipment[i] = Item();
     }
 
-    PlayableCharacter::PlayableCharacter(int LP, int MP, int DEF, int ATK, std::string Name){
+    PlayableCharacter::PlayableCharacter(int LP, int MP, int DEF, int ATK, int LUCK, std::string Name){
         this->LP = LP;
         this->LPMAX = LP;
         this->MP = MP;
         this->MPMAX = MP;
         this->DEF = DEF;
         this->ATK = ATK;
+        this->LUCK = LUCK;
         this->LV = 0;
         this->Coins = 0;
         this->Name = Name;
@@ -70,6 +72,10 @@
         return this->POS;
     }
 
+    int getLuck(){
+        return this->LUCK;
+    }
+
     int PlayableCharacter::getLV(){
         return this->LV;
     }
@@ -108,7 +114,7 @@
     }
 
     bool PlayableCharacter::useConsumable(Item sbobba){
-        if (sbobba.getType() == 5){ //  I consumabili sono item con campo Type pari a 6
+        if (sbobba.getType() == 5){ //  I consumabili sono item con campo Type pari a 5
             if (LPMAX >= LP + sbobba.getLP())
                 LP = LP + sbobba.getLP();
             else
@@ -119,7 +125,12 @@
             else
                 MP = MPMAX;
 
-            DEF = DEF + sbobba.getDEF();
+            if (DEFMAX >= DEF + sbobba.getDEF())
+                DEF = DEF + sbobba.getDEF();
+            else
+                DEF = DEFMAX;
+
+            LUCK = LUCK + sbobba.getLUCK;
             ATK = ATK + sbobba.getATK();
             Inventory.erase(Inventory.find(sbobba));    //  Consumabile utilizzabile una sola volta, quindi rimosso poi
 
@@ -132,8 +143,11 @@
         if ((ferraglia.getType() > -1 && ferraglia.getType() < 5) && (equipment[ferraglia.getType()] == Item())){
 
             equipment[ferraglia.getType()] = ferraglia; //  L'Item va ad occupare la sua posizione nel vettore equip.
+
             DEF = DEF + ferraglia.getDEF();
+
             ATK = ATK + ferraglia.getATK();
+
             return true;
         }
         return false;
@@ -177,18 +191,21 @@
             atk = 2;
             def = 3;
             lp = 2;
+            luck = 1;
     }
         if (this->Name == "Peppino"){
             atk = 1;
             def = 1;
             lp = 1;
             mp = 3;
+            luck = 1;
         }
 
         if (this->Name == "Badore"){
-            atk = 3;
+            atk = 2;
             mp = 1;
             lp = 1;
+            luck = 3;
         }
 
         if ((this->DEFMAX += def) > 90)     //La Difesa massima può arrivare fino a 90 (a 100 il pg è invincibile)
@@ -202,6 +219,7 @@
         this->LPMAX += lp ;
         this->LP = LPMAX;   //  Quando il PG sale di livello LP e MP vengono portati al loro valore massimo.
         this->MP = MPMAX;
+        this->LUCK += luck;
 };
 
 Item PlayableCharacter::getEquipmentAt(int index) {
