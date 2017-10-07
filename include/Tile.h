@@ -9,7 +9,8 @@ class Tile
     private:
 
         tile_t type;
-        std::string id;
+        std::string id;     // The id of the room
+        std::string upperLayer;    // The id of the item/monster on the tile
         bool visible;
         char symbol;
 
@@ -35,6 +36,9 @@ class Tile
 
         std::string getId();
         // Returns the id of the tile
+        
+        std::string getUpperLayer();
+        // Returns the id of the item/monster on the tile, if present
 
         bool isVisible();
         // Returns true if the tile is visible
@@ -50,6 +54,12 @@ class Tile
 
         void setId(std::string id);
         // Sets the id of the tile
+
+        void setUpperLayer(std::string id);
+        // Sets the id of the tile
+
+        bool isWalkable();
+        // Returns true if the tile is walkable
 };
 
 #endif
