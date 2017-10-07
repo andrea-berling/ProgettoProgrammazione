@@ -2,23 +2,24 @@
 
 using namespace std;
 
-Tile::Tile(): type(VOID), id(""), visible(false), symbol('?')
+Tile::Tile(): type(VOID), id(""), visible(false), symbol('?'),upperLayer("")
 {
 }
 
-Tile::Tile(tile_t type): type(type), id(""), visible(false)
+Tile::Tile(tile_t type): Tile()
 {
+    this->type = type;
     setSymbol();
 }
 
-Tile::Tile(tile_t type,bool visible): type(type), id(""), visible(visible)
+Tile::Tile(tile_t type,bool visible): Tile(type) 
 {
-    setSymbol();
+    this->visible = visible;
 }
 
-Tile::Tile(tile_t type, string id, bool visible): type(type), id(id), visible(visible)
+Tile::Tile(tile_t type, string id, bool visible): Tile(type,visible)
 {
-    setSymbol();
+    this->id = id;
 }
 
 tile_t Tile::getType()
@@ -49,7 +50,7 @@ void Tile::setVisible(bool b)
 void Tile::setId(string id)
 {
     this->id = id;
-}
+} 
 
 void Tile::setSymbol()
 {
@@ -83,4 +84,19 @@ void Tile::setType(tile_t type)
 {
     this->type = type;
     setSymbol();
+}
+
+std::string Tile::getUpperLayer()
+{
+    return upperLayer;
+}
+
+void Tile::setUpperLayer(std::string id)
+{
+    upperLayer = id;
+}
+
+bool Tile::isWalkable()
+{
+    return (type == HALLWAY || type == PAVEMENT || type == UP_STAIRS || type == DOWN_STAIRS) && (upperLayer == "" || upperLayer[0] != 'm');
 }
