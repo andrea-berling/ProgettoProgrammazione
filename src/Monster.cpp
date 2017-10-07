@@ -32,22 +32,34 @@ Monster::Monster(string Name, int LV) {
     }
 
     if (Name == "Troll"){
+        if ((3 + LV) > 50) //  I mostri hanno punti difesa di 50 massimo
+            def = 50;
+        else
+            def = 3 +LV;
+
         atk = 3 + LV;
-        def = 3 + LV;
         lp = 3 + LV;
         this->symbol = 'T';
     }
 
     if (Name == "Golem"){
+        if ((2 * (LV + 1)) > 50)
+            def = 50;
+        else
+            def = 2 * (LV + 1);
+
         atk = 2 + LV;
-        def = 2 * (LV + 1);
         lp = 2 + LV;
         this->symbol = 'O';
     }
 
     if (Name == "Gineppino"){
+        if ((5 * LV) > 50)
+            def = 50;
+        else
+            def = 5 * LV;
+
         atk = 3 * LV;
-        def = 5 * LV;
         lp = 5 * LV;
         this->symbol = 'P';
     }
@@ -63,6 +75,10 @@ int Monster::getLP(){
 
 int Monster::getDEF(){
     return this->DEF;
+}
+
+int Monster::getDEFMAX(){
+    return this->DEFMAX;
 }
 
 int Monster::getATK(){
