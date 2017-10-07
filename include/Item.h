@@ -21,7 +21,7 @@ class Item {
         Item();
         //  Costruttore di default
 
-        Item(std::string name, int type, int LP, int MP, int DEF, int ATK);
+        Item(std::string name, int type, int LP, int MP, int DEF, int ATK, int LUCK);
         //  Dati un nome, un intero e una quantità di LP, MP, DEF e ATK, crea un nuovo Item
 
         std::string getName();

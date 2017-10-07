@@ -121,7 +121,7 @@ void retrieveItems(std::ifstream& file, std::vector<Item>& set)
     using namespace boost;
     using namespace std;
     string name,line;
-    int type,LP,MP,DEF,ATK;
+    int type,LP,MP,DEF,ATK,LUCK;
     char_separator<char> sep(",");
     while(file)
     {
@@ -141,7 +141,9 @@ void retrieveItems(std::ifstream& file, std::vector<Item>& set)
             DEF = stoi(*it);
             ++it;
             ATK = stoi(*it);
-            set.push_back(Item(name,type,LP,MP,DEF,ATK));
+            ++it;
+            LUCK = stoi(*it);
+            set.push_back(Item(name,type,LP,MP,DEF,ATK,LUCK));
         }
     }
 }

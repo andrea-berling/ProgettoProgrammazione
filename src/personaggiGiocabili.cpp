@@ -138,7 +138,7 @@
             if (LUCKMAX >= LUCK + sbobba.getLuck())
                 LUCK = LUCKMAX;
             else
-                LUCK = LUCK + sbobba.getLUCK;
+                LUCK = LUCK + sbobba.getLuck();
 
             ATK = ATK + sbobba.getATK();
             Inventory.erase(Inventory.find(sbobba));    //  Consumabile utilizzabile una sola volta, quindi rimosso poi
