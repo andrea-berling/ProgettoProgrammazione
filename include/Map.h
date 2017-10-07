@@ -18,9 +18,6 @@ class Map
     private:
 
         Matrix<Tile> grid;
-        Matrix<std::string> upperLayer;
-        //Matrix<Item> itemsLayer;
-        //Matrix<Monster> monstersLayer;
         std::unordered_map<std::string,Room> rooms;
         int width, height;
 
@@ -84,17 +81,8 @@ class Map
         // Given a main character, places it in a random room in the map
         // Returns the id of the room the player was placed in
 
-        void place(std::string id,int x, int y);
-        // Given an id and a position, it places the item/monster on the map
-
         Point freeSpot(Room R);
         // Given a room, returns a free spot in the room
-
-        bool isWalkable(int x, int y);
-        // Returns true if the tile in Map(x,y) is walkable, false otherwise
-
-        void monstersAround(PlayableCharacter& player, std::list<std::string>& list);
-        // Given a player and an empty list, it fills the list with the ids of the monsters around player
 
 };
 

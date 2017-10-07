@@ -10,7 +10,7 @@
 using namespace std;
 
 Map::Map(int width, int height) : grid(height, width), width(width), height(height),
-    rooms(47),upperLayer(height,width)
+    rooms()
 {}
 // Creates a new map with the given # of rows and columns
 
@@ -78,12 +78,12 @@ void Map::setVisible(string id,std::unordered_map<std::string,Monster>& monsters
         for(int j = p.y; j < p.y + height; j++)
         {
             (*this)(i,j).setVisible(true);
-            if(upperLayer(j,i) != "")   // Wake up monsters and show items
+            if((*this)(i,j).getUpperLayer() != "")   // Wake up monsters and show items
             {
-                if(upperLayer(j,i)[0] == 'm')
-                    monsters[upperLayer(j,i)].wakeUp(true);
+                if((*this)(i,j).getUpperLayer()[0] == 'm')
+                    monsters[(*this)(i,j).getUpperLayer()].wakeUp(true);
                 else
-                    items[upperLayer(j,i)].setVisible(true);
+                    items[(*this)(i,j).getUpperLayer()].setVisible(true);
             }
         }
 }
@@ -213,13 +213,13 @@ void Map::link(Room& R,Room& Q,Graph& G)
 void Map::connectToMap(Graph& G, Point& p, Point& q)
 {
     G.insertPoint(p);
-    if(isWalkable(p.x-1,p.y) && (*this)(p.x-1,p.y).getType() != HALLWAY) // The room is on the left of the point
+    if((*this)(p.x-1,p.y).isWalkable() && (*this)(p.x-1,p.y).getType() != HALLWAY) // The room is on the left of the point
         q = {p.x+1,p.y};
-    else if(isWalkable(p.x+1,p.y) && (*this)(p.x+1,p.y).getType() != HALLWAY) // The room is on the right of the point
+    else if((*this)(p.x+1,p.y).isWalkable() && (*this)(p.x+1,p.y).getType() != HALLWAY) // The room is on the right of the point
         q = {p.x-1,p.y};
-    else if(isWalkable(p.x,p.y-1) && (*this)(p.x,p.y-1).getType() != HALLWAY) // And so on
+    else if((*this)(p.x,p.y-1).isWalkable() && (*this)(p.x,p.y-1).getType() != HALLWAY) // And so on
         q = {p.x,p.y+1};
-    else if(isWalkable(p.x,p.y+1) && (*this)(p.x,p.y+1).getType() != HALLWAY)
+    else if((*this)(p.x,p.y+1).isWalkable() && (*this)(p.x,p.y+1).getType() != HALLWAY)
         q = {p.x,p.y-1};
     G.insertEdge(p,q);
 }
@@ -264,18 +264,12 @@ std::string Map::placeCharacter(PlayableCharacter& player)
     {
                 p = Point(rand(x+1,x+width-2),rand(y+1,y+height-2)); // Rememeber to implement the printing of the
     }
-    while(!upperLayer.isEmpty(p.y,p.x));
+    while((*this)(p.x,p.y).getUpperLayer() != "");
 
     player.setPosition(p.x,p.y);
 
     return R.getId();
 }
-
-void Map::place(std::string id,int x, int y)
-{
-    upperLayer(y,x) = id;
-}
-// Given an items and its position
 
 void Map::generateRooms(int n)
 {
@@ -342,30 +336,14 @@ Point Map::freeSpot(Room R)
     int y = R.getCorner().y;
     int height = R.getHeight();
     int width = R.getWidth();
-    Point position;
+    Point p;
 
     do
     {
-        position = Point(rand(x+1,x+width-2),rand(y+1,y+height-2)); // Rememeber to implement the printing of the
+        p = Point(rand(x+1,x+width-2),rand(y+1,y+height-2)); // Rememeber to implement the printing of the
         // map to hide an object if a monster is on it
     }
-    while(!upperLayer.isEmpty(position.y,position.x));
+    while((*this)(p.x,p.y).getUpperLayer() != "");
 
-    return position;
-}
-
-bool Map::isWalkable(int x, int y)
-{
-    tile_t t = (*this)(x,y).getType();
-
-    return (t == HALLWAY || t == PAVEMENT || t == UP_STAIRS || t == DOWN_STAIRS);
-}
-
-void Map::monstersAround(PlayableCharacter& player, std::list<std::string>& list)
-{
-    Point p = player.getPosition();
-    for(int i = p.y - 1; i < p.y + 2; i++)
-        for(int j = p.x - 1; j < p.x + 2; j++)
-            if((*this).isWalkable(j,i) && upperLayer(i,j) != "" && upperLayer(i,j)[0] == 'm')
-                list.push_back(upperLayer(i,j));
+    return p;
 }
