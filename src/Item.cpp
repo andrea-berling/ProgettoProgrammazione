@@ -17,22 +17,24 @@ Item::Item() {
     MP = 0;
     DEF = 0;
     ATK = 0;
+    LUCK = 0;
     position.x = -1;
     position.y = -1;
     symbol = '?';
     visible = false;
 }
 
-Item::Item(string name, int type, int LP, int MP, int DEF, int ATK) {
+Item::Item(string name, int type, int LP, int MP, int DEF, int ATK, int LUCK) {
     this->name = name;
 
-    if (type > -1 && type < 7) //type va da 0 a 6
+    if (type > -1 && type < 5) //type va da 0 a 5
         this->type = type;
 
     this->LP = LP;
     this->MP = MP;
     this->DEF = DEF;
     this->ATK = ATK;
+    this->LUCK = LUCK;
     position.x = -1;
     position.y = -1;
     symbol = '?';   //  E' il simbolo che indica un Item sulla mappa
@@ -62,6 +64,10 @@ int Item::getDEF() {
 
 int Item::getATK() {
     return this->ATK;
+}
+
+int Item::getLuck() {
+    return this->LUCK;
 }
 
 string Item::getId() {
