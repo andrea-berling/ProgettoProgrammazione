@@ -14,7 +14,7 @@ class PlayableCharacter{
 private:
     int LP, MP, DEF, ATK;
     int LPMAX, MPMAX, DEFMAX;
-    int LUCK;
+    int LUCK, LUCKMAX;
     int LV, Coins;
     Point POS;
     std::string Name;
@@ -52,6 +52,9 @@ public:
 
     int getLuck();
     //  Restituisce i punti fortuna
+
+    int getLuckMAX();
+    //  Restituisce i punti fortuna massimi
 
     Point getPosition();
     //  Restituisce la posizione del PG
