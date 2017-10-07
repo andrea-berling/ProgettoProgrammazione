@@ -18,7 +18,7 @@ private:
     int LV, Coins;
     Point POS;
     std::string Name;
-    std::unordered_multiset<Item> Inventory;
+    std::unordered_set<Item> Inventory;
     Item equipment [5];
 
 public:
