@@ -24,7 +24,7 @@
             equipment[i] = Item();
     }
 
-    PlayableCharacter::PlayableCharacter(int LP, int MP, int DEF, int ATK, int LUCK, std::string Name){
+    PlayableCharacter::PlayableCharacter(int LP, int MP, int DEF, int ATK, int LUCK, int Coins, std::string Name){
         this->LP = LP;
         this->LPMAX = LP;
         this->MP = MP;
@@ -34,7 +34,7 @@
         this->ATK = ATK;
         this->LUCK = LUCK;
         this->LV = 0;
-        this->Coins = 0;
+        this->Coins = Coins;
         this->Name = Name;
         for (int i = 0; i<5; i++){
             equipment [i] = Item();      //Inizializza il vettore di Item "equipment"
