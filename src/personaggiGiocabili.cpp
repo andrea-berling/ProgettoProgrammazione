@@ -110,6 +110,10 @@
         this->POS.y = y;
     }
 
+    void PlayableCharacter::addCoins(int x) { //controllare che il saldo non vada sotto zero
+        this->Coins += x;
+    }
+
     void PlayableCharacter::setCoins(int Coins){
         this->Coins = Coins;
     }
