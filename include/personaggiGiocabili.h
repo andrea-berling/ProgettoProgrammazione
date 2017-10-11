@@ -26,7 +26,7 @@ public:
     PlayableCharacter();
     // Costruttore di default
 
-    PlayableCharacter(int LP, int MP, int DEF, int ATK, int LUCK, std::string Name);
+    PlayableCharacter(int LP, int MP, int DEF, int ATK, int LUCK, int Coins, std::string Name);
     //  Dati una quantità di LP, MP, DEF, ATK e un nome, crea un nuovo PG.
     
     int getLP();
