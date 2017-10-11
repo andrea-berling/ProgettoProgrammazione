@@ -23,7 +23,7 @@ class Level
 
     public:
 
-        Level(int level,int width,int height,int rooms, int _monsters, int _items);
+        Level(int level,int width,int height,int rooms, int _monsters, int _items, PlayableCharacter& pg);
         // Given a width, a height and a number of rooms, monsters and items, it creates a new level
 
         void printMap(PlayableCharacter& player);
@@ -57,5 +57,8 @@ void writeInfo(Window& win,PlayableCharacter& pg, int level);
 
 void writeEquipment(Window& win, PlayableCharacter& pg);
 //  Scrive gli oggetti equipaggiati
+
+void shopMenu(PlayableCharacter& pg, std::vector<Item>& itemsSet);
+//  Genera la finestra dello shop con i vari Item da acquistare
 
 #endif

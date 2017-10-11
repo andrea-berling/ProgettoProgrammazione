@@ -80,7 +80,7 @@ int main()
         int rooms = 10;
         int items = 5;
         int monsters = 5;
-        levels.insert(levels.begin(),Level(n,width,height,rooms,items,monsters));
+        levels.insert(levels.begin(),Level(n,width,height,rooms,items,monsters, player));
         currentLevel = levels.begin();
         (*currentLevel).placeCharacter(player,0);
         (*currentLevel).printMap(player);
@@ -95,7 +95,7 @@ int main()
                 if(currentLevel == levels.end())
                 {
                     ++n;
-                    Level newLevel = Level(n,width,height,rooms,items,monsters);
+                    Level newLevel = Level(n,width,height,rooms,items,monsters, player);
                     currentLevel = levels.insert(levels.end(),newLevel);
                     playerPosition = 0;
                 }

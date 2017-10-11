@@ -1,9 +1,11 @@
-Pozione rossa,5,10,0,0,0,0
 Elmo di ferro,0,0,0,3,0,0
 Corazza di ferro,1,0,0,5,0,0
 Stivali di ferro,2,0,0,2,0,0
 Spada di ferro,3,0,0,0,4,0
 Scudo di ferro,4,0,0,5,0,0
+Pozione rossa,5,10,0,0,0,0
+Pozione blu,5,0,10,0,0,0
+Pozione gialla,5,0,0,0,0,3
 Elmo d'argento,0,0,0,6,0,0
 Corazza d'argento,1,0,0,10,0,0
 Stivali d'argento,2,0,0,4,0,0

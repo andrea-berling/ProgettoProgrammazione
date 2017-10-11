@@ -79,6 +79,9 @@ public:
     
     void setPosition(int x, int y);
     //  Date le coordinate x y, modifica la posizione del PG
+
+    void addCoins(int x);
+    //  Dato una quantità intera la somma alle monete possedute dal PG
     
     void setCoins(int Coins);
     //  Modifica la quantità di monete del PG
