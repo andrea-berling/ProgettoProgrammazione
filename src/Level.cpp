@@ -286,6 +286,7 @@ void writeInfo(Window& win,PlayableCharacter& pg, int level){
     win.printLine("ATK: " + to_string(pg.getATK()));
     win.printLine("DEF: " + to_string(pg.getDEF()));
     win.printLine("LV: " + to_string(pg.getLV()));
+    win.printLine("Cucuzze: " + to_string(pg.getCoins()));
     win.printLine("");
     win.printLine("Livello attuale: " + to_string(level));
 
@@ -315,19 +316,19 @@ void shopMenu(PlayableCharacter& pg, vector<Item>& itemsSet){
         case 0:
             // istruzioni per aggiungere equip1
             pg.pickItem(itemsSet[i0]);
-            pg.addCoins(-10);            //Il primo Item costa 10 cucuzze
+            pg.addCoins(-i0*5);
             // pagamento
             break;
         case 1:
             // istruzioni per aggiungere equip2
             pg.pickItem(itemsSet[i1]);
-            pg.addCoins(-20);            //Il secondo Item costa 20 cucuzze
+            pg.addCoins(-i1*5);
             // pagamento
             break;
         case 2:
             // istruzioni per aggiungere Consumable
             pg.pickItem(itemsSet[i2]);
-            pg.addCoins(-30);            //Il terzo Item costa 30 cucuzze
+            pg.addCoins(-i2*5);
             //pagamento
             break;
     }
