@@ -14,6 +14,7 @@ class Menu
         WINDOW* menuwin;
         WINDOW* subwin;
         char** choices;
+        int choice;
         int nlines;
         int ncols;
         int x;
