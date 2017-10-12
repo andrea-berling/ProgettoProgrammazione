@@ -286,6 +286,7 @@ void writeInfo(Window& win,PlayableCharacter& pg, int level){
     win.printLine("ATK: " + to_string(pg.getATK()));
     win.printLine("DEF: " + to_string(pg.getDEF()));
     win.printLine("LV: " + to_string(pg.getLV()));
+    win.printLine("Cucuzze: " + to_string(pg.getCoins()));
     win.printLine("");
     win.printLine("Livello attuale: " + to_string(level));
 
@@ -305,28 +306,28 @@ void shopMenu(PlayableCharacter& pg, vector<Item>& itemsSet)
 
     int choice = 0;
 
-    Menu shop(0,0,4, itemsSet[indexes[0]].getName().c_str(), itemsSet[indexes[1]].getName().c_str(), itemsSet[indexes[2]].getName().c_str(), "Sono Povero");
+    Menu shop(COLS/2,LINES/2,4, itemsSet[indexes[0]].getName().c_str(), itemsSet[indexes[1]].getName().c_str(), itemsSet[indexes[2]].getName().c_str(), "Sono Povero");
     // c_str() returns the c string correpsonding to the string
 
     choice = shop.handleChoice();
 
-    switch (choice){ //aggiungere opzione quit
+    switch (choice){
         case 0:
             // istruzioni per aggiungere equip1
             pg.pickItem(itemsSet[indexes[0]]);
-            pg.addCoins(-indexes[0]*10);            //Il primo Item costa 10 cucuzze
+            pg.addCoins(-indexes[0]*5);            //Il primo Item costa 5 cucuzze
             // pagamento
             break;
         case 1:
             // istruzioni per aggiungere equip2
             pg.pickItem(itemsSet[indexes[1]]);
-            pg.addCoins(-indexes[1]*10);            //Il secondo Item costa 20 cucuzze
+            pg.addCoins(-indexes[1]*5);            //Il secondo Item costa 20 cucuzze
             // pagamento
             break;
         case 2:
             // istruzioni per aggiungere Consumable
             pg.pickItem(itemsSet[indexes[2]]);
-            pg.addCoins(-indexes[2]*10);            //Il terzo Item costa 30 cucuzze
+            pg.addCoins(-indexes[2]*5);            //Il terzo Item costa 30 cucuzze
             //pagamento
             break;
     }
