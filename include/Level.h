@@ -26,7 +26,7 @@ class Level
         Level(int level,int width,int height,int rooms, int _monsters, int _items, PlayableCharacter& pg);
         // Given a width, a height and a number of rooms, monsters and items, it creates a new level
 
-        void printMap(PlayableCharacter& player);
+        void printMap(PlayableCharacter& player, Window& mapWindow);
         // Prints the map, the monsters, the items and the player
 
         void placeCharacter(PlayableCharacter& player, int playerPosition);
@@ -35,7 +35,7 @@ class Level
         // if playerPosition == 1, the position is the same as the one of the down stairs
         // if playerPosition == -1, the position is the same as the one of the up stairs
 
-        int handleMovement(Window& info, PlayableCharacter& player);
+        int handleMovement(Window& mapWindow, Window& info, PlayableCharacter& player);
         // Handles the movement of the main character and the exploration of the map
         // and the printing of the stats
 
