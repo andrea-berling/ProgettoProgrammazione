@@ -35,6 +35,8 @@ class Window
         void clear();
         // Clears the window
 
+        WINDOW *getWin();
+        // Returns the WINDOW pointer
 };
 
 std::string wrap(std::string text,unsigned int maxLength);
