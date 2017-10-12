@@ -299,41 +299,78 @@ void writeInfo(Window& win,PlayableCharacter& pg, int level){
 
 void Level::shopMenu(PlayableCharacter& pg, vector<Item>& itemsSet)
 {
-
+    int priceMult = 5;
     int items = 3;
     int indexes[items];
     int yoffset = items + 1;
     int xoffset = 24;   // length of the name of the item with the longest name
 
+    int xinfo = 20;
+    int yinfo = 0;
     generateKPermutation(indexes,0,itemsSet.size()-1,items);
 
     int choice = 0;
 
     Menu shop(map.getWidth()/2 - xoffset,map.getHeight()/2 - yoffset,4, itemsSet[indexes[0]].getName().c_str(), itemsSet[indexes[1]].getName().c_str(), itemsSet[indexes[2]].getName().c_str(), "Sono Povero");
     // c_str() returns the c string correpsonding to the string
+    Window itemInfo(shop.getX() + xinfo, shop.getY() + yinfo, 10, 30);
 
     choice = shop.handleChoice();
 
-    switch (choice){
-        case 0:
-            // istruzioni per aggiungere equip1
-            pg.pickItem(itemsSet[indexes[0]]);
-            pg.addCoins(-indexes[0]*5);            //Il primo Item costa 5 cucuzze
-            // pagamento
-            break;
-        case 1:
-            // istruzioni per aggiungere equip2
-            pg.pickItem(itemsSet[indexes[1]]);
-            pg.addCoins(-indexes[1]*5);            //Il secondo Item costa 20 cucuzze
-            // pagamento
-            break;
-        case 2:
-            // istruzioni per aggiungere Consumable
-            pg.pickItem(itemsSet[indexes[2]]);
-            pg.addCoins(-indexes[2]*5);            //Il terzo Item costa 30 cucuzze
-            //pagamento
-            break;
+    bool done = false;
+    int confirm = -1;
+    bool success = false;
+    Item itemChosen = Item();
+
+    while (!done) {
+
+        switch (choice) {
+            case 0:
+
+                itemChosen = itemsSet[indexes[choice]];
+                break;
+
+            case 1:
+                itemChosen = itemsSet[indexes[choice]];
+                break;
+
+            case 2:
+                itemChosen = itemsSet[indexes[choice]];
+                break;
+        }
+
+        if (choice != 3) {
+            itemInfo.clear();
+
+            itemInfo.printLine("Prezzo: " + to_string((indexes[choice] * priceMult)) + " Cucuzze");
+            itemInfo.printLine("LP: + " + to_string(itemChosen.getLP()));
+            itemInfo.printLine("MP: + " + to_string(itemChosen.getMP()));
+            itemInfo.printLine("ATK: + " + to_string(itemChosen.getATK()));
+            itemInfo.printLine("DEF: + " + to_string(itemChosen.getDEF()));
+            itemInfo.printLine("LUCK: + " + to_string(itemChosen.getLuck()));
+            itemInfo.separator();
+
+            confirm = shop.handleChoice();
+
+            if (confirm == choice){ // se scelto due volte, viene scalato il prezzo dell'Item
+                pg.pickItem(itemsSet[indexes[choice]]);
+                success = pg.addCoins(-indexes[choice]*priceMult); //true se bastano i fondi, false altrimenti
+                if (success)
+                    done = true;
+                else
+                    itemInfo.printLine("Cucuzze insufficienti!");
+                    //non viene stampato a causa del clear; implementare setFirstAvaiableLine?
+            }
+            else
+                choice = confirm;   // Così fa vedere le stat della nuova scelta
+        }
+
+        else {
+            done = true;        // è stato selezionato quit/esci
+        }
+
     }
+
 }
 
 void whatsHappening(Window& win, PlayableCharacter& pg){
