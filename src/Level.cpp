@@ -306,13 +306,13 @@ void shopMenu(PlayableCharacter& pg, vector<Item>& itemsSet){
 
     int choice = 0;
 
-    Menu shop(0,0,4, itemsSet[i0].getName().c_str(), itemsSet[i1].getName().c_str(), itemsSet[i2].getName().c_str(), "Sono Povero");
+    Menu shop(COLS/2,LINES/2,4, itemsSet[i0].getName().c_str(), itemsSet[i1].getName().c_str(), itemsSet[i2].getName().c_str(), "Sono Povero");
     // c_str() returns the c string correpsonding to the string
 
-    refresh();  //could be useless
+    refresh();  // potrebbe non servire
     choice = shop.handleChoice();
 
-    switch (choice){ //aggiungere opzione quit
+    switch (choice){
         case 0:
             // istruzioni per aggiungere equip1
             pg.pickItem(itemsSet[i0]);
