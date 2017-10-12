@@ -304,71 +304,59 @@ void Level::shopMenu(PlayableCharacter& pg, vector<Item>& itemsSet)
     int indexes[items];
     int yoffset = items + 1;
     int xoffset = 24;   // length of the name of the item with the longest name
-
     int xinfo = 20;
     int yinfo = 0;
+    int choice = 0;
+    bool done = false;
+    bool noMoney = false;
+    int confirm = -1;
+    Item chosenItem;
+
     generateKPermutation(indexes,0,itemsSet.size()-1,items);
 
-    int choice = 0;
-
-    Menu shop(map.getWidth()/2 - xoffset,map.getHeight()/2 - yoffset,4, itemsSet[indexes[0]].getName().c_str(), itemsSet[indexes[1]].getName().c_str(), itemsSet[indexes[2]].getName().c_str(), "Sono Povero");
-    // c_str() returns the c string correpsonding to the string
-    Window itemInfo(shop.getX() + xinfo, shop.getY() + yinfo, 10, 30);
+    Menu shop(map.getWidth()/2 - xoffset,map.getHeight()/2 - yoffset,4, itemsSet[indexes[0]].getName().c_str(), itemsSet[indexes[1]].getName().c_str(), itemsSet[indexes[2]].getName().c_str(), "Sono Povero"); // c_str() returns the c string correpsonding to the string
+    Window itemInfo(shop.getX() + xinfo, shop.getY() + yinfo, 11, 30);
 
     choice = shop.handleChoice();
-
-    bool done = false;
-    int confirm = -1;
-    bool success = false;
-    Item itemChosen = Item();
+    chosenItem = itemsSet[indexes[choice]];
 
     while (!done) {
-
-        switch (choice) {
-            case 0:
-
-                itemChosen = itemsSet[indexes[choice]];
-                break;
-
-            case 1:
-                itemChosen = itemsSet[indexes[choice]];
-                break;
-
-            case 2:
-                itemChosen = itemsSet[indexes[choice]];
-                break;
-        }
 
         if (choice != 3) {
             itemInfo.clear();
 
-            itemInfo.printLine("Prezzo: " + to_string((1 + indexes[choice]) * priceMult)) + " Cucuzze");
-            itemInfo.printLine("LP: + " + to_string(itemChosen.getLP()));
-            itemInfo.printLine("MP: + " + to_string(itemChosen.getMP()));
-            itemInfo.printLine("ATK: + " + to_string(itemChosen.getATK()));
-            itemInfo.printLine("DEF: + " + to_string(itemChosen.getDEF()));
-            itemInfo.printLine("LUCK: + " + to_string(itemChosen.getLuck()));
+            chosenItem = itemsSet[indexes[choice]];
+            itemInfo.printLine(chosenItem.getName());
+            itemInfo.printLine("Prezzo: " + to_string((1 + indexes[choice])*priceMult) + " Cucuzze");
+            itemInfo.printLine("LP: + " + to_string(chosenItem.getLP()));
+            itemInfo.printLine("MP: + " + to_string(chosenItem.getMP()));
+            itemInfo.printLine("ATK: + " + to_string(chosenItem.getATK()));
+            itemInfo.printLine("DEF: + " + to_string(chosenItem.getDEF()));
+            itemInfo.printLine("LUCK: + " + to_string(chosenItem.getLuck()));
             itemInfo.separator();
-
+            if(noMoney)     // If you tried to buy something you can't afford
+            {
+                itemInfo.printLine("Cucuzze insufficienti!");
+                noMoney = false;
+            }
             confirm = shop.handleChoice();
 
             if (confirm == choice){ // se scelto due volte, viene scalato il prezzo dell'Item
-                pg.pickItem(itemsSet[indexes[choice]]);
-                success = pg.addCoins(-(1 + indexes[choice])*priceMult); //true se bastano i fondi, false altrimenti
-                if (success)
+                if (pg.addCoins(-(1 + indexes[choice])*priceMult))  // true se bastano i fondi, false altrimenti
+                {
+                    pg.pickItem(itemsSet[indexes[choice]]);
                     done = true;
+                }
                 else
+                    noMoney = true;
                     itemInfo.printLine("Cucuzze insufficienti!");
                     //non viene stampato a causa del clear; implementare setFirstAvaiableLine?
             }
             else
                 choice = confirm;   // Così fa vedere le stat della nuova scelta
         }
-
-        else {
+        else
             done = true;        // è stato selezionato quit/esci
-        }
-
     }
 
 }
