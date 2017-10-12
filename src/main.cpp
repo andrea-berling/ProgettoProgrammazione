@@ -152,11 +152,10 @@ int playerChoiceMenu()
     int choice = -1;
     int confirm; 
 
+    choice = players.handleChoice();
     while(!done)
     {
         string filename = "resources/descriptions/";
-        if(choice == -1)    // The first time choice is uninitialized (= -1); the next times this won't be necessary
-            choice = players.handleChoice();
         switch(choice)
         {
             case 0:
