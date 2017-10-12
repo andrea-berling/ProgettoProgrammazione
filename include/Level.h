@@ -50,6 +50,9 @@ class Level
 
         void monstersAround(PlayableCharacter& player, std::list<Monster>& list);
         // Given a player and an empty list, it fills the list with the the monsters around player
+
+        void shopMenu(PlayableCharacter& pg, std::vector<Item>& itemsSet);
+        //  Genera la finestra dello shop con i vari Item da acquistare
 };
 
 void writeInfo(Window& win,PlayableCharacter& pg, int level);
@@ -58,7 +61,5 @@ void writeInfo(Window& win,PlayableCharacter& pg, int level);
 void writeEquipment(Window& win, PlayableCharacter& pg);
 //  Scrive gli oggetti equipaggiati
 
-void shopMenu(PlayableCharacter& pg, std::vector<Item>& itemsSet);
-//  Genera la finestra dello shop con i vari Item da acquistare
 
 #endif
