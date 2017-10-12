@@ -57,37 +57,38 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
     upStairs = {p.x,p.y};
 }
 
-void Level::printMap(PlayableCharacter& player)
+void Level::printMap(PlayableCharacter& player, Window& mapWindow)
 {
-    clear();
+    mapWindow.clear();
+    WINDOW *win = mapWindow.getWin();
     move(0,0);
     for(int i = 0; i < map.getHeight(); i++)
     {
         for (int j = 0; j < map.getWidth(); j++)
         {
             if(map(j,i).isVisible())
-                addch(map(j,i).getSymbol());
+                waddch(win,map(j,i).getSymbol());
             else
-                addch(' ');
+                waddch(win,' ');
         }
-        addch('\n');
+        //waddch(win,'\n');
     }
     for(auto m : monsters)
     {
         Point position = m.second.getPosition();
         if(m.second.isAwake())
-            mvaddch(position.y,position.x,m.second.getSymbol());
+            mvwaddch(win,position.y,position.x,m.second.getSymbol());
     }
     for(auto i : items)
     {
         Point position = i.second.getPosition();
         if(i.second.isVisible())
-            mvaddch(position.y,position.x,i.second.getSymbol());
+            mvwaddch(win,position.y,position.x,i.second.getSymbol());
     }
     Point p = player.getPosition();
-    mvaddch(p.y,p.x,'@');
+    mvwaddch(win,p.y,p.x,'@');
 
-    refresh();
+    wrefresh(win);
 }
 
 void Level::placeCharacter(PlayableCharacter& player,int playerPosition)
@@ -118,7 +119,7 @@ void Level::placeCharacter(PlayableCharacter& player,int playerPosition)
     }
 }
 
-int Level::handleMovement(Window& info,PlayableCharacter& player)
+int Level::handleMovement(Window& mapWindow, Window& info,PlayableCharacter& player)
 {
     int x,y,c;
     Point pos = player.getPosition();
@@ -203,7 +204,7 @@ int Level::handleMovement(Window& info,PlayableCharacter& player)
             else if(map(x,y).getType() == DOWN_STAIRS)
                 return -1;
         }
-        printMap(player);
+        printMap(player,mapWindow);
         info.clear();
         writeInfo(info,player,level);
 
