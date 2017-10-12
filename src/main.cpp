@@ -143,7 +143,7 @@ void endCurses()
 {
 	endwin();
 }
- 
+
 int playerChoiceMenu()
 {
     Menu players((COLS)/2 - 25,(LINES - 10)/2,4,"Gaudenzio","Peppino","Badore","Indietro");

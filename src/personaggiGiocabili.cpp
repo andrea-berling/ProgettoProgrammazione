@@ -110,12 +110,21 @@
         this->POS.y = y;
     }
 
-    void PlayableCharacter::addCoins(int x) { //controllare che il saldo non vada sotto zero
-        this->Coins += x;
+    bool PlayableCharacter::addCoins(int x) {
+        if ((x + this->Coins) >= 0){
+            this->Coins += x;
+            return true;
+        }
+
+        return false;
+
     }
 
     void PlayableCharacter::setCoins(int Coins){
-        this->Coins = Coins;
+        if (Coins > 0)
+            this->Coins = Coins;
+        else
+            this->Coins = 0;
     }
 
     std::string PlayableCharacter::getName(){
@@ -210,13 +219,12 @@
             atk = 1;
             def = 1;
             lp = 1;
-            mp = 3;
+            mp = 1;
             luck = 1;
         }
 
         if (this->Name == "Badore"){
             atk = 2;
-            mp = 1;
             lp = 1;
             luck = 3;
         }
