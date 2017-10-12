@@ -334,6 +334,10 @@ void shopMenu(PlayableCharacter& pg, vector<Item>& itemsSet){
     }
 }
 
+void whatsHappening(Window& win, PlayableCharacter& pg){
+    // Dovranno esserci le comunicazioni della battaglia, della raccolta di oggetti, dell'aumento delle stats
+}
+
 Point Level::getUpStairs()
 {
     return upStairs;

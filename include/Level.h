@@ -53,12 +53,15 @@ class Level
 };
 
 void writeInfo(Window& win,PlayableCharacter& pg, int level);
-//  Scrive le informazioni sulla finestra che fornisce i dati su oggetti posseduti e statistiche del PG
+//  Scrive le informazioni nella finestra a destra, fornendo i dati su oggetti posseduti e sulle statistiche del PG
 
 void writeEquipment(Window& win, PlayableCharacter& pg);
-//  Scrive gli oggetti equipaggiati
+//  Scrive gli oggetti equipaggiati nella finestra a destra
 
 void shopMenu(PlayableCharacter& pg, std::vector<Item>& itemsSet);
 //  Genera la finestra dello shop con i vari Item da acquistare
+
+void whatsHappening(Window& win, PlayableCharacter& pg);
+//  Scrive gli avvenimenti nella finestra in basso
 
 #endif
