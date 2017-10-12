@@ -73,7 +73,6 @@ void Window::printLine(string line) {
         wborder(win, '|', '|', '-', '-', '+', '+', '+', '+');
         firstAvailableLine++;
         wrefresh(win);
-
     }
 }
 
@@ -94,5 +93,11 @@ void Window::box()
 void Window::clear()
 {
     wclear(win);
+    wrefresh(win);
     firstAvailableLine = 1;
+}
+
+WINDOW *Window::getWin()
+{
+    return win;
 }
