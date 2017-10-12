@@ -18,7 +18,8 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
     retrieveItems(itemsFile,itemsSet);
     monstersSet = {Monster("Goblin",level),Monster("Troll",level),Monster("Golem",level),Monster("Gineppino",level)};
 
-    shopMenu(pg, itemsSet);
+    if(level > 1)
+        shopMenu(pg, itemsSet);
 
     map.generate(rooms);
     map.freeSpots(_items,spots);
@@ -296,39 +297,40 @@ void writeInfo(Window& win,PlayableCharacter& pg, int level){
 
 }
 
-void shopMenu(PlayableCharacter& pg, vector<Item>& itemsSet){
-    int tmp = -1;
+void Level::shopMenu(PlayableCharacter& pg, vector<Item>& itemsSet)
+{
 
-    int i0=0, i1=0, i2=0;
-    i0 = rand() % itemsSet.size(); // Non dipende dal livello e potrebbero essere
-    i1 = rand() % itemsSet.size(); // uguali. Inoltre non distinguo gli equip tra loro
-    i2 = rand() % itemsSet.size();
+    int items = 3;
+    int indexes[items];
+    int yoffset = items + 1;
+    int xoffset = 24;   // length of the name of the item with the longest name
+
+    generateKPermutation(indexes,0,itemsSet.size()-1,items);
 
     int choice = 0;
 
-    Menu shop(COLS/2,LINES/2,4, itemsSet[i0].getName().c_str(), itemsSet[i1].getName().c_str(), itemsSet[i2].getName().c_str(), "Sono Povero");
+    Menu shop(map.getWidth()/2 - xoffset,map.getHeight()/2 - yoffset,4, itemsSet[indexes[0]].getName().c_str(), itemsSet[indexes[1]].getName().c_str(), itemsSet[indexes[2]].getName().c_str(), "Sono Povero");
     // c_str() returns the c string correpsonding to the string
 
-    refresh();  // potrebbe non servire
     choice = shop.handleChoice();
 
     switch (choice){
         case 0:
             // istruzioni per aggiungere equip1
-            pg.pickItem(itemsSet[i0]);
-            pg.addCoins(-i0*5);
+            pg.pickItem(itemsSet[indexes[0]]);
+            pg.addCoins(-indexes[0]*5);            //Il primo Item costa 5 cucuzze
             // pagamento
             break;
         case 1:
             // istruzioni per aggiungere equip2
-            pg.pickItem(itemsSet[i1]);
-            pg.addCoins(-i1*5);
+            pg.pickItem(itemsSet[indexes[1]]);
+            pg.addCoins(-indexes[1]*5);            //Il secondo Item costa 20 cucuzze
             // pagamento
             break;
         case 2:
             // istruzioni per aggiungere Consumable
-            pg.pickItem(itemsSet[i2]);
-            pg.addCoins(-i2*5);
+            pg.pickItem(itemsSet[indexes[2]]);
+            pg.addCoins(-indexes[2]*5);            //Il terzo Item costa 30 cucuzze
             //pagamento
             break;
     }

@@ -50,6 +50,7 @@ Menu::Menu(int x, int y, int n, string option1, ...):x(x),y(y)
     set_menu_win(menu,menuwin);
     set_menu_sub(menu,subwin);
 
+    choice = 0;
     set_menu_mark(menu,"");
     curs_set(0);
 
@@ -61,6 +62,9 @@ Menu::~Menu()
 {
     unpost_menu(menu);
     wrefresh(menuwin);
+	free_menu(menu);
+    delwin(subwin);
+    delwin(menuwin);
     for(int i = 0; i < nlines; i++)
     {
         free_item(items[i]);
@@ -68,16 +72,12 @@ Menu::~Menu()
     }
     free(choices);
     free(items);
-	free_menu(menu);
-    delwin(subwin);
-    delwin(menuwin);
 }
 
 int Menu::handleChoice()
 {
-    int choice = -1;
-    bool done = false;
     int c;
+    bool done = false;
 
 	while(!done)
 	{   
@@ -86,19 +86,24 @@ int Menu::handleChoice()
 	    {	
             case KEY_DOWN:
 		        menu_driver(menu, REQ_DOWN_ITEM);
+                if(choice < nlines - 1)
+                    choice++;
 				break;
 			case KEY_UP:
 				menu_driver(menu, REQ_UP_ITEM);
+                if(choice > 0)
+                    choice--;
 				break;
-            case 10:
-                ITEM* cur_item = current_item(menu);
-                int i = 0;
+            case 10:    // Enter
+                /*
+                ITEM* cur_item = current_item(menu);    // Fix: init i at 0, increase and decrease with key_up and
+                                                        // key_down, return choice in constant time
                 while(i < nlines && choice == -1)
                 {
                     if(strcmp(item_name(cur_item),choices[i]) == 0)
-                        choice = i;
                     i++;
                 }
+                */
                 done = true;
                 break;
 		}
