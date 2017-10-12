@@ -295,39 +295,38 @@ void writeInfo(Window& win,PlayableCharacter& pg, int level){
 
 }
 
-void shopMenu(PlayableCharacter& pg, vector<Item>& itemsSet){
-    int tmp = -1;
+void shopMenu(PlayableCharacter& pg, vector<Item>& itemsSet)
+{
 
-    int i0=0, i1=0, i2=0;
-    i0 = rand() % itemsSet.size(); // Non dipende dal livello e potrebbero essere
-    i1 = rand() % itemsSet.size(); // uguali. Inoltre non distinguo gli equip tra loro
-    i2 = rand() % itemsSet.size();
+    int items = 3;
+    int indexes[items];
+
+    generateKPermutation(indexes,0,itemsSet.size()-1,items);
 
     int choice = 0;
 
-    Menu shop(0,0,4, itemsSet[i0].getName().c_str(), itemsSet[i1].getName().c_str(), itemsSet[i2].getName().c_str(), "Sono Povero");
+    Menu shop(0,0,4, itemsSet[indexes[0]].getName().c_str(), itemsSet[indexes[1]].getName().c_str(), itemsSet[indexes[2]].getName().c_str(), "Sono Povero");
     // c_str() returns the c string correpsonding to the string
 
-    refresh();  //could be useless
     choice = shop.handleChoice();
 
     switch (choice){ //aggiungere opzione quit
         case 0:
             // istruzioni per aggiungere equip1
-            pg.pickItem(itemsSet[i0]);
-            pg.addCoins(-10);            //Il primo Item costa 10 cucuzze
+            pg.pickItem(itemsSet[indexes[0]]);
+            pg.addCoins(-indexes[0]*10);            //Il primo Item costa 10 cucuzze
             // pagamento
             break;
         case 1:
             // istruzioni per aggiungere equip2
-            pg.pickItem(itemsSet[i1]);
-            pg.addCoins(-20);            //Il secondo Item costa 20 cucuzze
+            pg.pickItem(itemsSet[indexes[1]]);
+            pg.addCoins(-indexes[1]*10);            //Il secondo Item costa 20 cucuzze
             // pagamento
             break;
         case 2:
             // istruzioni per aggiungere Consumable
-            pg.pickItem(itemsSet[i2]);
-            pg.addCoins(-30);            //Il terzo Item costa 30 cucuzze
+            pg.pickItem(itemsSet[indexes[2]]);
+            pg.addCoins(-indexes[2]*10);            //Il terzo Item costa 30 cucuzze
             //pagamento
             break;
     }
