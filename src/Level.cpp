@@ -18,7 +18,8 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
     retrieveItems(itemsFile,itemsSet);
     monstersSet = {Monster("Goblin",level),Monster("Troll",level),Monster("Golem",level),Monster("Gineppino",level)};
 
-    shopMenu(pg, itemsSet);
+    if(level > 1)
+        shopMenu(pg, itemsSet);
 
     map.generate(rooms);
     map.freeSpots(_items,spots);
@@ -296,17 +297,19 @@ void writeInfo(Window& win,PlayableCharacter& pg, int level){
 
 }
 
-void shopMenu(PlayableCharacter& pg, vector<Item>& itemsSet)
+void Level::shopMenu(PlayableCharacter& pg, vector<Item>& itemsSet)
 {
 
     int items = 3;
     int indexes[items];
+    int yoffset = items + 1;
+    int xoffset = 24;   // length of the name of the item with the longest name
 
     generateKPermutation(indexes,0,itemsSet.size()-1,items);
 
     int choice = 0;
 
-    Menu shop(COLS/2,LINES/2,4, itemsSet[indexes[0]].getName().c_str(), itemsSet[indexes[1]].getName().c_str(), itemsSet[indexes[2]].getName().c_str(), "Sono Povero");
+    Menu shop(map.getWidth()/2 - xoffset,map.getHeight()/2 - yoffset,4, itemsSet[indexes[0]].getName().c_str(), itemsSet[indexes[1]].getName().c_str(), itemsSet[indexes[2]].getName().c_str(), "Sono Povero");
     // c_str() returns the c string correpsonding to the string
 
     choice = shop.handleChoice();
