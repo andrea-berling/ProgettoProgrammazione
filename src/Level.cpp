@@ -299,7 +299,7 @@ void writeInfo(Window& win,PlayableCharacter& pg, int level){
 
 void Level::shopMenu(PlayableCharacter& pg, vector<Item>& itemsSet)
 {
-    int priceMult = 5;
+    int priceMult = 4;
     int items = 3;
     int indexes[items];
     int yoffset = items + 1;
@@ -342,7 +342,7 @@ void Level::shopMenu(PlayableCharacter& pg, vector<Item>& itemsSet)
         if (choice != 3) {
             itemInfo.clear();
 
-            itemInfo.printLine("Prezzo: " + to_string((indexes[choice] * priceMult)) + " Cucuzze");
+            itemInfo.printLine("Prezzo: " + to_string((1 + indexes[choice]) * priceMult)) + " Cucuzze");
             itemInfo.printLine("LP: + " + to_string(itemChosen.getLP()));
             itemInfo.printLine("MP: + " + to_string(itemChosen.getMP()));
             itemInfo.printLine("ATK: + " + to_string(itemChosen.getATK()));
@@ -354,7 +354,7 @@ void Level::shopMenu(PlayableCharacter& pg, vector<Item>& itemsSet)
 
             if (confirm == choice){ // se scelto due volte, viene scalato il prezzo dell'Item
                 pg.pickItem(itemsSet[indexes[choice]]);
-                success = pg.addCoins(-indexes[choice]*priceMult); //true se bastano i fondi, false altrimenti
+                success = pg.addCoins(-(1 + indexes[choice])*priceMult); //true se bastano i fondi, false altrimenti
                 if (success)
                     done = true;
                 else
