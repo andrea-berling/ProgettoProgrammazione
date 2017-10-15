@@ -69,4 +69,10 @@ void writeEquipment(Window& win, PlayableCharacter& pg);
 void whatsHappening(Window& win, PlayableCharacter& pg);
 //  Scrive gli avvenimenti nella finestra in basso
 
+int Battle (Window& battle_win, Window& right_win, PlayableCharacter& player, int level,std::list<Monster>& list);
+
+int Atk_Def (int def, int atk);
+
+int Critical_Atk (int luck);
+
 #endif
