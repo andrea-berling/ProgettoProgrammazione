@@ -392,3 +392,43 @@ void Level::monstersAround(PlayableCharacter& player, std::list<Monster>& list)
         list.push_back(monsters[id]);
     }
 }
+
+void Level::moveMonster(Point playerPosition, Monster& mons){
+    int dist;
+    Point fmpos;    //  Futura posizione del mostro
+    Point mpos; //  Posizione del mostro
+    mpos = mons.getPosition();
+
+    dist = w(playerPosition, mpos);
+
+    for (int i = 0; i < 4; i++) {
+        switch (i){
+            case 0:
+                fmpos.x = mpos.x + 1;
+                fmpos.y = mpos.y;
+                if (map(fmpos).isWalkable() && (w(fmpos, playerPosition) < dist))
+                    mpos = fmpos;
+                break;
+            case 1:
+                fmpos.x = mpos.x - 1;
+                fmpos.y = mpos.y;
+                if (map(fmpos).isWalkable() && (w(fmpos, playerPosition) < dist))
+                    mpos = fmpos;
+                break;
+            case 2:
+                fmpos.x = mpos.x;
+                fmpos.y = mpos.y + 1;
+                if (map(fmpos).isWalkable() && (w(fmpos, playerPosition) < dist))
+                    mpos = fmpos;
+                break;
+            case 3:
+                fmpos.x = mpos.x;
+                fmpos.y = mpos.y - 1;
+                if (map(fmpos).isWalkable() && (w(fmpos, playerPosition) < dist))
+                    mpos = fmpos;
+                break;
+        }
+    }
+
+    mons.setPosition(mpos.x, mpos.y);   // Assegna la nuova posizione al mostro
+}

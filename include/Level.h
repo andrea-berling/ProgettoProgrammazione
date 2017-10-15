@@ -53,6 +53,10 @@ class Level
 
         void shopMenu(PlayableCharacter& pg, std::vector<Item>& itemsSet);
         //  Genera la finestra dello shop con i vari Item da acquistare
+
+        void moveMonster(Point playerPosition, Monster& mons);
+        // Muove il mostro passato in modo che si avvicini al giocatore 
+
 };
 
 void writeInfo(Window& win,PlayableCharacter& pg, int level);
