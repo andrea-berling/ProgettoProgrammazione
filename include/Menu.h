@@ -3,6 +3,7 @@
 #include <cstdarg>
 #include <ncurses.h>
 #include <list>
+#include <vector>
 #include <string>
 #include <menu.h>
 
@@ -20,10 +21,12 @@ class Menu
         int ncols;
         int x;
         int y;
+        void createMenu();
+        // Once the items and choices vectors have been filled, creates a new menu
 
     public:
 
-        Menu(int x, int y, std::list<std::string> options);
+        Menu(int x, int y, std::vector<std::string> options);
         // Given two position coordinates and the options, as strings in a list, it creates a new menu
 
         Menu(int x, int y, int n, std::string option1, ...);
