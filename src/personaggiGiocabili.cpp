@@ -251,3 +251,8 @@
 Item PlayableCharacter::getEquipmentAt(int index) {
     return equipment[index];
 }
+
+std::unordered_set<Item>& PlayableCharacter::getInventory()
+{
+    return Inventory;
+}
