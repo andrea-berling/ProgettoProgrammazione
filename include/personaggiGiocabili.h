@@ -121,8 +121,8 @@ public:
     Item getEquipmentAt(int index);
     //  Dato un indice restituisce il contenuto del vettore equipment a quell'indice
 
-    std::unordered_set<Item>& getInventory();
-    // Returns the inventory set by ref
+    void showInventory();
+    // Shows the inventory
 };
 
 #endif //PERSONAGGI_GIOCABILI_H
