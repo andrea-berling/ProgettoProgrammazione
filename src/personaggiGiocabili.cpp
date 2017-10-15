@@ -7,7 +7,9 @@
 
 
 #include <unordered_set>
-
+#include <vector>
+#include "../include/Window.h"
+#include "../include/Menu.h"
 #include "../include/personaggiGiocabili.h"
 
 
@@ -252,7 +254,94 @@ Item PlayableCharacter::getEquipmentAt(int index) {
     return equipment[index];
 }
 
-std::unordered_set<Item>& PlayableCharacter::getInventory()
-{
-    return Inventory;
+void PlayableCharacter::showInventory() {
+
+    using namespace std;
+    int choice = 0;
+    int select;
+    bool look= false;
+    int iterator= 0;
+    vector<Item> I_vector;
+    vector<string> names;
+    Item it;
+
+    for(Item i : Inventory) // Inserisce i nomi nella lista delle entries e gli oggetti nel vettore degli items
+    {
+        names.push_back(i.getName());
+        I_vector[iterator]= i;
+        iterator++;
+    }
+
+    for (; iterator < 20; iterator++){               // riempie i vuoti se ce ne sono
+        names.push_back("-VUOTO-");
+    }
+    
+    names.push_back(string("BACK"));
+
+    Menu inv (50, 0, names);  // Mostra le scelte possibili (Item nell'inventario)
+    Window ItemInventory (inv.getX() + 5, inv.getY(), 19, 70);      // Crea una finestra per l'inventario
+
+    choice = inv.handleChoice();
+    if(choice < names.size() - 1 && names[choice] != "-VUOTO-")
+        it = I_vector[choice]; // Controllo sull'aver premuto Back prima di assegnare
+                               // Inventory[choice]
+
+    while (!look){
+        ItemInventory.clear();
+
+        if (choice != names.size() - 1){    // Se non si vuole tornare indietro e non si sceglie una casella vuota
+                                                               // mostra le caratteristiche dell'Item
+            ItemInventory.printLine("STATISTICHE:");
+            ItemInventory.printLine("LP: " + to_string(it.getLP()));
+            ItemInventory.printLine("MP: " + to_string(it.getMP()));
+            ItemInventory.printLine("ATK: " + to_string(it.getATK()));
+            ItemInventory.printLine("DEF: " + to_string(it.getDEF()));
+            ItemInventory.printLine("LUCK: " + to_string(it.getLuck()));
+            ItemInventory.separator();
+            ItemInventory.printLine("Premere u per usare, i per disequipaggiare");  // Aggiungerei un'opzione per non
+            //fare niente e continuare a stare nel menu
+
+            do {
+                select= getch();
+            } while ((select != 'u') && (select != 'i'));
+
+            if (select == 'u'){
+                ItemInventory.clear();
+                if (it.getType() != 5) {
+                    if (!equip(it))   // Se ritorna vero l'Item è equipaggiato
+                        ItemInventory.printLine(it.getName() + " NON equipaggiato");
+                    else{
+                        ItemInventory.printLine(it.getName() + " equipaggiato");
+                        look= true;
+                    }
+                }
+                else if (it.getType() == 5){
+                    if (!useConsumable(it)) // Se ritorna vero il consumabile viene utilizzato
+                        ItemInventory.printLine(it.getName() + " NON usato");
+                    else{
+                        ItemInventory.printLine(it.getName() + " usato");
+                        look= true;
+                    }
+                }
+            }
+            else if (select == 'i'){
+                ItemInventory.clear();
+                if (it.getType() == 5)
+                    ItemInventory.printLine(it.getName() + " IMPOSSIBILE equipaggiare");
+                else if (it.getType() != 5){
+                    if (!dropItem(it))   // Se ritorna vero l'Item viene disequipaggiato
+                        ItemInventory.printLine(it.getName() + "  NON disequipaggiato");
+                    else{
+                        ItemInventory.printLine(it.getName() + "  disequipaggiato");
+                        look= true;
+                    }
+
+                }
+            }
+        }
+        else
+            look= true;
+    }
 }
+
+
