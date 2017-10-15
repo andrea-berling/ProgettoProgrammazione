@@ -4,6 +4,53 @@
 
 using namespace std;
 
+Menu::Menu(int x, int y, std::list<string> options):x(x),y(y)
+{
+    int i;
+    nlines = options.size();
+    list<string>::iterator it;
+    string max = options.front();
+    ncols = max.length();
+
+    for(string s : options) 
+    {
+        if(s.length() > ncols)
+        {
+            max = s;
+            ncols = s.length();
+        }
+    }   // finds the longest string and assigns its length to ncols
+
+    choices = (char**)malloc(nlines*sizeof(char*)); // Given nlines choices, an array of nlines char arrays is
+    // allocated
+    items = (ITEM**)malloc((nlines + 1)*sizeof(ITEM*));
+
+    for(it = options.begin(),i = 0; i < nlines; i++,it++)
+    {
+        choices[i] = (char*)malloc(ncols*sizeof(char)); // ncols is the length of the longest string in the list
+        strcpy(choices[i],(*it).c_str());
+        items[i] = new_item(choices[i],nullptr); 
+    }
+    items[nlines] = nullptr;
+    
+    menuwin = newwin(nlines + 1,ncols,y,x);
+    subwin = derwin(menuwin,nlines,ncols,1,0); // The items show up one line after the title, at the same indentation
+    //level as the title
+    keypad(menuwin,TRUE); // Lets the user use arrow keys
+    keypad(subwin,TRUE);
+    
+    menu = new_menu(items);
+    set_menu_win(menu,menuwin);
+    set_menu_sub(menu,subwin);
+
+    choice = 0;
+    set_menu_mark(menu,"");
+    curs_set(0);
+
+    post_menu(menu);
+    wrefresh(menuwin);
+}
+
 Menu::Menu(int x, int y, int n, string option1, ...):x(x),y(y)
 {
     va_list args;

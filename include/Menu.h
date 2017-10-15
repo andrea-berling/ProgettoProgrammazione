@@ -2,6 +2,7 @@
 #define MYMENU_H
 #include <cstdarg>
 #include <ncurses.h>
+#include <list>
 #include <string>
 #include <menu.h>
 
@@ -21,6 +22,9 @@ class Menu
         int y;
 
     public:
+
+        Menu(int x, int y, std::list<std::string> options);
+        // Given two position coordinates and the options, as strings in a list, it creates a new menu
 
         Menu(int x, int y, int n, std::string option1, ...);
         // Given two position coordinates, the number of the options and the options, as strings, it creates a new menu
