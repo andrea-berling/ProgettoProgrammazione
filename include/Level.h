@@ -20,6 +20,7 @@ class Level
         Point upStairs;
         Point downStairs;
         int level;
+        bool validPosition(Point pos,Point playerPos);
 
     public:
 
