@@ -29,7 +29,7 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
         int index = rand(0,min(level*3,static_cast<int>(itemsSet.size())-1));
         Item i = itemsSet[index];
         i.setPosition(p.x,p.y);
-        string ID = "item" + to_string(id);
+        string ID = "item" + to_string(id) + "." + to_string(level);
         i.setId(ID);
         id++;
         map(p.x,p.y).setUpperLayer(ID);
@@ -184,20 +184,22 @@ int Level::handleMovement(Window& mapWindow, Window& info,PlayableCharacter& pla
             case 'N':
                 return -1;
                 break;
+            case '$':
+                player.setCoins(9999);
+                break;
 #endif
+            case 'i':
+                player.showInventory();
+                break;
             case 'q':
                 return 0;
                 break;
         }
         player.setPosition(x,y);
         if(map(x,y).getId() != "")
-        {
             map.setVisible(map(x,y).getId(),monsters,items);
-        }
         else
-        {
             map.showAround(x,y);
-        }
         if(moved == true)
         {
             if(map(x,y).getType() == UP_STAIRS)
@@ -312,6 +314,7 @@ void Level::shopMenu(PlayableCharacter& pg, vector<Item>& itemsSet)
     bool done = false;
     bool noMoney = false;
     int confirm = -1;
+    string ID = "item.shop." + to_string(level) + ".";
     Item chosenItem;
 
     generateKPermutation(indexes,0,itemsSet.size()-1,items);
@@ -320,11 +323,11 @@ void Level::shopMenu(PlayableCharacter& pg, vector<Item>& itemsSet)
     Window itemInfo(shop.getX() + xinfo, shop.getY() + yinfo, 11, 30);
 
     choice = shop.handleChoice();
-    chosenItem = itemsSet[indexes[choice]];
 
     while (!done) {
 
         if (choice != 3) {
+            chosenItem = itemsSet[indexes[choice]];
             itemInfo.clear();
 
             chosenItem = itemsSet[indexes[choice]];
@@ -346,7 +349,8 @@ void Level::shopMenu(PlayableCharacter& pg, vector<Item>& itemsSet)
             if (confirm == choice){ // se scelto due volte, viene scalato il prezzo dell'Item
                 if (pg.addCoins(-(1 + indexes[choice])*priceMult))  // true se bastano i fondi, false altrimenti
                 {
-                    pg.pickItem(itemsSet[indexes[choice]]);
+                    chosenItem.setId(ID + to_string(choice));
+                    pg.pickItem(chosenItem);
                     done = true;
                 }
                 else
