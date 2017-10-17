@@ -294,6 +294,7 @@ void PlayableCharacter::showInventory() {
 
         if (choice != names.size() - 1){    // Se non si vuole tornare indietro e non si sceglie una casella vuota
                                             // mostra le caratteristiche dell'Item
+            it = I_vector[choice];
             ItemInventory.printLine("STATISTICHE:");
             ItemInventory.printLine("LP: " + to_string(it.getLP()));
             ItemInventory.printLine("MP: " + to_string(it.getMP()));
@@ -323,7 +324,6 @@ void PlayableCharacter::showInventory() {
                             ItemInventory.printLine(it.getName() + " equipaggiato");
                             look= true;
                         }
-                        getch();
                     }
                     else if (it.getType() == 5){
                         if (!useConsumable(it)) // Se ritorna vero il consumabile viene utilizzato
@@ -332,8 +332,8 @@ void PlayableCharacter::showInventory() {
                             ItemInventory.printLine(it.getName() + " usato");
                             look= true;
                         }
-                        getch();
                     }
+                    getch();
                     break;
                 case 'i':
                     ItemInventory.clear();
@@ -346,8 +346,8 @@ void PlayableCharacter::showInventory() {
                             ItemInventory.printLine(it.getName() + "  disequipaggiato");
                             look= true;
                         }
-                        getch();
                     }
+                    getch();
                     break;
                 case 'q':
                     ItemInventory.clear();
