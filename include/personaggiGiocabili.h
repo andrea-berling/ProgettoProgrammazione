@@ -125,5 +125,8 @@ public:
     // Shows the inventory
 };
 
+std::string suffix(int type);
+//  Dato il tipo dell'oggetto ne restituisce il suffisso che ne consegue
+
 #endif //PERSONAGGI_GIOCABILI_H
 
