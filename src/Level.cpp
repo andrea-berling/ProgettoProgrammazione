@@ -74,17 +74,17 @@ void Level::printMap(PlayableCharacter& player, Window& mapWindow)
         }
         //waddch(win,'\n');
     }
-    for(auto m : monsters)
-    {
-        Point position = m.second.getPosition();
-        if(m.second.isAwake())
-            mvwaddch(win,position.y,position.x,m.second.getSymbol());
-    }
     for(auto i : items)
     {
         Point position = i.second.getPosition();
         if(i.second.isVisible())
             mvwaddch(win,position.y,position.x,i.second.getSymbol());
+    }
+    for(auto m : monsters)
+    {
+        Point position = m.second.getPosition();
+        if(m.second.isAwake())
+            mvwaddch(win,position.y,position.x,m.second.getSymbol());
     }
     Point p = player.getPosition();
     mvwaddch(win,p.y,p.x,'@');
@@ -202,6 +202,9 @@ int Level::handleMovement(Window& mapWindow, Window& info,PlayableCharacter& pla
             map.showAround(x,y);
         if(moved == true)
         {
+            for(auto& m : monsters)
+                if(m.second.isAwake())
+                    moveMonster(player.getPosition(),m.second);
             if(map(x,y).getType() == UP_STAIRS)
                 return 1;
             else if(map(x,y).getType() == DOWN_STAIRS)
@@ -399,6 +402,8 @@ void Level::moveMonster(Point playerPosition, Monster& mons){
     Point fmpos;    //  Futura posizione del mostro
     Point mpos; //  Posizione del mostro
     mpos = mons.getPosition();
+    fmpos = mpos;
+    map(mpos).setUpperLayer("");
 
     dist = w(playerPosition, mpos);
 
@@ -407,31 +412,31 @@ void Level::moveMonster(Point playerPosition, Monster& mons){
             case 0:
                 fmpos.x = mpos.x + 1;
                 fmpos.y = mpos.y;
-                if (map(fmpos).isWalkable() && (w(fmpos, playerPosition) < dist))
-                    mpos = fmpos;
                 break;
             case 1:
                 fmpos.x = mpos.x - 1;
                 fmpos.y = mpos.y;
-                if (map(fmpos).isWalkable() && (w(fmpos, playerPosition) < dist))
-                    mpos = fmpos;
                 break;
             case 2:
                 fmpos.x = mpos.x;
                 fmpos.y = mpos.y + 1;
-                if (map(fmpos).isWalkable() && (w(fmpos, playerPosition) < dist))
-                    mpos = fmpos;
                 break;
             case 3:
                 fmpos.x = mpos.x;
                 fmpos.y = mpos.y - 1;
-                if (map(fmpos).isWalkable() && (w(fmpos, playerPosition) < dist))
-                    mpos = fmpos;
                 break;
         }
+        if (validPosition(fmpos,playerPosition) && (w(fmpos, playerPosition) < dist))
+            mpos = fmpos;
     }
 
     mons.setPosition(mpos.x, mpos.y);   // Assegna la nuova posizione al mostro
+    map(mpos).setUpperLayer(mons.getId());
+}
+
+bool Level::validPosition(Point pos,Point playerPos)
+{
+    return pos != playerPos && map(pos).getType() == PAVEMENT && map(pos).getId() != "";
 }
 
 int Battle(Window& battle_win, Window& right_win, PlayableCharacter& player, int level,std::list<Monster>& list){
