@@ -267,8 +267,11 @@ void PlayableCharacter::showInventory() {
 
     for(Item i : Inventory) // Inserisce i nomi nella lista delle entries e gli oggetti nel vettore degli items
     {
-        names.push_back(i.getName());
-        I_vector[iterator]= i;
+        if(i.getType() != 5 && equipment[i.getType()] != Item() && i.getId() == equipment[i.getType()].getId())
+            names.push_back("*" + i.getName());
+        else
+            names.push_back(i.getName());
+        I_vector.push_back(i);
         iterator++;
     }
 
@@ -279,7 +282,7 @@ void PlayableCharacter::showInventory() {
     names.push_back(string("BACK"));
 
     Menu inv (50, 0, names);  // Mostra le scelte possibili (Item nell'inventario)
-    Window ItemInventory (inv.getX() + 5, inv.getY(), 19, 70);      // Crea una finestra per l'inventario
+    Window ItemInventory (inv.getX() + 5, inv.getY(), 19, 50);      // Crea una finestra per l'inventario
 
     choice = inv.handleChoice();
     if(choice < names.size() - 1 && names[choice] != "-VUOTO-")
@@ -290,7 +293,7 @@ void PlayableCharacter::showInventory() {
         ItemInventory.clear();
 
         if (choice != names.size() - 1){    // Se non si vuole tornare indietro e non si sceglie una casella vuota
-                                                               // mostra le caratteristiche dell'Item
+                                            // mostra le caratteristiche dell'Item
             ItemInventory.printLine("STATISTICHE:");
             ItemInventory.printLine("LP: " + to_string(it.getLP()));
             ItemInventory.printLine("MP: " + to_string(it.getMP()));
@@ -298,45 +301,69 @@ void PlayableCharacter::showInventory() {
             ItemInventory.printLine("DEF: " + to_string(it.getDEF()));
             ItemInventory.printLine("LUCK: " + to_string(it.getLuck()));
             ItemInventory.separator();
-            ItemInventory.printLine("Premere u per usare, i per disequipaggiare");  // Aggiungerei un'opzione per non
+            ItemInventory.printLine("Premere u per usare, i per disequipaggiare");
+            ItemInventory.printLine("q per chiudere, d per droppare");  // Aggiungerei un'opzione per non
             //fare niente e continuare a stare nel menu
 
             do {
                 select= getch();
-            } while ((select != 'u') && (select != 'i'));
+            } while ((select != 'u') && (select != 'i') && (select != 'q') && (select != 'd'));
 
-            if (select == 'u'){
-                ItemInventory.clear();
-                if (it.getType() != 5) {
-                    if (!equip(it))   // Se ritorna vero l'Item è equipaggiato
-                        ItemInventory.printLine(it.getName() + " NON equipaggiato");
-                    else{
-                        ItemInventory.printLine(it.getName() + " equipaggiato");
-                        look= true;
+            switch(select)
+            {
+                case 'u':
+                    ItemInventory.clear();
+                    if (it.getType() != 5) {
+                        if (!equip(it))   // Se ritorna vero l'Item è equipaggiato
+                        {
+                            ItemInventory.printLine(it.getName() + " NON equipaggiato:");
+                            ItemInventory.printLine("Stai usando un oggetto dello stesso tipo");
+                        } 
+                        else{
+                            ItemInventory.printLine(it.getName() + " equipaggiato");
+                            look= true;
+                        }
+                        getch();
                     }
-                }
-                else if (it.getType() == 5){
-                    if (!useConsumable(it)) // Se ritorna vero il consumabile viene utilizzato
-                        ItemInventory.printLine(it.getName() + " NON usato");
-                    else{
-                        ItemInventory.printLine(it.getName() + " usato");
-                        look= true;
+                    else if (it.getType() == 5){
+                        if (!useConsumable(it)) // Se ritorna vero il consumabile viene utilizzato
+                            ItemInventory.printLine(it.getName() + " NON usato");
+                        else{
+                            ItemInventory.printLine(it.getName() + " usato");
+                            look= true;
+                        }
+                        getch();
                     }
-                }
-            }
-            else if (select == 'i'){
-                ItemInventory.clear();
-                if (it.getType() == 5)
-                    ItemInventory.printLine(it.getName() + " IMPOSSIBILE equipaggiare");
-                else if (it.getType() != 5){
-                    if (!dropItem(it))   // Se ritorna vero l'Item viene disequipaggiato
-                        ItemInventory.printLine(it.getName() + "  NON disequipaggiato");
-                    else{
-                        ItemInventory.printLine(it.getName() + "  disequipaggiato");
-                        look= true;
+                    break;
+                case 'i':
+                    ItemInventory.clear();
+                    if (it.getType() == 5)
+                        ItemInventory.printLine(it.getName() + " IMPOSSIBILE equipaggiare");
+                    else if (it.getType() != 5){
+                        if (!unequip(it))   // Se ritorna vero l'Item viene disequipaggiato
+                            ItemInventory.printLine(it.getName() + "  NON disequipaggiato");
+                        else{
+                            ItemInventory.printLine(it.getName() + "  disequipaggiato");
+                            look= true;
+                        }
+                        getch();
                     }
-
-                }
+                    break;
+                case 'q':
+                    ItemInventory.clear();
+                    choice = inv.handleChoice();
+                    if(choice == names.size() - 1)
+                        look = true;
+                    break;
+                case 'd':
+                    ItemInventory.clear();
+                    if(it.getType() != 5)
+                        unequip(it);
+                    dropItem(it);
+                    ItemInventory.printLine(it.getName() + " droppato");
+                    getch();
+                    look = true;
+                    break;
             }
         }
         else
