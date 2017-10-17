@@ -11,7 +11,7 @@
 #include "../include/Window.h"
 #include "../include/Menu.h"
 #include "../include/personaggiGiocabili.h"
-
+using namespace std;
 
     PlayableCharacter::PlayableCharacter(){
 
@@ -317,19 +317,19 @@ void PlayableCharacter::showInventory() {
                     if (it.getType() != 5) {
                         if (!equip(it))   // Se ritorna vero l'Item è equipaggiato
                         {
-                            ItemInventory.printLine(it.getName() + " NON equipaggiato:");
-                            ItemInventory.printLine("Stai usando un oggetto dello stesso tipo");
-                        } 
+                            ItemInventory.printLine(it.getName() + " NON equipaggiat"+suffix(it.getType())+":");
+                            ItemInventory.printLine("Stai usando un oggetto dello stesso tipo!");
+                        }
                         else{
-                            ItemInventory.printLine(it.getName() + " equipaggiato");
+                            ItemInventory.printLine(it.getName() + " equipaggiat"+suffix(it.getType()));
                             look= true;
                         }
                     }
                     else if (it.getType() == 5){
                         if (!useConsumable(it)) // Se ritorna vero il consumabile viene utilizzato
-                            ItemInventory.printLine(it.getName() + " NON usato");
+                            ItemInventory.printLine(it.getName() + " NON usata");
                         else{
-                            ItemInventory.printLine(it.getName() + " usato");
+                            ItemInventory.printLine(it.getName() + " usata!");
                             look= true;
                         }
                     }
@@ -338,12 +338,12 @@ void PlayableCharacter::showInventory() {
                 case 'i':
                     ItemInventory.clear();
                     if (it.getType() == 5)
-                        ItemInventory.printLine(it.getName() + " IMPOSSIBILE equipaggiare");
+                        ItemInventory.printLine(it.getName() + " IMPOSSIBILE equipaggiare!");
                     else if (it.getType() != 5){
                         if (!unequip(it))   // Se ritorna vero l'Item viene disequipaggiato
-                            ItemInventory.printLine(it.getName() + "  NON disequipaggiato");
+                            ItemInventory.printLine(it.getName() + "Che ne dici di equipaggiare l'oggetto prima?");
                         else{
-                            ItemInventory.printLine(it.getName() + "  disequipaggiato");
+                            ItemInventory.printLine(it.getName() + " disequipaggiat"+suffix(it.getType()));
                             look= true;
                         }
                     }
@@ -360,7 +360,7 @@ void PlayableCharacter::showInventory() {
                     if(it.getType() != 5)
                         unequip(it);
                     dropItem(it);
-                    ItemInventory.printLine(it.getName() + " droppato");
+                    ItemInventory.printLine(it.getName() + " droppat"+suffix(it.getType())+"!");
                     getch();
                     look = true;
                     break;
@@ -371,4 +371,22 @@ void PlayableCharacter::showInventory() {
     }
 }
 
+string suffix(int type){
+    string sfx;
+    switch (type){
+        case 0:
+        case 4:
+            sfx = "o";
+            break;
+        case 1:
+        case 3:
+            sfx = "a";
+            break;
+        case 2:
+            sfx = "i";
+            break;
+        }
+
+    return sfx;
+}
 
