@@ -27,7 +27,7 @@ Item::Item() {
 Item::Item(string name, int type, int LP, int MP, int DEF, int ATK, int LUCK) {
     this->name = name;
 
-    if (type > -1 && type < 5) //type va da 0 a 5
+    if (type > -1 && type <= 5) //type va da 0 a 5
         this->type = type;
 
     this->LP = LP;
@@ -111,7 +111,7 @@ namespace std
 {
     size_t hash<Item>::operator()(Item i) const
     {
-        return hash<string>()(i.getName());
+        return hash<string>()(i.getId());
     }
     // Hash function for the class Item
 }

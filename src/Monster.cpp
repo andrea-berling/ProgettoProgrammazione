@@ -146,7 +146,7 @@ namespace std
 {
     size_t hash<Monster>::operator()(Monster m) const
     {
-        return hash<string>()(m.getName());
+        return hash<string>()(m.getId());
     }
     // Hash function for the class Monster
 }
