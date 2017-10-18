@@ -500,7 +500,7 @@ void Level::moveMonster(Point playerPosition, Monster& mons){
 
 bool Level::validPosition(Point pos,Point playerPos)
 {
-    return pos != playerPos && map(pos).getType() == PAVEMENT && map(pos).getId() != "";    // The monster can't leave
+    return pos != playerPos && map(pos).getType() == PAVEMENT && map(pos).getId() != "" && map(pos).getUpperLayer() == "";    // The monster can't leave
     //the room it's in and can't walk on the player
 }
 
