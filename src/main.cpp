@@ -59,9 +59,11 @@ int main()
         int height = 37;
         Window mapWindow(0,0,height,width);
         Window infoWindow(101, 0, 37, 30);
+        Window bottomWindow(0, 37, 10, 100);
         int status = -1;
         clear();
         refresh();
+        bottomWindow.box();
         PlayableCharacter player;
         switch(character)
         {
@@ -89,7 +91,7 @@ int main()
         while(status != 0)
         {
             int playerPosition;
-            status = (*currentLevel).handleMovement(mapWindow,infoWindow,player);
+            status = (*currentLevel).handleMovement(mapWindow,infoWindow,bottomWindow,player);
             if(status == 1)
             {
                 ++currentLevel;
