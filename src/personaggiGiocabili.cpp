@@ -281,90 +281,90 @@ void PlayableCharacter::showInventory() {
     
     names.push_back(string("BACK"));
 
-    Menu inv (50, 0, names);  // Mostra le scelte possibili (Item nell'inventario)
-    Window ItemInventory (inv.getX() + 5, inv.getY(), 19, 50);      // Crea una finestra per l'inventario
+    Menu inv (0, 0, names);  // Mostra le scelte possibili (Item nell'inventario)
+    Window ItemInventory (inv.getX() + 20, inv.getY(), 19, 50);      // Crea una finestra per l'inventario
 
     choice = inv.handleChoice();
-    if(choice < names.size() - 1 && names[choice] != "-VUOTO-")
-        it = I_vector[choice]; // Controllo sull'aver premuto Back prima di assegnare
-                               // Inventory[choice]
 
     while (!look){
         ItemInventory.clear();
 
-        if (choice != names.size() - 1){    // Se non si vuole tornare indietro e non si sceglie una casella vuota
-                                            // mostra le caratteristiche dell'Item
-            it = I_vector[choice];
-            ItemInventory.printLine("STATISTICHE:");
-            ItemInventory.printLine("LP: " + to_string(it.getLP()));
-            ItemInventory.printLine("MP: " + to_string(it.getMP()));
-            ItemInventory.printLine("ATK: " + to_string(it.getATK()));
-            ItemInventory.printLine("DEF: " + to_string(it.getDEF()));
-            ItemInventory.printLine("LUCK: " + to_string(it.getLuck()));
-            ItemInventory.separator();
-            ItemInventory.printLine("Premere u per usare, i per disequipaggiare");
-            ItemInventory.printLine("q per chiudere, d per droppare");  // Aggiungerei un'opzione per non
-            //fare niente e continuare a stare nel menu
+        if(choice < names.size() - 1){
+            // Se non si vuole tornare indietro e non si sceglie una casella vuota
+            // mostra le caratteristiche dell'Item
+            if(names[choice] !=  "-VUOTO-"){
+                it = I_vector[choice];
+                ItemInventory.printLine("STATISTICHE:");
+                ItemInventory.printLine("LP: " + to_string(it.getLP()));
+                ItemInventory.printLine("MP: " + to_string(it.getMP()));
+                ItemInventory.printLine("ATK: " + to_string(it.getATK()));
+                ItemInventory.printLine("DEF: " + to_string(it.getDEF()));
+                ItemInventory.printLine("LUCK: " + to_string(it.getLuck()));
+                ItemInventory.separator();
+                ItemInventory.printLine("Premere u per usare, i per disequipaggiare");
+                ItemInventory.printLine("q per chiudere, d per droppare");
 
-            do {
                 select= getch();
-            } while ((select != 'u') && (select != 'i') && (select != 'q') && (select != 'd'));
 
-            switch(select)
-            {
-                case 'u':
-                    ItemInventory.clear();
-                    if (it.getType() != 5) {
-                        if (!equip(it))   // Se ritorna vero l'Item è equipaggiato
-                        {
-                            ItemInventory.printLine(it.getName() + " NON equipaggiat"+suffix(it.getType())+":");
-                            ItemInventory.printLine("Stai usando un oggetto dello stesso tipo!");
+                switch(select)
+                {
+                    case 'u':
+                        ItemInventory.clear();
+                        if (it.getType() != 5) {
+                            if (!equip(it))   // Se ritorna vero l'Item è equipaggiato
+                            {
+                                ItemInventory.printLine(it.getName() + " NON equipaggiat"+suffix(it.getType())+":");
+                                ItemInventory.printLine("Stai usando un oggetto dello stesso tipo!");
+                            }
+                            else{
+                                ItemInventory.printLine(it.getName() + " equipaggiat"+suffix(it.getType()));
+                                look= true;
+                            }
                         }
-                        else{
-                            ItemInventory.printLine(it.getName() + " equipaggiat"+suffix(it.getType()));
-                            look= true;
+                        else if (it.getType() == 5){
+                            if (!useConsumable(it)) // Se ritorna vero il consumabile viene utilizzato
+                                ItemInventory.printLine(it.getName() + " NON usata");
+                            else{
+                                ItemInventory.printLine(it.getName() + " usata!");
+                                look= true;
+                            }
                         }
-                    }
-                    else if (it.getType() == 5){
-                        if (!useConsumable(it)) // Se ritorna vero il consumabile viene utilizzato
-                            ItemInventory.printLine(it.getName() + " NON usata");
-                        else{
-                            ItemInventory.printLine(it.getName() + " usata!");
-                            look= true;
+                        getch();
+                        break;
+                    case 'i':
+                        ItemInventory.clear();
+                        if (it.getType() == 5)
+                            ItemInventory.printLine(it.getName() + " IMPOSSIBILE equipaggiare!");
+                        else if (it.getType() != 5){
+                            if (!unequip(it))   // Se ritorna vero l'Item viene disequipaggiato
+                                ItemInventory.printLine("Che ne dici di equipaggiare l'oggetto prima?");
+                            else{
+                                ItemInventory.printLine(it.getName() + " disequipaggiat"+suffix(it.getType()));
+                                look= true;
+                            }
                         }
-                    }
-                    getch();
-                    break;
-                case 'i':
-                    ItemInventory.clear();
-                    if (it.getType() == 5)
-                        ItemInventory.printLine(it.getName() + " IMPOSSIBILE equipaggiare!");
-                    else if (it.getType() != 5){
-                        if (!unequip(it))   // Se ritorna vero l'Item viene disequipaggiato
-                            ItemInventory.printLine(it.getName() + "Che ne dici di equipaggiare l'oggetto prima?");
-                        else{
-                            ItemInventory.printLine(it.getName() + " disequipaggiat"+suffix(it.getType()));
-                            look= true;
-                        }
-                    }
-                    getch();
-                    break;
-                case 'q':
-                    ItemInventory.clear();
-                    choice = inv.handleChoice();
-                    if(choice == names.size() - 1)
+                        getch();
+                        break;
+                    case 'q':
+                        ItemInventory.clear();
+                        choice = inv.handleChoice();
+                        if(choice == names.size() - 1)
+                            look = true;
+                        break;
+                    case 'd':
+                        ItemInventory.clear();
+                        if(it.getType() != 5)
+                            unequip(it);
+                        dropItem(it);
+                        ItemInventory.printLine(it.getName() + " droppat"+suffix(it.getType())+"!");
+                        getch();
                         look = true;
-                    break;
-                case 'd':
-                    ItemInventory.clear();
-                    if(it.getType() != 5)
-                        unequip(it);
-                    dropItem(it);
-                    ItemInventory.printLine(it.getName() + " droppat"+suffix(it.getType())+"!");
-                    getch();
-                    look = true;
-                    break;
+                        break;
+                }
             }
+            else
+                choice = inv.handleChoice();
+
         }
         else
             look= true;
