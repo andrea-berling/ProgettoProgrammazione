@@ -406,9 +406,38 @@ void Level::moveMonster(Point playerPosition, Monster& mons){
     map(mpos).setUpperLayer("");
 
     dist = w(playerPosition, mpos);
+    if (mostro_e_pg_sono_nella_stessa_stanza) {
 
-    for (int i = 0; i < 4; i++) {
-        switch (i){
+        for (int i = 0; i < 4; i++) {
+            switch (i) {
+                case 0:
+                    fmpos.x = mpos.x + 1;
+                    fmpos.y = mpos.y;
+                    break;
+                case 1:
+                    fmpos.x = mpos.x - 1;
+                    fmpos.y = mpos.y;
+                    break;
+                case 2:
+                    fmpos.x = mpos.x;
+                    fmpos.y = mpos.y + 1;
+                    break;
+                case 3:
+                    fmpos.x = mpos.x;
+                    fmpos.y = mpos.y - 1;
+                    break;
+            }
+
+            if (validPosition(fmpos, playerPosition) && (w(fmpos, playerPosition) < dist))
+                mpos = fmpos;
+
+        }
+    }
+    else{
+        int rmove;
+        rmove = rand(0,3);
+
+        switch (rmove) {
             case 0:
                 fmpos.x = mpos.x + 1;
                 fmpos.y = mpos.y;
@@ -426,8 +455,10 @@ void Level::moveMonster(Point playerPosition, Monster& mons){
                 fmpos.y = mpos.y - 1;
                 break;
         }
-        if (validPosition(fmpos,playerPosition) && (w(fmpos, playerPosition) < dist))
+
+        if (validPosition(fmpos, playerPosition) && (w(fmpos, playerPosition) < dist))
             mpos = fmpos;
+
     }
 
     mons.setPosition(mpos.x, mpos.y);   // Assegna la nuova posizione al mostro
