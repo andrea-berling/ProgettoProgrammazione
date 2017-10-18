@@ -36,7 +36,7 @@ class Level
         // if playerPosition == 1, the position is the same as the one of the down stairs
         // if playerPosition == -1, the position is the same as the one of the up stairs
 
-        int handleMovement(Window& mapWindow, Window& info, PlayableCharacter& player);
+        int handleMovement(Window& mapWindow, Window& info, Window& bottom, PlayableCharacter& player);
         // Handles the movement of the main character and the exploration of the map
         // and the printing of the stats
 
@@ -49,7 +49,7 @@ class Level
         Point getDownStairs();
         // Returns the coordinates of the down stairs
 
-        void monstersAround(PlayableCharacter& player, std::list<Monster>& list);
+        void monstersAround(Point playerPos, std::list<Monster>& list);
         // Given a player and an empty list, it fills the list with the the monsters around player
 
         void shopMenu(PlayableCharacter& pg, std::vector<Item>& itemsSet);
@@ -66,7 +66,7 @@ void writeInfo(Window& win,PlayableCharacter& pg, int level);
 void writeEquipment(Window& win, PlayableCharacter& pg);
 //  Scrive gli oggetti equipaggiati nella finestra a destra
 
-int Battle (Window& battle_win, Window& right_win, PlayableCharacter& player, int level,std::list<Monster>& list);
+int Battle (Window& battle_win, Window& right_win, PlayableCharacter& player, int level,Monster& m);
 
 int Atk_Def (int def, int atk);
 

@@ -120,7 +120,7 @@ void Level::placeCharacter(PlayableCharacter& player,int playerPosition)
     }
 }
 
-int Level::handleMovement(Window& mapWindow, Window& info,PlayableCharacter& player)
+int Level::handleMovement(Window& mapWindow, Window& info, Window& bottom,PlayableCharacter& player)
 {
     int x,y,c;
     Point pos = player.getPosition();
@@ -128,8 +128,10 @@ int Level::handleMovement(Window& mapWindow, Window& info,PlayableCharacter& pla
     x = pos.x;
     y = pos.y;
     map.showAround(x,y);
+    list<Monster> monstersNearby;
     while(true)
     {
+        monstersNearby.clear();
         c = getch();
         switch(c)
         {
@@ -212,9 +214,40 @@ int Level::handleMovement(Window& mapWindow, Window& info,PlayableCharacter& pla
                 return -1;
         }
         printMap(player,mapWindow);
+        if(map(x,y).getUpperLayer() != "" && map(x,y).getUpperLayer()[0] == 'i')
+            if(player.pickItem(items[map(x,y).getUpperLayer()]))
+            {
+                bottom.clear();
+                bottom.printLine("Raccolto " + items[map(x,y).getUpperLayer()].getName());
+                getch();
+                bottom.clear();
+                items.erase(map(x,y).getUpperLayer());
+                map(x,y).setUpperLayer("");
+            }
+            else
+            {
+                bottom.clear();
+                bottom.printLine("Hai camminato su " + items[map(x,y).getUpperLayer()].getName());
+                getch();
+                bottom.clear();
+            } 
         info.clear();
         writeInfo(info,player,level);
-
+        monstersAround(player.getPosition(),monstersNearby);
+        if(!monstersNearby.empty())
+        {
+            for(Monster m : monstersNearby)
+            if(Battle(bottom,info,player,level,m))
+            {
+                map(m.getPosition()).setUpperLayer("");
+                monsters.erase(m.getId());
+                printMap(player,mapWindow);
+                info.clear();
+                writeInfo(info,player,level);
+            } 
+            else
+                return 0;
+        }
     }
 }
 
@@ -381,13 +414,12 @@ Point Level::getDownStairs()
     return downStairs;
 }
 
-void Level::monstersAround(PlayableCharacter& player, std::list<Monster>& list)
+void Level::monstersAround(Point playerPos, std::list<Monster>& list)
 {
     std::list<std::string> ids;
-    Point p = player.getPosition();
 
-    for(int i = p.y - 1; i < p.y + 2; i++)
-        for(int j = p.x - 1; j < p.x + 2; j++)
+    for(int i = playerPos.y - 1; i < playerPos.y + 2; i++)
+        for(int j = playerPos.x - 1; j < playerPos.x + 2; j++)
             if(!map(j,i).isWalkable() && map(j,i).getUpperLayer() != "" && map(j,i).getUpperLayer()[0] == 'm') 
                 // Map(j,i) is not walkable as there is a monster on it
                 ids.push_back(map(j,i).getUpperLayer());
@@ -407,7 +439,7 @@ void Level::moveMonster(Point playerPosition, Monster& mons){
     map(mpos).setUpperLayer("");
 
     dist = w(playerPosition, mpos);
-    if (mostro_e_pg_sono_nella_stessa_stanza) {
+    if (map(playerPosition).getId() == map(mpos).getId()) { // if the monster and the player are in the same room
 
         for (int i = 0; i < 4; i++) {
             switch (i) {
@@ -457,7 +489,7 @@ void Level::moveMonster(Point playerPosition, Monster& mons){
                 break;
         }
 
-        if (validPosition(fmpos, playerPosition) && (w(fmpos, playerPosition) < dist))
+        if (validPosition(fmpos, playerPosition))
             mpos = fmpos;
 
     }
@@ -472,99 +504,104 @@ bool Level::validPosition(Point pos,Point playerPos)
     //the room it's in and can't walk on the player
 }
 
-int Battle(Window& battle_win, Window& right_win, PlayableCharacter& player, int level,std::list<Monster>& list){
+int Battle(Window& battle_win, Window& right_win, PlayableCharacter& player, int level,Monster& m){
 
     using namespace std;
     char c;
-    Monster m;
+    bool noAttack = false;
 
-    while (!list.empty()){
-        m = list.front();
+    while ((m.getLP() > 0) && (player.getLP() > 0)) {
 
-        battle_win.printLine("Per iniziare la battaglia premere a, per consultare l'inventario premere s");
+        //battle_win.printLine("Per iniziare la battaglia premere a, per consultare l'inventario premere s");
+        battle_win.printLine("Per attaccare premere a, per consultare l'inventario premere i");
+        c = getch();
+        battle_win.clear();
 
-        while ((m.getLP() > 0) && (player.getLP() > 0)) {
+        switch (c) {
+            case 'a':
 
-            do
-            {
-                battle_win.clear();
-                battle_win.printLine("Premere un tasto valido: ");
-                c = getch();
-            } while ((c != 'a') && (c != 's')); 
+                battle_win.printLine("Battaglia con " + m.getName() + ":");
+                battle_win.printLine("");
+                battle_win.printLine("PUNTI VITA -> " + to_string(m.getLP()));
+                battle_win.printLine("ATTACCO -> " + to_string(m.getATK()));
+                battle_win.printLine("DIFESA -> " + to_string(m.getDEF()));
 
-            battle_win.clear();
-
-            switch (c) {
-                case 'a':
-
-                    battle_win.printLine("Battaglia con " + m.getName() + ":");
-                    battle_win.printLine("");
-                    battle_win.printLine("PUNTI VITA -> " + to_string(m.getLP()));
-                    battle_win.printLine("ATTACCO -> " + to_string(m.getATK()));
-                    battle_win.printLine("DIFESA -> " + to_string(m.getDEF()));
-
-                    sleep(1);   // alternatively getch() press a key to continue
-
-                    if (Critical_Atk(player.getLuck()) == 1){
-                        m.setLP(m.getLP() - Atk_Def(m.getDEF(), (2 * player.getATK())));
-                        battle_win.printLine("");
-                        battle_win.printLine("COLPO CRITICO");
-                    }
-                    else
-                        m.setLP(m.getLP() - Atk_Def(m.getDEF(), player.getATK()));
-
-                    if (m.getLP() < 0)
-                        m.setLP(0);
-
-                    battle_win.clear();
-
-                    battle_win.printLine("Battaglia con " + m.getName() + ":");
-                    battle_win.printLine("");
-                    battle_win.printLine("PUNTI VITA -> " + to_string(m.getLP()));
-                    battle_win.printLine("ATTACCO -> " + to_string(m.getATK()));
-                    battle_win.printLine("DIFESA -> " + to_string(m.getDEF()));
-
-                    sleep(2);
-
-                    break;
-
-                case 's':
-                    //funzione che richiama l'inventario
-                    break;
-            }
-
-            if (m.getLP() > 0) {
-                battle_win.clear();
-                battle_win.printLine("L'avversario ti attacca!");
-
+                //sleep(1);   // alternatively getch() press a key to continue
                 getch();
 
-                player.setLP(player.getLP() - Atk_Def(player.getDEF(), m.getATK()));
+                if (Critical_Atk(player.getLuck()) == 1){
+                    m.setLP(m.getLP() - Atk_Def(m.getDEF(), (2 * player.getATK())));
+                    battle_win.printLine("");
+                    battle_win.printLine("COLPO CRITICO");
+                }
+                else
+                    m.setLP(m.getLP() - Atk_Def(m.getDEF(), player.getATK()));
 
-                if (player.getLP() <= 0)
-                    player.setLP(0);
+                if (m.getLP() < 0)
+                    m.setLP(0);
 
-                writeInfo(right_win, player,level);
+                battle_win.clear();
 
+                battle_win.printLine("Battaglia con " + m.getName() + ":");
                 battle_win.printLine("");
-                battle_win.printLine("L'attacco del nemico ti toglie -> " + to_string(Atk_Def(player.getDEF(), m.getATK())) + " LP");
-            }
+                battle_win.printLine("PUNTI VITA -> " + to_string(m.getLP()));
+                battle_win.printLine("ATTACCO -> " + to_string(m.getATK()));
+                battle_win.printLine("DIFESA -> " + to_string(m.getDEF()));
 
-            sleep(2);
+                //sleep(2);
+                getch();
+
+                break;
+
+            case 'i':
+                player.showInventory();
+                break;
+            default:
+                battle_win.clear();
+                battle_win.printLine("Premere un tasto valido!");
+                getch();
+                battle_win.clear();
+                noAttack = true;
+                break;
         }
 
-        if (m.getLP() <= 0) {
+        if (m.getLP() > 0 && !noAttack) {
             battle_win.clear();
-            battle_win.printLine("!VITTORIA!");
-            //mvprintw(4, 44,);
-            list.pop_front();
+            battle_win.printLine("L'avversario ti attacca!");
+
+            getch();
+
+            player.setLP(player.getLP() - Atk_Def(player.getDEF(), m.getATK()));
+
+            if (player.getLP() <= 0)
+                player.setLP(0);
+
+            right_win.clear();
+            writeInfo(right_win, player,level);
+
+            battle_win.printLine("");
+            battle_win.printLine("L'attacco del nemico ti toglie -> " + to_string(Atk_Def(player.getDEF(), m.getATK())) + " LP");
         }
-        else if (player.getLP() <= 0){
-            battle_win.clear();
-            battle_win.printLine("SEI STATO SCONFITTO!");
-            return 0;
-            //mvprintw(4, 39, "");
-        }
+        else
+            noAttack = false;
+
+        //sleep(2);
+    }
+
+    if (m.getLP() <= 0) {
+        battle_win.clear();
+        battle_win.printLine("!VITTORIA!");
+        getch();
+        battle_win.clear();
+        //mvprintw(4, 44,);
+    }
+    else if (player.getLP() <= 0){
+        battle_win.clear();
+        battle_win.printLine("SEI STATO SCONFITTO!");
+        getch();
+        battle_win.clear();
+        return 0;
+        //mvprintw(4, 39, "");
     }
 
     return 1;
