@@ -202,6 +202,7 @@ int Level::handleMovement(Window& mapWindow, Window& info,PlayableCharacter& pla
             map.showAround(x,y);
         if(moved == true)
         {
+            moved = false;
             for(auto& m : monsters)
                 if(m.second.isAwake())
                     moveMonster(player.getPosition(),m.second);
@@ -436,7 +437,8 @@ void Level::moveMonster(Point playerPosition, Monster& mons){
 
 bool Level::validPosition(Point pos,Point playerPos)
 {
-    return pos != playerPos && map(pos).getType() == PAVEMENT && map(pos).getId() != "";
+    return pos != playerPos && map(pos).getType() == PAVEMENT && map(pos).getId() != "";    // The monster can't leave
+    //the room it's in and can't walk on the player
 }
 
 int Battle(Window& battle_win, Window& right_win, PlayableCharacter& player, int level,std::list<Monster>& list){
