@@ -237,7 +237,7 @@ int Level::handleMovement(Window& mapWindow, Window& info, Window& bottom,Playab
         if(!monstersNearby.empty())
         {
             for(Monster m : monstersNearby)
-            if(Battle(bottom,info,player,level,m))
+            if(Battle(bottom,info,mapWindow,player,m))
             {
                 map(m.getPosition()).setUpperLayer("");
                 monsters.erase(m.getId());
@@ -504,7 +504,7 @@ bool Level::validPosition(Point pos,Point playerPos)
     //the room it's in and can't walk on the player
 }
 
-int Battle(Window& battle_win, Window& right_win, PlayableCharacter& player, int level,Monster& m){
+int Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, PlayableCharacter& player, Monster& m){
 
     using namespace std;
     char c;
@@ -555,6 +555,7 @@ int Battle(Window& battle_win, Window& right_win, PlayableCharacter& player, int
 
             case 'i':
                 player.showInventory();
+                printMap(player,mapWin);
                 break;
             default:
                 battle_win.clear();
