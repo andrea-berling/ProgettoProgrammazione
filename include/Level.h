@@ -58,6 +58,7 @@ class Level
         void moveMonster(Point playerPosition, Monster& mons);
         // Muove il mostro passato in modo che si avvicini al giocatore 
 
+        int Battle (Window& battle_win, Window& right_win, Window& mapWin, PlayableCharacter& player, Monster& m);
 };
 
 void writeInfo(Window& win,PlayableCharacter& pg, int level);
@@ -65,8 +66,6 @@ void writeInfo(Window& win,PlayableCharacter& pg, int level);
 
 void writeEquipment(Window& win, PlayableCharacter& pg);
 //  Scrive gli oggetti equipaggiati nella finestra a destra
-
-int Battle (Window& battle_win, Window& right_win, PlayableCharacter& player, int level,Monster& m);
 
 int Atk_Def (int def, int atk);
 
