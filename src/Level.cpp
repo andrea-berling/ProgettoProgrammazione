@@ -58,7 +58,7 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
     upStairs = {p.x,p.y};
 }
 
-void Level::printMap(PlayableCharacter& player, Window& mapWindow)
+void Level::printMap(Point playerPos, Window& mapWindow)
 {
     mapWindow.clear();
     WINDOW *win = mapWindow.getWin();
@@ -86,8 +86,8 @@ void Level::printMap(PlayableCharacter& player, Window& mapWindow)
         if(m.second.isAwake())
             mvwaddch(win,position.y,position.x,m.second.getSymbol());
     }
-    Point p = player.getPosition();
-    mvwaddch(win,p.y,p.x,'@');
+
+    mvwaddch(win,playerPos.y,playerPos.x,'@');
 
     wrefresh(win);
 }
@@ -213,7 +213,7 @@ int Level::handleMovement(Window& mapWindow, Window& info, Window& bottom,Playab
             else if(map(x,y).getType() == DOWN_STAIRS)
                 return -1;
         }
-        printMap(player,mapWindow);
+        printMap(player.getPosition(),mapWindow);
         if(map(x,y).getUpperLayer() != "" && map(x,y).getUpperLayer()[0] == 'i')
             if(player.pickItem(items[map(x,y).getUpperLayer()]))
             {
@@ -241,7 +241,7 @@ int Level::handleMovement(Window& mapWindow, Window& info, Window& bottom,Playab
             {
                 map(m.getPosition()).setUpperLayer("");
                 monsters.erase(m.getId());
-                printMap(player,mapWindow);
+                printMap(player.getPosition(),mapWindow);
                 info.clear();
                 writeInfo(info,player,level);
             } 
@@ -555,7 +555,7 @@ int Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playabl
 
             case 'i':
                 player.showInventory();
-                printMap(player,mapWin);
+                printMap(player.getPosition(),mapWin);
                 break;
             default:
                 battle_win.clear();
