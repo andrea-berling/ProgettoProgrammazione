@@ -86,7 +86,7 @@ int main()
         levels.insert(levels.begin(),Level(n,width,height,rooms,items,monsters, player));
         currentLevel = levels.begin();
         (*currentLevel).placeCharacter(player,0);
-        (*currentLevel).printMap(player,mapWindow);
+        (*currentLevel).printMap(player.getPosition(),mapWindow);
         writeInfo(infoWindow,player,(*currentLevel).getLevel());
         while(status != 0)
         {
@@ -115,7 +115,7 @@ int main()
                 playerPosition = -1;
             }
             (*currentLevel).placeCharacter(player,playerPosition);
-            (*currentLevel).printMap(player,mapWindow);
+            (*currentLevel).printMap(player.getPosition(),mapWindow);
             infoWindow.clear();
             writeInfo(infoWindow,player,(*currentLevel).getLevel());
         }
