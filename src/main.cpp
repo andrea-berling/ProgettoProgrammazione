@@ -71,7 +71,7 @@ int main()
                 player = PlayableCharacter(15,0,20,12,5,30,"Gaudenzio");
                 break;
             case 1:
-                player = PlayableCharacter(10,20,10,8,5,30,"Peppino");
+                player = PlayableCharacter(10,9,10,8,5,30,"Peppino");
                 break;
             case 2:
                 player = PlayableCharacter(10,0,5,12,10,60,"Badore");

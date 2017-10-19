@@ -320,6 +320,7 @@ void writeEquipment(Window& win, PlayableCharacter& pg){
 }
 
 void writeInfo(Window& win,PlayableCharacter& pg, int level){
+    win.clear();
     win.box();
     win.printLine(pg.getName());
     win.printLine("");
@@ -526,16 +527,103 @@ int Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playabl
                 battle_win.printLine("ATTACCO -> " + to_string(m.getATK()));
                 battle_win.printLine("DIFESA -> " + to_string(m.getDEF()));
 
-                //sleep(1);   // alternatively getch() press a key to continue
                 getch();
 
-                if (Critical_Atk(player.getLuck()) == 1){
-                    m.setLP(m.getLP() - Atk_Def(m.getDEF(), (2 * player.getATK())));
-                    battle_win.printLine("");
-                    battle_win.printLine("COLPO CRITICO");
+                switch (player.getName()[0]) {  //Momentaneamente uso la difesa per distinguere i pg
+                    case 'G':    //Gaudenzio
+                        battle_win.clear();
+                        battle_win.printLine("Cosa vuoi fare?");
+                        battle_win.printLine("1) Attacco normale");
+                        battle_win.printLine("2) Rigenerazione");
+                        c = getch();
+                        switch (c) {
+
+                            case '1':    // Attacco normale scelto
+                                if (Critical_Atk(player.getLuck()) == 1) { // Attacco critico
+                                    m.setLP(m.getLP() - Atk_Def(m.getDEF(), (2 * player.getATK())));
+                                    battle_win.printLine("");
+                                    battle_win.printLine("COLPO CRITICO");
+                                } else
+                                    m.setLP(m.getLP() - Atk_Def(m.getDEF(), player.getATK()));  //Attacco normale
+                                break;
+                            case '2':
+                                battle_win.printLine("Hai guadagnato " + to_string(player.getLV() * 2) + " punti vita!");
+                                player.setLP(player.getLP() + player.getLV() * 2);
+                                writeInfo(right_win, player, level);
+                                break;
+                            default:
+                                battle_win.printLine("Hai fatto una mossa falsa, perdi il turno!");
+                                battle_win.printLine("(La prossima volta premi 1 o 2)");
+                                break;
+                        }
+                        break;
+                    case 'P': //Peppino
+                        battle_win.clear();
+                        battle_win.printLine("Cosa vuoi fare?");
+                        battle_win.printLine("1) Attacco normale");
+                        battle_win.printLine("2) Attacco magico");
+                        c = getch();
+                        switch (c) {
+
+                            case '1':    // Attacco normale scelto
+                                if (Critical_Atk(player.getLuck()) == 1) { // Attacco critico
+                                    m.setLP(m.getLP() - Atk_Def(m.getDEF(), (2 * player.getATK())));
+                                    battle_win.printLine("");
+                                    battle_win.printLine("COLPO CRITICO");
+                                } else
+                                    m.setLP(m.getLP() - Atk_Def(m.getDEF(), player.getATK()));  //Attacco normale
+                                break;
+                            case '2': // Attacco magico scelto
+                                if (player.getMP() > 3) {
+                                    battle_win.printLine("Stai usando 3 mana: attacco duplicato!");
+                                    m.setLP(m.getLP() - Atk_Def(m.getDEF(), (2 * player.getATK())));
+                                    writeInfo(right_win, player, level);
+                                }
+                                break;
+                            default:
+                                battle_win.printLine("Hai fatto una mossa falsa, perdi il turno!");
+                                battle_win.printLine("(La prossima volta premi 1 o 2");
+                                break;
+                        }
+                        break;
+                    case 'B': // Badore
+                        battle_win.clear();
+                        battle_win.printLine("Cosa vuoi fare?");
+                        battle_win.printLine("1) Attacco normale");
+                        battle_win.printLine("2) Attacco furtivo");
+                        c = getch();
+                        switch (c) {
+                            case '1':    // Attacco normale scelto
+                                if (Critical_Atk(player.getLuck()) == 1) { // Attacco critico
+                                    m.setLP(m.getLP() - Atk_Def(m.getDEF(), (2 * player.getATK())));
+                                    battle_win.printLine("");
+                                    battle_win.printLine("COLPO CRITICO");
+                                } else
+                                    m.setLP(m.getLP() - Atk_Def(m.getDEF(), player.getATK()));  //Attacco normale
+                                break;
+                            case '2': // Attacco furtivo scelto
+                                if (Critical_Atk(player.getLuck()) == 1) {
+                                    battle_win.printLine("Il nemico non ti vede: attacco triplicato!");
+                                    m.setLP(m.getLP() - Atk_Def(m.getDEF(), (3 * player.getATK())));
+                                } else {
+                                    battle_win.printLine(
+                                            "Sei stato maldestro: il nemico contrattacca e perdi un turno!");
+                                    player.setLP(player.getLP() - Atk_Def(player.getDEF(), (2 * m.getATK())));
+                                    writeInfo(right_win, player, level);
+                                }
+                                break;
+                            default:
+                                battle_win.printLine("Hai fatto una mossa falsa, perdi il turno!");
+                                battle_win.printLine("(La prossima volta premi 1 o 2");
+                                break;
+                        }
+
+                break;
+
                 }
-                else
-                    m.setLP(m.getLP() - Atk_Def(m.getDEF(), player.getATK()));
+
+                //sleep(1);   // alternatively getch() press a key to continue
+                getch();
 
                 if (m.getLP() < 0)
                     m.setLP(0);
@@ -557,6 +645,7 @@ int Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playabl
                 player.showInventory();
                 printMap(player,mapWin);
                 break;
+        // case 'r': scappare dalla battaglia con probabilità luck perdendo x monete
             default:
                 battle_win.clear();
                 battle_win.printLine("Premere un tasto valido!");
@@ -590,8 +679,12 @@ int Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playabl
     }
 
     if (m.getLP() <= 0) {
+        int wCoins = m.getLV() * 5; //  Monete vinte dal PG
         battle_win.clear();
         battle_win.printLine("!VITTORIA!");
+        getch();
+        battle_win.printLine("Hai ottenuto "+to_string(wCoins)+" Cucuzze!");
+        player.addCoins(wCoins);
         getch();
         battle_win.clear();
         //mvprintw(4, 44,);

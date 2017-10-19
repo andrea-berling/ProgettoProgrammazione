@@ -35,7 +35,7 @@ using namespace std;
         this->DEFMAX = DEF;
         this->ATK = ATK;
         this->LUCK = LUCK;
-        this->LV = 0;
+        this->LV = 1;
         this->Coins = Coins;
         this->Name = Name;
         for (int i = 0; i<5; i++){
@@ -92,7 +92,10 @@ using namespace std;
     }
 
     void PlayableCharacter::setLP(int LP){
-        this->LP = LP;
+        if (LP < LPMAX)
+            this->LP = LP;
+        else
+            this->LP = LPMAX;
     }
 
     void PlayableCharacter::setMP(int MP){
@@ -221,7 +224,7 @@ using namespace std;
             atk = 1;
             def = 1;
             lp = 1;
-            mp = 1;
+            mp = 3;
             luck = 1;
         }
 
