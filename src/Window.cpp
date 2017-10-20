@@ -40,10 +40,14 @@ void Window::readFromFile(string filename)
     while(file)
     {
         getline(file,line);
-        description += line;
+        if(line.front() != ' ')
+            description += " " + line;
+        else
+            description += line;
     }
-    description = wrap(description, ncols);
+    description = wrap(description, ncols - 1);
     description = title + '\n' + description;
+    firstAvailableLine = description.length() / ncols + 5;
     wprintw(win,description.c_str());
     wrefresh(win);
 }
@@ -74,9 +78,7 @@ string wrap(string text,unsigned int maxLength)
 
 void Window::printLine(string line) {
     if (line.length() < ncols) {
-        line += '\n';
         mvwprintw(win,firstAvailableLine,1,line.c_str());
-        wborder(win, '|', '|', '-', '-', '+', '+', '+', '+');
         firstAvailableLine++;
         wrefresh(win);
     }
