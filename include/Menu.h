@@ -2,6 +2,7 @@
 #define MYMENU_H
 #include <cstdarg>
 #include <ncurses.h>
+#include <panel.h>
 #include <list>
 #include <vector>
 #include <string>
@@ -11,11 +12,12 @@ class Menu
 {
     private:
 
-        ITEM** items;
-        MENU* menu;
-        WINDOW* menuwin;
-        WINDOW* subwin;
-        char** choices;
+        ITEM **items;
+        MENU *menu;
+        PANEL *menupanel;
+        WINDOW *menuwin;
+        WINDOW *subwin;
+        char **choices;
         int choice;
         int nlines;
         int ncols;
