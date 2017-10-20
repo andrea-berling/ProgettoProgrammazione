@@ -297,7 +297,7 @@ void PlayableCharacter::showInventory() {
             // mostra le caratteristiche dell'Item
             if(names[choice] !=  "-VUOTO-"){
                 ItemInventory.show();
-                ItemInventory.clear();
+                ItemInventory.clean();
                 it = I_vector[choice];
                 ItemInventory.printLine("STATISTICHE:");
                 ItemInventory.printLine("LP: " + to_string(it.getLP()));
@@ -314,7 +314,7 @@ void PlayableCharacter::showInventory() {
                 switch(select)
                 {
                     case 'u':
-                        ItemInventory.clear();
+                        ItemInventory.clean();
                         if (it.getType() != 5) {
                             if (!equip(it))   // Se ritorna vero l'Item è equipaggiato
                             {
@@ -337,7 +337,7 @@ void PlayableCharacter::showInventory() {
                         getch();
                         break;
                     case 'i':
-                        ItemInventory.clear();
+                        ItemInventory.clean();
                         if (it.getType() == 5)
                             ItemInventory.printLine(it.getName() + " IMPOSSIBILE equipaggiare!");
                         else if (it.getType() != 5){
@@ -351,14 +351,14 @@ void PlayableCharacter::showInventory() {
                         getch();
                         break;
                     case 'q':
-                        ItemInventory.clear();
+                        ItemInventory.clean();
                         ItemInventory.hide();
                         choice = inv.handleChoice();
                         if(choice == names.size() - 1)
                             look = true;
                         break;
                     case 'd':
-                        ItemInventory.clear();
+                        ItemInventory.clean();
                         if(it.getType() != 5)
                             unequip(it);
                         dropItem(it);
