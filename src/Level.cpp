@@ -218,6 +218,7 @@ int Level::handleMovement(Window& mapWindow, Window& info, Window& bottom,Playab
             if(player.pickItem(items[map(x,y).getUpperLayer()]))
             {
                 bottom.clear();
+                bottom.box();
                 bottom.printLine("Raccolto " + items[map(x,y).getUpperLayer()].getName());
                 getch();
                 bottom.clear();
@@ -368,6 +369,7 @@ void Level::shopMenu(PlayableCharacter& pg, vector<Item>& itemsSet)
         if (choice != 3) {
             chosenItem = itemsSet[indexes[choice]];
             itemInfo.clear();
+            itemInfo.box();
 
             chosenItem = itemsSet[indexes[choice]];
             itemInfo.printLine(chosenItem.getName());
@@ -518,6 +520,7 @@ int Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playabl
         battle_win.printLine("Per attaccare premere a, per consultare l'inventario premere i");
         c = getch();
         battle_win.clear();
+        battle_win.box();
 
         switch (c) {
             case 'a':
@@ -533,6 +536,7 @@ int Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playabl
                 switch (player.getName()[0]) {  //Momentaneamente uso la difesa per distinguere i pg
                     case 'G':    //Gaudenzio
                         battle_win.clear();
+                        battle_win.box();
                         battle_win.printLine("Cosa vuoi fare?");
                         battle_win.printLine("1) Attacco normale");
                         battle_win.printLine("2) Rigenerazione");
@@ -560,6 +564,7 @@ int Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playabl
                         break;
                     case 'P': //Peppino
                         battle_win.clear();
+                        battle_win.box();
                         battle_win.printLine("Cosa vuoi fare?");
                         battle_win.printLine("1) Attacco normale");
                         battle_win.printLine("2) Attacco magico");
@@ -589,6 +594,7 @@ int Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playabl
                         break;
                     case 'B': // Badore
                         battle_win.clear();
+                        battle_win.box();
                         battle_win.printLine("Cosa vuoi fare?");
                         battle_win.printLine("1) Attacco normale");
                         battle_win.printLine("2) Attacco furtivo");
@@ -630,6 +636,7 @@ int Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playabl
                     m.setLP(0);
 
                 battle_win.clear();
+                battle_win.box();
 
                 battle_win.printLine("Battaglia con " + m.getName() + ":");
                 battle_win.printLine("");
@@ -649,15 +656,18 @@ int Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playabl
         // case 'r': scappare dalla battaglia con probabilità luck perdendo x monete
             default:
                 battle_win.clear();
+                battle_win.box();
                 battle_win.printLine("Premere un tasto valido!");
                 getch();
                 battle_win.clear();
+                battle_win.box();
                 noAttack = true;
                 break;
         }
 
         if (m.getLP() > 0 && !noAttack) {
             battle_win.clear();
+            battle_win.box();
             battle_win.printLine("L'avversario ti attacca!");
 
             getch();
@@ -668,6 +678,7 @@ int Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playabl
                 player.setLP(0);
 
             right_win.clear();
+            right_win.box();
             writeInfo(right_win, player,level);
 
             battle_win.printLine("");
@@ -682,6 +693,7 @@ int Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playabl
     if (m.getLP() <= 0) {
         int wCoins = m.getLV() * 5; //  Monete vinte dal PG
         battle_win.clear();
+        battle_win.box();
         battle_win.printLine("!VITTORIA!");
         getch();
         battle_win.printLine("Hai ottenuto "+to_string(wCoins)+" Cucuzze!");
@@ -689,10 +701,12 @@ int Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playabl
         getch();
         battle_win.clear();
         battle_win.box();
+        battle_win.box();
         //mvprintw(4, 44,);
     }
     else if (player.getLP() <= 0){
         battle_win.clear();
+        battle_win.box();
         battle_win.printLine("SEI STATO SCONFITTO!");
         getch();
         battle_win.clear();
