@@ -37,6 +37,10 @@ class Window
         void clear();
         // Clears the window
 
+        void clean();
+        // Cleans the window, keeping the box
+        // Use only with boxed windows
+
         WINDOW *getWin();
         // Returns the WINDOW pointer
 

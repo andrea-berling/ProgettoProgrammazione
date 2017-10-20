@@ -123,3 +123,9 @@ void Window::hide()
     update_panels();
     doupdate();
 }
+
+void Window::clean()
+{
+    clear();
+    box();
+}
