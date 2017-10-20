@@ -8,6 +8,9 @@ using namespace boost;
 Window::Window(int x, int y, int nlines, int ncols):x(x),y(y),nlines(nlines),ncols(ncols)
 {
     win = newwin(nlines,ncols,y,x);
+    panel = new_panel(win);
+    update_panels();
+    doupdate();
     firstAvailableLine = 1;
 }
 // Given position coordinates and the number of lines and columns, it creates a new window
@@ -16,6 +19,9 @@ Window::~Window()
 {
     werase(win);
     wrefresh(win);
+    del_panel(panel);
+    update_panels();
+    doupdate();
     delwin(win);
 }
 // Destructor
@@ -100,4 +106,18 @@ void Window::clear()
 WINDOW *Window::getWin()
 {
     return win;
+}
+
+void Window::show()
+{
+    show_panel(panel);
+    update_panels();
+    doupdate();
+}
+
+void Window::hide()
+{
+    hide_panel(panel);
+    update_panels();
+    doupdate();
 }
