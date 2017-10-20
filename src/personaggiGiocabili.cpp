@@ -286,16 +286,18 @@ void PlayableCharacter::showInventory() {
 
     Menu inv (0, 0, names);  // Mostra le scelte possibili (Item nell'inventario)
     Window ItemInventory (inv.getX() + 20, inv.getY(), 19, 50);      // Crea una finestra per l'inventario
+    ItemInventory.hide();
 
     choice = inv.handleChoice();
 
     while (!look){
-        ItemInventory.clear();
 
         if(choice < names.size() - 1){
             // Se non si vuole tornare indietro e non si sceglie una casella vuota
             // mostra le caratteristiche dell'Item
             if(names[choice] !=  "-VUOTO-"){
+                ItemInventory.show();
+                ItemInventory.clear();
                 it = I_vector[choice];
                 ItemInventory.printLine("STATISTICHE:");
                 ItemInventory.printLine("LP: " + to_string(it.getLP()));
@@ -350,6 +352,7 @@ void PlayableCharacter::showInventory() {
                         break;
                     case 'q':
                         ItemInventory.clear();
+                        ItemInventory.hide();
                         choice = inv.handleChoice();
                         if(choice == names.size() - 1)
                             look = true;
@@ -361,12 +364,16 @@ void PlayableCharacter::showInventory() {
                         dropItem(it);
                         ItemInventory.printLine(it.getName() + " droppat"+suffix(it.getType())+"!");
                         getch();
+                        ItemInventory.hide();
                         look = true;
                         break;
                 }
             }
             else
+            {
                 choice = inv.handleChoice();
+                ItemInventory.hide();
+            }
 
         }
         else
