@@ -78,6 +78,9 @@ Menu::~Menu()
 {
     unpost_menu(menu);
     wrefresh(menuwin);
+    del_panel(menupanel);
+    update_panels();
+    doupdate();
 	free_menu(menu);
     delwin(subwin);
     delwin(menuwin);
@@ -111,15 +114,10 @@ int Menu::handleChoice()
                     choice--;
 				break;
             case 10:    // Enter
-                /*
-                ITEM* cur_item = current_item(menu);    // Fix: init i at 0, increase and decrease with key_up and
-                                                        // key_down, return choice in constant time
-                while(i < nlines && choice == -1)
-                {
-                    if(strcmp(item_name(cur_item),choices[i]) == 0)
-                    i++;
-                }
-                */
+                done = true;
+                break;
+            case 'q':
+                choice = nlines - 1;
                 done = true;
                 break;
 		}
@@ -150,6 +148,9 @@ void Menu::createMenu()
     set_menu_win(menu,menuwin);
     set_menu_sub(menu,subwin);
 
+    menupanel = new_panel(menuwin);
+    update_panels();
+    doupdate();
     choice = 0;
     set_menu_mark(menu,"");
     curs_set(0);
