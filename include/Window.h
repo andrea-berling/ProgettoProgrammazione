@@ -1,6 +1,7 @@
 #ifndef MY_WINDOW_H
 #define MY_WINDOW_H
 #include <ncurses.h>
+#include <panel.h>
 #include <string>
     /**
       Wrapper for the ncurses window
@@ -10,6 +11,7 @@ class Window
     private:
 
         WINDOW* win;
+        PANEL* panel;
         int x,y,nlines,ncols, firstAvailableLine;
 
     public:
@@ -37,6 +39,12 @@ class Window
 
         WINDOW *getWin();
         // Returns the WINDOW pointer
+
+        void show();
+        // Shows the panel of the window
+
+        void hide();
+        // Hides the panel of the window
 };
 
 std::string wrap(std::string text,unsigned int maxLength);
