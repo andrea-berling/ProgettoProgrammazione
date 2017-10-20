@@ -221,6 +221,7 @@ int Level::handleMovement(Window& mapWindow, Window& info, Window& bottom,Playab
                 bottom.printLine("Raccolto " + items[map(x,y).getUpperLayer()].getName());
                 getch();
                 bottom.clear();
+                bottom.box();
                 items.erase(map(x,y).getUpperLayer());
                 map(x,y).setUpperLayer("");
             }
@@ -687,6 +688,7 @@ int Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playabl
         player.addCoins(wCoins);
         getch();
         battle_win.clear();
+        battle_win.box();
         //mvprintw(4, 44,);
     }
     else if (player.getLP() <= 0){
