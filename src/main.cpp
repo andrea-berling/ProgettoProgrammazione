@@ -152,6 +152,7 @@ int playerChoiceMenu()
 {
     Menu players((COLS)/2 - 25,(LINES - 10)/2,4,"Gaudenzio","Peppino","Badore","Indietro");
     Window description(players.getX() + 20,players.getY() - 5,19,70);
+    string stats;
     bool done = false, close = false;
     int choice = -1;
     int confirm; 
@@ -164,12 +165,15 @@ int playerChoiceMenu()
         {
             case 0:
                 filename += "gaudenzio.desc";
+                stats = "LP: 15 MP: 0 DEF: 20 ATK: 12 LUCK: 5 COINS: 30";
                 break;
             case 1:
                 filename += "peppino.desc";
+                stats = "LP: 10 MP: 9 DEF: 10 ATK: 8 LUCK: 5 COINS: 30";
                 break;
             case 2:
                 filename += "badore.desc";
+                stats = "LP: 10 MP: 0 DEF: 5 ATK: 12 LUCK: 10 COINS: 60";
                 break;
             case 3:
                 close = true;
@@ -178,6 +182,8 @@ int playerChoiceMenu()
         if(!close)
         {
             description.readFromFile(filename);
+            description.separator();
+            description.printLine(stats);
             confirm = players.handleChoice();
             if(confirm == choice)
                 done = true;
