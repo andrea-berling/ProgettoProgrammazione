@@ -58,7 +58,7 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
 
     Room R = map.pickRoom();
     Point p = map.freeSpot(R);
-    map(p.x,p.y).setType(UP_STAIRS);
+    map.placeStairs(UP_STAIRS,p.x,p.y);
     upStairs = {p.x,p.y};
 
     R = map.pickRoom();
@@ -114,7 +114,7 @@ void Level::placeCharacter(PlayableCharacter& player,int playerPosition)
                 {
                     int x = player.getPosition().x;
                     int y = player.getPosition().y;
-                    map(x,y).setType(DOWN_STAIRS);
+                    map.placeStairs(DOWN_STAIRS,x,y);    // Here x and y can be modified to the actual position
                     downStairs = {x,y};
                 }
             }
