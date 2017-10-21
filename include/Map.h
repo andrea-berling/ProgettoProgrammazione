@@ -84,6 +84,10 @@ class Map
         Point freeSpot(Room R);
         // Given a room, returns a free spot in the room
 
+        void placeStairs(tile_t type, int& x, int& y);
+        // Places the stairs specified by type in x,y if possible
+        // If the stairs are in the way of the hallway, the stairs are placed nearby
+
 };
 
 #endif

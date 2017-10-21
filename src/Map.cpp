@@ -326,3 +326,17 @@ Point Map::freeSpot(Room R)
 
     return p;
 }
+
+void Map::placeStairs(tile_t type, int& x, int& y)
+{
+    if(type == UP_STAIRS || type == DOWN_STAIRS)
+    {
+        Point p = {x,y};
+        Room R = this->rooms[(*this)(x,y).getId()];
+        while((*this)(x-1,y).getType() == HALLWAY && (*this)(x+1,y).getType() == HALLWAY && (*this)(x,y+1).getType() == HALLWAY)
+            p = freeSpot(R);
+        x = p.x;
+        y = p.y;
+        (*this)(x,y).setType(type);
+    }
+}
