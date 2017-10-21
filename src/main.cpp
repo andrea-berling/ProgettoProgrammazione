@@ -56,7 +56,7 @@ int main()
     }
     if(!quit) 
     {
-        int mapWidth = 100, mapHeight = 37, n = 1, rooms = 10, items = 5, monsters = 5, status = -1;
+        int mapWidth = 100, mapHeight = 37, n = 1, rooms = 2, items = 1, monsters = 1, status = -1;
         Window mapWindow(0,0,mapHeight,mapWidth), infoWindow(101, 0, 37, 30), bottomWindow(0, 37, 10, 100);
         list<Level> levels;
         list<Level>::iterator currentLevel;
@@ -82,7 +82,7 @@ int main()
                 break;
         }
 
-        levels.insert(levels.begin(),Level(n,mapWidth,mapHeight,rooms,items,monsters, player));
+        levels.insert(levels.begin(),Level(n,mapWidth,mapHeight,rooms,items,monsters,player));
         currentLevel = levels.begin();
         (*currentLevel).placeCharacter(player,positionPreference);   // place the player in a random room
         (*currentLevel).printMap(player.getPosition(),mapWindow);
@@ -101,8 +101,12 @@ int main()
                         {
                             // Creation of a new level
                             ++n;
+                            rooms++;
+                            items = rooms/2;
+                            monsters = rooms/2;
+                            player.LVLup();
                             mapWindow.clear();
-                            Level newLevel = Level(n,mapWidth,mapHeight,rooms,items,monsters, player);
+                            Level newLevel = Level(n,mapWidth,mapHeight,rooms,items,monsters,player);
                             currentLevel = levels.insert(levels.end(),newLevel);
                             positionPreference = 0;
                         }
