@@ -51,20 +51,20 @@ int main()
                 break;
         }
     }
-    if(quit == true) 
-        endCurses();
-    else
+    if(!quit) 
     {
-        int width = 100;
-        int height = 37;
-        Window mapWindow(0,0,height,width);
-        Window infoWindow(101, 0, 37, 30);
-        Window bottomWindow(0, 37, 10, 100);
-        int status = -1;
+        int mapWidth = 100, mapHeight = 37, n = 1, rooms = 10, items = 5, monsters = 5, status = -1;
+        Window mapWindow(0,0,mapHeight,mapWidth), infoWindow(101, 0, 37, 30), bottomWindow(0, 37, 10, 100);
+        list<Level> levels;
+        list<Level>::iterator currentLevel;
+        PlayableCharacter player;
+        bool done = false;
+        int positionPreference = 0;
+
         clear();
         refresh();
         bottomWindow.box();
-        PlayableCharacter player;
+
         switch(character)
         {
             case 0:
@@ -77,47 +77,60 @@ int main()
                 player = PlayableCharacter(10,0,5,12,10,60,"Badore");
                 break;
         }
-        list<Level> levels;
-        list<Level>::iterator currentLevel;
-        int n = 1;
-        int rooms = 10;
-        int items = 5;
-        int monsters = 5;
-        levels.insert(levels.begin(),Level(n,width,height,rooms,items,monsters, player));
+
+        levels.insert(levels.begin(),Level(n,mapWidth,mapHeight,rooms,items,monsters, player));
         currentLevel = levels.begin();
-        (*currentLevel).placeCharacter(player,0);
+        (*currentLevel).placeCharacter(player,positionPreference);   // place the player in a random room
         (*currentLevel).printMap(player.getPosition(),mapWindow);
         writeInfo(infoWindow,player,(*currentLevel).getLevel());
-        while(status != 0)
+        while(!done)
         {
-            int playerPosition;
-            status = (*currentLevel).handleMovement(mapWindow,infoWindow,bottomWindow,player);
-            if(status == 1)
+            status = (*currentLevel).handleTurn(mapWindow,infoWindow,bottomWindow,player);
+            if(status != 0 && status != 2)
             {
-                ++currentLevel;
-                if(currentLevel == levels.end())
+                switch(status)
                 {
-                    ++n;
-                    mapWindow.clear();
-                    Level newLevel = Level(n,width,height,rooms,items,monsters, player);
-                    currentLevel = levels.insert(levels.end(),newLevel);
-                    playerPosition = 0;
+                    case 1:
+                        ++currentLevel;
+                        if(currentLevel == levels.end())
+                        {
+                            // Creation of a new level
+                            ++n;
+                            mapWindow.clear();
+                            Level newLevel = Level(n,mapWidth,mapHeight,rooms,items,monsters, player);
+                            currentLevel = levels.insert(levels.end(),newLevel);
+                            positionPreference = 0;
+                        }
+                        else
+                            positionPreference = 1; // no need to increment, the increment was done in the if part
+                        break;
+                    case -1:
+                        if(currentLevel != levels.begin())
+                        {
+                            currentLevel--;
+                            positionPreference = -1;
+                        }
+                        break;
                 }
-                else
-                {
-                    playerPosition = 1; // no need to increment, the increment was done in the if part
-                }
+                (*currentLevel).placeCharacter(player,positionPreference);
+                (*currentLevel).printMap(player.getPosition(),mapWindow);
+                infoWindow.clear();
+                writeInfo(infoWindow,player,(*currentLevel).getLevel());
             }
-            else if(status == -1)
+            else
             {
-                if(currentLevel != levels.begin())
-                    currentLevel--;
-                playerPosition = -1;
+                switch(status)
+                {
+                    case 2:
+                        // Victory
+                        break;
+                    case 0:
+                        // Loss
+                        break;
+                }
+
+                done = true;
             }
-            (*currentLevel).placeCharacter(player,playerPosition);
-            (*currentLevel).printMap(player.getPosition(),mapWindow);
-            infoWindow.clear();
-            writeInfo(infoWindow,player,(*currentLevel).getLevel());
         }
         // Generate the map with the given character
     }
@@ -153,7 +166,7 @@ int playerChoiceMenu()
     Menu players((COLS)/2 - 25,(LINES - 10)/2,4,"Gaudenzio","Peppino","Badore","Indietro");
     Window description(players.getX() + 20,players.getY() - 5,19,70);
     string stats;
-    bool done = false, close = false;
+    bool done = false;
     int choice = -1;
     int confirm; 
 
@@ -176,10 +189,10 @@ int playerChoiceMenu()
                 stats = "LP: 10 MP: 0 DEF: 5 ATK: 12 LUCK: 10 COINS: 60";
                 break;
             case 3:
-                close = true;
+                done = true;
                 break;
         }
-        if(!close)
+        if(!done)
         {
             description.readFromFile(filename);
             description.separator();
@@ -191,9 +204,7 @@ int playerChoiceMenu()
                 choice = confirm;
         }
         else
-        {
-            return -1;   // The player hit back, no charater was selected
-        }
+            choice = -1;   // The player hit back, no charater was selected
     }
 
     return choice;
