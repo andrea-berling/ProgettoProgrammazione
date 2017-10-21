@@ -16,13 +16,13 @@ Map::Map(int width, int height) : grid(height, width), width(width), height(heig
 
 Tile& Map::operator () (int x, int y)
 {
-    return grid(y,x);
+    return this->grid(y,x);
 }
 // Returns a reference variable to Map(x,y)
 
 Tile& Map::operator () (Point p)
 {
-    return grid(p.y,p.x);
+    return this->grid(p.y,p.x);
 }
 // Returns a reference variable to Map(x,y)
 
@@ -67,17 +67,17 @@ Room Map::pickRoom()
 
 void Map::setVisible(string id,std::unordered_map<std::string,Monster>& monsters,std::unordered_map<std::string,Item>& items)
 {
-    rooms[id].setVisible(true);
-    Point p = rooms[id].getCorner();    
-    int width = rooms[id].getWidth();
-    int height = rooms[id].getHeight();
+    this->rooms[id].setVisible(true);
+    Point p = this->rooms[id].getCorner();    
+    int width = this->rooms[id].getWidth();
+    int height = this->rooms[id].getHeight();
     for(int i = p.x; i < p.x + width; i++)
         for(int j = p.y; j < p.y + height; j++)
         {
             (*this)(i,j).setVisible(true);
             if((*this)(i,j).getUpperLayer() != "")   // Wake up monsters and show items
             {
-                if((*this)(i,j).getUpperLayer()[0] == 'm')
+                if((*this)(i,j).getUpperLayer().front() == 'm')
                     monsters[(*this)(i,j).getUpperLayer()].wakeUp(true);
                 else
                     items[(*this)(i,j).getUpperLayer()].setVisible(true);
@@ -110,10 +110,10 @@ void Map::generate(int requiredRooms)
     populateGraph(dots);
     createLinks(dots);
 
-    it = rooms.begin();
+    it = this->rooms.begin();
     R = (*it).second;
     ++it;
-    while(it != rooms.end())
+    while(it != this->rooms.end())
     {
         Q = (*it).second;
         ++it;
@@ -125,28 +125,16 @@ void Map::generate(int requiredRooms)
 Room Map::generateRoom(Area A,string id)
 {
     Point p;
-    int x = A.getCorner().x;
-    int y = A.getCorner().y;
-    int width = A.getWidth();
-    int height = A.getHeight();
-    int wMax, hMax;
-    int w,h;
+    int x = A.getCorner().x, y = A.getCorner().y, width = A.getWidth(), height = A.getHeight(), wMax, hMax, w, h, freeXSpace,freeYSpace;
 
     p.x = rand(x + 1, x + width - 2 - 7); // a room has a minimum size of 7x7 and a max size of 20x20
     p.y = rand(y + 1, y + height - 2 - 7); 
     
-    int freeXSpace = x + width - 2 - p.x;
-    int freeYSpace = y + height - 2 - p.y;
+    freeXSpace = x + width - 2 - p.x;
+    freeYSpace = y + height - 2 - p.y;
 
-    if(20 < freeXSpace)
-        wMax = 20;
-    else 
-        wMax = freeXSpace;
-
-    if(20 < freeYSpace)
-        hMax = 20;
-    else 
-        hMax = freeYSpace;
+    wMax = (20 < freeXSpace ? 20 : freeXSpace);
+    hMax = (20 < freeYSpace ? 20 : freeYSpace);
 
     w = rand(7, wMax);
     h = rand(7, hMax);
@@ -166,18 +154,18 @@ void Map::populateGraph(Graph& G)
 
 void Map::createLinks(Graph& G)
 {
-    for(int i = 0; i < height; i++)
-        for(int j = 0; j < width; j++)
+    for(int i = 0; i < this->height; i++)
+        for(int j = 0; j < this->width; j++)
         {
             Point current = {j, i};
             Point right = {j + 1, i};
             Point down = {j, i + 1};
             if((*this)(current).getType() == WALL)
             {
-                if(j < width - 1 && (*this)(right).getType() == WALL)
+                if(j < this->width - 1 && (*this)(right).getType() == WALL)
                     G.insertEdge(current,right);
 
-                if(i < height - 1 && (*this)(down).getType() == WALL)
+                if(i < this->height - 1 && (*this)(down).getType() == WALL)
                     G.insertEdge(current,down);
             }
         }
@@ -199,9 +187,7 @@ void Map::link(Room& R,Room& Q,Graph& G)
     retrievePath(steps,T,p,q);
 
     for(Point p : steps)
-    {
         (*this)(p).setType(HALLWAY);
-    }
 
     G.deletePoint(p);
     G.deletePoint(q);
@@ -225,11 +211,11 @@ void Map::freeSpots(int n,unordered_set<Point>& spots,int r)
 {
     unordered_map<string,Room>::iterator it;
     int permutation[n];
-    generateKPermutation(permutation,0,rooms.size()-1,n);
+    generateKPermutation(permutation,0,this->rooms.size()-1,n);
 
     for(int i = 0; i < n; i++) 
     {
-        it = rooms.begin();
+        it = this->rooms.begin();
         for(int j = 0; j < permutation[i]; j++)
             ++it;
 
@@ -270,11 +256,10 @@ void Map::generateRooms(int n)
 {
     Area A({1,1},width-1,height-1);
     unordered_set<Area> areas,toRemove,toInsert;
-    bool vertical = true;
-    int i = 1;
-    int roomId = 0;
+    bool vertical_split = true;
+    int i = 1, roomId = 0, tries = 0;
     string id;
-    int tries = 0;
+    
 
     areas.insert(A);
     while(i < n && tries < 500)
@@ -287,14 +272,14 @@ void Map::generateRooms(int n)
             {
                 bool split = false;
                 Area A1,A2;
-                if ((vertical && (A.getWidth()/3 > 10)) || (!vertical && (A.getHeight()/3 > 10)))
+                if ((vertical_split && (A.getWidth()/3 > 10)) || (!vertical_split && (A.getHeight()/3 > 10)))
                 {
-                    A.split(A1,A2,vertical);
+                    A.split(A1,A2,vertical_split);
                     split = true;
                 }
-                else if ((vertical && (A.getWidth()/2 > 10)) || (!vertical && (A.getHeight()/2 > 10)))
+                else if ((vertical_split && (A.getWidth()/2 > 10)) || (!vertical_split && (A.getHeight()/2 > 10)))
                 {
-                    A.splitInHalf(A1,A2,vertical);
+                    A.splitInHalf(A1,A2,vertical_split);
                     split = true;
                 }
                 if(split)
@@ -311,7 +296,7 @@ void Map::generateRooms(int n)
             areas.erase(A);
         for(Area A : toInsert)
             areas.insert(A);
-        vertical = !vertical;
+        vertical_split = !vertical_split;
     }
     // Generate rooms for each area
     for(Area A : areas)
