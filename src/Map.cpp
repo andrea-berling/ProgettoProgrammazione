@@ -9,10 +9,10 @@
 
 using namespace std;
 
-Map::Map(int width, int height) : grid(height, width), width(width), height(height),
-    rooms()
+Map::Map(int width, int height) : grid(height, width), width(width), height(height)
 {}
 // Creates a new map with the given # of rows and columns
+
 
 Tile& Map::operator () (int x, int y)
 {
@@ -59,11 +59,8 @@ Room Map::pickRoom()
     int index = rand(0,rooms.size()-1);
     unordered_map<string,Room>::iterator it = rooms.begin();
 
-    while(index > 0)
-    {
+    for(; index > 0; index--)
         ++it;
-        --index;
-    }
 
     return (*it).second;
 }
@@ -243,8 +240,6 @@ void Map::freeSpots(int n,unordered_set<Point>& spots,int r)
             do
             {
                 position = freeSpot((*it).second);
-                // Rememeber to implement the printing of the
-                // map to hide an object if a monster is on it
             }
             while(spots.find(position) != spots.end());
             spots.insert(position);
@@ -262,7 +257,7 @@ std::string Map::placeCharacter(PlayableCharacter& player)
     int width = R.getWidth();
     do
     {
-                p = Point(rand(x+1,x+width-2),rand(y+1,y+height-2)); // Rememeber to implement the printing of the
+        p = Point(rand(x+1,x+width-2),rand(y+1,y+height-2));
     }
     while((*this)(p.x,p.y).getUpperLayer() != "");
 
@@ -340,8 +335,7 @@ Point Map::freeSpot(Room R)
 
     do
     {
-        p = Point(rand(x+1,x+width-2),rand(y+1,y+height-2)); // Rememeber to implement the printing of the
-        // map to hide an object if a monster is on it
+        p = Point(rand(x+1,x+width-2),rand(y+1,y+height-2));
     }
     while((*this)(p.x,p.y).getUpperLayer() != "");
 
