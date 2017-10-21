@@ -41,6 +41,7 @@ using namespace std;
         for (int i = 0; i<5; i++){
             equipment [i] = Item();      //Inizializza il vettore di Item "equipment"
         }
+        this->pieces = 0;
     }
 
     int PlayableCharacter::getLP(){
@@ -400,3 +401,12 @@ string suffix(int type){
     return sfx;
 }
 
+void PlayableCharacter::pickUpPiece()
+{
+    this->pieces++;
+}
+
+int PlayableCharacter::getPieces()
+{
+    return this->pieces;
+}
