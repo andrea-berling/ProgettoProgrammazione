@@ -16,6 +16,7 @@ private:
     int LPMAX, MPMAX, DEFMAX;
     int LUCK, LUCKMAX;
     int LV, Coins;
+    int pieces;
     Point POS;
     std::string Name;
     std::unordered_set<Item> Inventory;
@@ -123,6 +124,12 @@ public:
 
     void showInventory();
     // Shows the inventory
+
+    void pickUpPiece();
+    // Increases the pieces counter
+
+    int getPieces();
+    // Returns the number of pieces
 };
 
 std::string suffix(int type);
