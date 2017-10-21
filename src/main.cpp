@@ -26,6 +26,9 @@ int playerChoiceMenu();
 void endCurses();
 // Ends curses mode
 
+void showStory();
+// Creates a window that shows the main story
+
 int main()
 {	
     int choice;
@@ -61,9 +64,10 @@ int main()
         bool done = false;
         int positionPreference = 0;
 
+
         clear();
         refresh();
-        bottomWindow.box();
+        showStory();    // Shows the main story
 
         switch(character)
         {
@@ -83,6 +87,7 @@ int main()
         (*currentLevel).placeCharacter(player,positionPreference);   // place the player in a random room
         (*currentLevel).printMap(player.getPosition(),mapWindow);
         writeInfo(infoWindow,player,(*currentLevel).getLevel());
+        bottomWindow.box();
         while(!done)
         {
             status = (*currentLevel).handleTurn(mapWindow,infoWindow,bottomWindow,player);
@@ -210,3 +215,10 @@ int playerChoiceMenu()
     return choice;
 }
 
+void showStory()
+{
+    Window storyWin(COLS/3,LINES/5,30,70);
+    storyWin.readFromFile("resources/storia.dat");
+    storyWin.printLine("Premi un tasto per continuare...");
+    getch();
+}
