@@ -31,12 +31,7 @@ void Window::readFromFile(string filename)
     ifstream file(filename);
     string line;
     string description = "";
-    string title;
     
-    werase(win);
-    wrefresh(win);
-    getline(file,title);
-    title = wrap(title,ncols);
     while(file)
     {
         getline(file,line);
@@ -45,11 +40,11 @@ void Window::readFromFile(string filename)
         else
             description += line;
     }
+    char_separator<char> sep("\n");
     description = wrap(description, ncols - 1);
-    description = title + '\n' + description;
-    firstAvailableLine = description.length() / ncols + 5;
-    wprintw(win,description.c_str());
-    wrefresh(win);
+    tokenizer<char_separator<char>> tokens(description,sep);
+    for(string line : tokens)
+        printLine(line);
 }
 // Given a filename, it writes its contents in the window
 
