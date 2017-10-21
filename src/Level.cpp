@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include "../include/Menu.h"
 
+#define NEEDED_PIECES 12
+
 using namespace std;
 
 Level::Level(int level, int width, int height, int rooms, int _monsters, int _items, PlayableCharacter& pg):level(level),map(width,height),monsters(47),items(47)
@@ -23,6 +25,7 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
         shopMenu(pg, itemsSet);
 
     map.generate(rooms);
+    // Spawn items
     map.freeSpots(_items,spots);
     for(Point p : spots)
     {
@@ -38,6 +41,7 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
     }
     spots.clear();
     id = 0;
+    // Spawn monsters
     map.freeSpots(_monsters,spots);
     for(Point p : spots)
     {
@@ -56,6 +60,10 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
     Point p = map.freeSpot(R);
     map(p.x,p.y).setType(UP_STAIRS);
     upStairs = {p.x,p.y};
+
+    R = map.pickRoom();
+    p = map.freeSpot(R);
+    map(p.x,p.y).setUpperLayer("degree");
 }
 
 void Level::printMap(Point playerPos, Window& mapWindow)
@@ -68,11 +76,13 @@ void Level::printMap(Point playerPos, Window& mapWindow)
         for (int j = 0; j < map.getWidth(); j++)
         {
             if(map(j,i).isVisible())
-                waddch(win,map(j,i).getSymbol());
+                if(map(j,i).getUpperLayer() == "degree")
+                    waddch(win,'*');
+                else
+                    waddch(win,map(j,i).getSymbol());
             else
                 waddch(win,' ');
         }
-        //waddch(win,'\n');
     }
     for(auto i : items)
     {
@@ -120,18 +130,21 @@ void Level::placeCharacter(PlayableCharacter& player,int playerPosition)
     }
 }
 
-int Level::handleMovement(Window& mapWindow, Window& info, Window& bottom,PlayableCharacter& player)
+int Level::handleTurn(Window& mapWindow, Window& info, Window& bottom,PlayableCharacter& player)
 {
-    int x,y,c;
-    Point pos = player.getPosition();
+    int x,y,c, status = -2; // Default value
     bool moved = false;
-    x = pos.x;
-    y = pos.y;
-    map.showAround(x,y);
+    x = player.getPosition().x;
+    y = player.getPosition().y;
     list<Monster> monstersNearby;
-    while(true)
+
+    map.showAround(x,y);
+
+    while(status == -2)
     {
         monstersNearby.clear();
+
+        // Handle the actual movement of the player
         c = getch();
         switch(c)
         {
@@ -194,61 +207,97 @@ int Level::handleMovement(Window& mapWindow, Window& info, Window& bottom,Playab
                 player.showInventory();
                 break;
             case 'q':
-                return 0;
+                status = 0;
+                break;
+            case 'P':
+                for(int i = player.getPieces(); i < NEEDED_PIECES - 1; i++)
+                    player.pickUpPiece();
                 break;
         }
         player.setPosition(x,y);
+
+        // Show the map dinamically
         if(map(x,y).getId() != "")
             map.setVisible(map(x,y).getId(),monsters,items);
         else
             map.showAround(x,y);
+
         if(moved == true)
         {
             moved = false;
+            // Move the npcs
             for(auto& m : monsters)
                 if(m.second.isAwake())
                     moveMonster(player.getPosition(),m.second);
+            // Change level
             if(map(x,y).getType() == UP_STAIRS)
-                return 1;
+                status = 1;
             else if(map(x,y).getType() == DOWN_STAIRS)
-                return -1;
+                status = -1;
         }
+
+        // Pick up items or degree pieces
         printMap(player.getPosition(),mapWindow);
-        if(map(x,y).getUpperLayer() != "" && map(x,y).getUpperLayer()[0] == 'i')
-            if(player.pickItem(items[map(x,y).getUpperLayer()]))
-            {
-                bottom.clean();
-                bottom.printLine("Raccolto " + items[map(x,y).getUpperLayer()].getName());
-                getch();
-                bottom.clean();
-                items.erase(map(x,y).getUpperLayer());
-                map(x,y).setUpperLayer("");
-            }
+        if(map(x,y).getUpperLayer() != "")
+            if(map(x,y).getUpperLayer().front() == 'i')
+                if(player.pickItem(items[map(x,y).getUpperLayer()]))    /* returns true if the item was actually picke
+                     up*/
+                {
+                    bottom.printLine("Raccolto " + items[map(x,y).getUpperLayer()].getName());
+                    getch();
+                    bottom.clean();
+                    items.erase(map(x,y).getUpperLayer());
+                    map(x,y).setUpperLayer("");
+                }
+                else
+                {
+                    bottom.printLine("Hai camminato su " + items[map(x,y).getUpperLayer()].getName());
+                    getch();
+                    bottom.clean();
+                } 
             else
             {
-                bottom.clear();
-                bottom.printLine("Hai camminato su " + items[map(x,y).getUpperLayer()].getName());
+                player.pickUpPiece();
+                bottom.printLine("Hai raccolto un pezzo di laurea");
+                map(x,y).setUpperLayer("");
                 getch();
-                bottom.clear();
-            } 
+                if(player.getPieces() == NEEDED_PIECES)
+                {
+                    bottom.printLine("Hai trovato tutti i pezzi della laurea");
+                    getch();
+                    status = 2;   // Victory status
+                }
+                else
+                {
+                    bottom.printLine("Ne mancano ancora " + to_string(NEEDED_PIECES - player.getPieces()) + ". Tieni duro");
+                    getch();
+                    bottom.clean();
+                } 
+            }
+
+        // Update the players info
         info.clear();
         writeInfo(info,player,level);
+
+        // Handle the battle between nearby monsters, if present
         monstersAround(player.getPosition(),monstersNearby);
         if(!monstersNearby.empty())
         {
             for(Monster m : monstersNearby)
-            if(Battle(bottom,info,mapWindow,player,m))
-            {
-                map(m.getPosition()).setUpperLayer("");
-                monsters.erase(m.getId());
-                printMap(player.getPosition(),mapWindow);
-                info.clear();
-                writeInfo(info,player,level);
-            } 
-            else
-                return 0;
+                if(Battle(bottom,info,mapWindow,player,m))  // Returns true upon a win, false upon a loss
+                {
+                    map(m.getPosition()).setUpperLayer("");
+                    monsters.erase(m.getId());
+                    printMap(player.getPosition(),mapWindow);
+                    info.clear();
+                    writeInfo(info,player,level);
+                } 
+                else
+                    status = 0;
         }
     }
+
+    return status;
 }
 
 int Level::getLevel() {
@@ -331,6 +380,7 @@ void writeInfo(Window& win,PlayableCharacter& pg, int level){
     win.printLine("Cucuzze: " + to_string(pg.getCoins()));
     win.printLine("");
     win.printLine("Livello attuale: " + to_string(level));
+    win.printLine("Pezzi di laurea: " + to_string(pg.getPieces()) + "/" + to_string(NEEDED_PIECES));
 
     win.separator();
 
@@ -420,7 +470,7 @@ void Level::monstersAround(Point playerPos, std::list<Monster>& list)
 
     for(int i = playerPos.y - 1; i < playerPos.y + 2; i++)
         for(int j = playerPos.x - 1; j < playerPos.x + 2; j++)
-            if(!map(j,i).isWalkable() && map(j,i).getUpperLayer() != "" && map(j,i).getUpperLayer()[0] == 'm') 
+            if(!map(j,i).isWalkable() && map(j,i).getUpperLayer() != "" && map(j,i).getUpperLayer().front() == 'm') 
                 // Map(j,i) is not walkable as there is a monster on it
                 ids.push_back(map(j,i).getUpperLayer());
 
@@ -501,14 +551,15 @@ void Level::moveMonster(Point playerPosition, Monster& mons){
 bool Level::validPosition(Point pos,Point playerPos)
 {
     return pos != playerPos && map(pos).getType() == PAVEMENT && map(pos).getId() != "" && map(pos).getUpperLayer() == "";    // The monster can't leave
-    //the room it's in and can't walk on the player
+    //the room it's in and can't walk on the player or on items
 }
 
-int Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, PlayableCharacter& player, Monster& m){
+bool Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, PlayableCharacter& player, Monster& m){
 
     using namespace std;
     char c;
     bool noAttack = false;
+    bool win;
 
     while ((m.getLP() > 0) && (player.getLP() > 0)) {
 
@@ -528,7 +579,7 @@ int Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playabl
 
                 getch();
 
-                switch (player.getName()[0]) {  //Momentaneamente uso la difesa per distinguere i pg
+                switch (player.getName().front()) {  //Momentaneamente uso la difesa per distinguere i pg
                     case 'G':    //Gaudenzio
                         battle_win.clean();
                         battle_win.printLine("Cosa vuoi fare?");
@@ -621,7 +672,6 @@ int Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playabl
 
                 }
 
-                //sleep(1);   // alternatively getch() press a key to continue
                 getch();
 
                 if (m.getLP() < 0)
@@ -635,7 +685,6 @@ int Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playabl
                 battle_win.printLine("ATTACCO -> " + to_string(m.getATK()));
                 battle_win.printLine("DIFESA -> " + to_string(m.getDEF()));
 
-                //sleep(2);
                 getch();
 
                 break;
@@ -674,7 +723,6 @@ int Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playabl
         else
             noAttack = false;
 
-        //sleep(2);
     }
 
     if (m.getLP() <= 0) {
@@ -687,18 +735,17 @@ int Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playabl
         getch();
         battle_win.clean();
         battle_win.box();
-        //mvprintw(4, 44,);
+        win = true;
     }
     else if (player.getLP() <= 0){
         battle_win.clean();
         battle_win.printLine("SEI STATO SCONFITTO!");
         getch();
         battle_win.clear();
-        return 0;
-        //mvprintw(4, 39, "");
+        win = false;
     }
 
-    return 1;
+    return win;
 }
 
 int Atk_Def (int def, int atk) {
