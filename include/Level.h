@@ -36,9 +36,8 @@ class Level
         // if playerPosition == 1, the position is the same as the one of the down stairs
         // if playerPosition == -1, the position is the same as the one of the up stairs
 
-        int handleMovement(Window& mapWindow, Window& info, Window& bottom, PlayableCharacter& player);
-        // Handles the movement of the main character and the exploration of the map
-        // and the printing of the stats
+        int handleTurn(Window& mapWindow, Window& info, Window& bottom, PlayableCharacter& player);
+        // Handles the player's turn
 
         int getLevel();
         //  Restituisce il numero del livello
@@ -58,7 +57,7 @@ class Level
         void moveMonster(Point playerPosition, Monster& mons);
         // Muove il mostro passato in modo che si avvicini al giocatore 
 
-        int Battle (Window& battle_win, Window& right_win, Window& mapWin, PlayableCharacter& player, Monster& m);
+        bool Battle (Window& battle_win, Window& right_win, Window& mapWin, PlayableCharacter& player, Monster& m);
 };
 
 void writeInfo(Window& win,PlayableCharacter& pg, int level);
