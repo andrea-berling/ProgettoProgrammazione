@@ -307,8 +307,7 @@ void PlayableCharacter::showInventory() {
                 ItemInventory.printLine("DEF: " + to_string(it.getDEF()));
                 ItemInventory.printLine("LUCK: " + to_string(it.getLuck()));
                 ItemInventory.separator();
-                ItemInventory.printLine("Premere u per usare, i per disequipaggiare");
-                ItemInventory.printLine("q per chiudere, d per droppare");
+                ItemInventory.print("Premere u per usare, i per disequipaggiare, q per chiudere, d per droppare");
 
                 select= getch();
 
