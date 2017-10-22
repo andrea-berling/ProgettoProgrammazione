@@ -120,6 +120,10 @@ int Menu::handleChoice()
                 choice = nlines - 1;
                 done = true;
                 break;
+            case 'G':
+                menu_driver(menu, REQ_LAST_ITEM);
+                choice = nlines - 1;
+                break;
 		}
         wrefresh(menuwin);
 	}	
