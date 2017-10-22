@@ -333,7 +333,7 @@ void Map::placeStairs(tile_t type, int& x, int& y)
     {
         Point p = {x,y};
         Room R = this->rooms[(*this)(x,y).getId()];
-        while((*this)(x-1,y).getType() == HALLWAY && (*this)(x+1,y).getType() == HALLWAY && (*this)(x,y+1).getType() == HALLWAY)
+        while((*this)(p.x-1,p.y).getType() == HALLWAY || (*this)(p.x+1,p.y).getType() == HALLWAY || (*this)(p.x,p.y+1).getType() == HALLWAY)
             p = freeSpot(R);
         x = p.x;
         y = p.y;
