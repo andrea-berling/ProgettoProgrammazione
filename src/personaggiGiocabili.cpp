@@ -32,7 +32,6 @@ using namespace std;
         this->MP = MP;
         this->MPMAX = MP;
         this->DEF = DEF;
-        this->DEFMAX = DEF;
         this->ATK = ATK;
         this->LUCK = LUCK;
         this->LV = 1;
@@ -61,11 +60,7 @@ using namespace std;
     }
 
     int PlayableCharacter::getDEF(){
-        return this->DEF;
-    }
-
-    int PlayableCharacter::getDEFMAX() {
-        return this->DEFMAX;
+        return min(this->DEF,90);   // La Difesa massima può arrivare fino a 90 (a 100 il pg è invincibile)
     }
 
     int PlayableCharacter::getATK(){
@@ -77,7 +72,7 @@ using namespace std;
     }
 
     int PlayableCharacter::getLuck(){
-        return this->LUCK;
+        return min(this->LUCK,30);  // La fortuna masssima può arrivare fino a 30
     }
 
     int PlayableCharacter::getLuckMAX() {
@@ -149,10 +144,7 @@ using namespace std;
             else
                 MP = MPMAX;
 
-            if (DEFMAX >= DEF + sbobba.getDEF())
-                DEF = DEFMAX;
-            else
-                DEF = DEF + sbobba.getDEF();
+            DEF = DEF + sbobba.getDEF();
 
             if (LUCKMAX >= LUCK + sbobba.getLuck())
                 LUCK = LUCKMAX;
@@ -220,38 +212,27 @@ using namespace std;
             def = 3;
             lp = 2;
             luck = 1;
-    }
-        if (this->Name == "Peppino"){
+        }
+        else if (this->Name == "Peppino"){
             atk = 1;
             def = 1;
             lp = 1;
             mp = 3;
             luck = 1;
         }
-
-        if (this->Name == "Badore"){
+        else if (this->Name == "Badore"){
             atk = 2;
             lp = 1;
             luck = 3;
         }
 
-        if ((this->DEFMAX += def) > 90)     //La Difesa massima può arrivare fino a 90 (a 100 il pg è invincibile)
-            this->DEFMAX = 90;
-        else
-            this->DEFMAX += def;
-
-        if ((this->LUCKMAX += luck) > 30)    //La fortuna masssima può arrivare fino a 30
-            this->LUCKMAX = 30;
-        else
-            this->LUCKMAX += luck;
-
         this->ATK += atk;
-        this->DEF = DEFMAX;
+        this->DEF += def;
         this->MPMAX += mp ;
         this->LPMAX += lp ;
         this->LP = LPMAX;   //  Quando il PG sale di livello LP, MP, DEF e LUCK vengono portati al loro valore massimo.
         this->MP = MPMAX;
-        this->LUCK = LUCKMAX;
+        this->LUCK += luck;
 };
 
 Item PlayableCharacter::getEquipmentAt(int index) {
