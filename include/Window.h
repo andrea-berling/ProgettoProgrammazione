@@ -49,6 +49,10 @@ class Window
 
         void hide();
         // Hides the panel of the window
+
+        void print(std::string str);
+        // Prints the string str to the window, wrapping it if necessary
+
 };
 
 std::string wrap(std::string text,unsigned int maxLength);
