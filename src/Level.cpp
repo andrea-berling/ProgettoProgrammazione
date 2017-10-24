@@ -631,21 +631,24 @@ bool Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playab
 
                     case '2':
                         switch (player.getName().front()){
-                            case 'g':   //gaudenzio
+                            case 'G':   //gaudenzio
                                 battle_win.printLine("Hai guadagnato " + to_string(player.getLV() * 2) + " punti vita!");
                                 player.setLP(player.getLP() + player.getLV() * 2);
                                 writeInfo(right_win, player, level);
                                 break;
 
-                            case 'p':   //peppino
-                                if (player.getMP() > 3) {
+                            case 'P':   //peppino
+                                if (player.getMP() >= 3) {
                                     battle_win.printLine("Stai usando 3 mana: attacco duplicato!");
+                                    player.setMP(player.getMP() - 3);
                                     m.setLP(m.getLP() - Atk_Def(m.getDEF(), (2 * player.getATK())));
                                     writeInfo(right_win, player, level);
                                 }
+                                else
+                                    battle_win.printLine("Mana insufficiente!");
                                 break;
 
-                            case 'b':   //badore
+                            case 'B':   //badore
                                 if (Luck(player.getLuck()) == 1) {
                                     battle_win.printLine("Il nemico non ti vede: attacco triplicato!");
                                     m.setLP(m.getLP() - Atk_Def(m.getDEF(), (3 * player.getATK())));

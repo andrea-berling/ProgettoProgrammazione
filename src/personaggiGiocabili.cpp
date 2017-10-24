@@ -95,7 +95,7 @@ using namespace std;
     }
 
     void PlayableCharacter::setMP(int MP){
-        this->MP = MP;
+        this->MP = max(MP, 0);
     }
 
     void PlayableCharacter::setDEF(int DEF){
@@ -230,8 +230,6 @@ using namespace std;
         this->DEF += def;
         this->MPMAX += mp ;
         this->LPMAX += lp ;
-        this->LP = LPMAX;   //  Quando il PG sale di livello LP, MP, DEF e LUCK vengono portati al loro valore massimo.
-        this->MP = MPMAX;
         this->LUCK += luck;
 };
 
