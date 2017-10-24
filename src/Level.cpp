@@ -26,7 +26,7 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
 
     map.generate(rooms);
     // Spawn items
-    map.freeSpots(_items,spots);
+    map.freeSpots(_items,spots,ceil((double)(_items)/rooms));
     for(Point p : spots)
     {
         int index = rand(0,min(level*3,static_cast<int>(itemsSet.size())-1));
@@ -42,7 +42,8 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
     spots.clear();
     id = 0;
     // Spawn monsters
-    map.freeSpots(_monsters,spots);
+    map.freeSpots(_monsters,spots,ceil((double)(_monsters)/rooms));
+    //map.freeSpots(_monsters,spots);
     for(Point p : spots)
     {
         int index = rand(0,monstersSet.size()-1);
