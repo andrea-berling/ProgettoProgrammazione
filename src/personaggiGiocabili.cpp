@@ -267,7 +267,7 @@ void PlayableCharacter::showInventory() {
     names.push_back(string("BACK"));
 
     Menu inv (0, 0, names);  // Mostra le scelte possibili (Item nell'inventario)
-    Window ItemInventory (inv.getX() + 20, inv.getY(), 19, 50);      // Crea una finestra per l'inventario
+    Window ItemInventory (inv.getX() + 20, inv.getY(), 21, 50);      // Crea una finestra per l'inventario
     ItemInventory.hide();
 
     choice = inv.handleChoice();
@@ -288,7 +288,18 @@ void PlayableCharacter::showInventory() {
                 ItemInventory.printLine("DEF: " + to_string(it.getDEF()));
                 ItemInventory.printLine("LUCK: " + to_string(it.getLuck()));
                 ItemInventory.separator();
-                ItemInventory.print("Premere u per usare, i per disequipaggiare, q per chiudere, d per droppare");
+
+                ItemInventory.printLine("Premi: ");
+
+                if (it.getType() != 5){
+                    ItemInventory.printLine("u) Equipaggia");
+                    ItemInventory.printLine("i) Disequipaggia");
+                }
+                else if (it.getType() == 5)
+                    ItemInventory.printLine("u) Usa consumabile");
+
+                ItemInventory.printLine("q) Chiudi inventario");
+                ItemInventory.printLine("d) Droppa oggeto");
 
                 select= getch();
 
@@ -317,6 +328,7 @@ void PlayableCharacter::showInventory() {
                         }
                         getch();
                         break;
+
                     case 'i':
                         ItemInventory.clean();
                         if (it.getType() == 5)
@@ -331,6 +343,7 @@ void PlayableCharacter::showInventory() {
                         }
                         getch();
                         break;
+
                     case 'q':
                         ItemInventory.clean();
                         ItemInventory.hide();
@@ -338,6 +351,7 @@ void PlayableCharacter::showInventory() {
                         if(choice == names.size() - 1)
                             look = true;
                         break;
+
                     case 'd':
                         ItemInventory.clean();
                         if(it.getType() != 5)
