@@ -564,7 +564,8 @@ bool Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playab
     while ((m.getLP() > 0) && (player.getLP() > 0)) {
 
         //battle_win.printLine("Per iniziare la battaglia premere a, per consultare l'inventario premere s");
-        battle_win.printLine("Per attaccare premere a, per consultare l'inventario premere i");
+        battle_win.printLine("- Per attaccare premere a");
+        battle_win.printLine("- Per consultare l'inventario premere i");
         c = getch();
         battle_win.clean();
 
