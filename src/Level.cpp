@@ -26,7 +26,7 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
 
     map.generate(rooms);
     // Spawn items
-    map.freeSpots(_items,spots);
+    map.freeSpots(_items,spots,ceil((double)(_items)/rooms));
     for(Point p : spots)
     {
         int index = rand(0,min(level*3,static_cast<int>(itemsSet.size())-1));
@@ -42,7 +42,8 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
     spots.clear();
     id = 0;
     // Spawn monsters
-    map.freeSpots(_monsters,spots);
+    map.freeSpots(_monsters,spots,ceil((double)(_monsters)/rooms));
+    //map.freeSpots(_monsters,spots);
     for(Point p : spots)
     {
         int index = rand(0,monstersSet.size()-1);
@@ -58,7 +59,7 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
 
     Room R = map.pickRoom();
     Point p = map.freeSpot(R);
-    map(p.x,p.y).setType(UP_STAIRS);
+    map.placeStairs(UP_STAIRS,p.x,p.y);
     upStairs = {p.x,p.y};
 
     R = map.pickRoom();
@@ -114,7 +115,7 @@ void Level::placeCharacter(PlayableCharacter& player,int playerPosition)
                 {
                     int x = player.getPosition().x;
                     int y = player.getPosition().y;
-                    map(x,y).setType(DOWN_STAIRS);
+                    map.placeStairs(DOWN_STAIRS,x,y);    // Here x and y can be modified to the actual position
                     downStairs = {x,y};
                 }
             }

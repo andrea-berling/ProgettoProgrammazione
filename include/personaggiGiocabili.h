@@ -13,7 +13,7 @@
 class PlayableCharacter{
 private:
     int LP, MP, DEF, ATK;
-    int LPMAX, MPMAX, DEFMAX;
+    int LPMAX, MPMAX;
     int LUCK, LUCKMAX;
     int LV, Coins;
     int pieces;
