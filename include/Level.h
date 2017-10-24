@@ -68,6 +68,6 @@ void writeEquipment(Window& win, PlayableCharacter& pg);
 
 int Atk_Def (int def, int atk);
 
-int Critical_Atk (int luck);
+int Luck (int luck);
 
 #endif
