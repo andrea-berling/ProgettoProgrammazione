@@ -10,7 +10,14 @@
 using namespace std;
 
 Map::Map(int width, int height) : grid(height, width), width(width), height(height)
-{}
+{
+    for(int i = 0; i < width; i++)        // Map initialization
+        for(int j = 0; j < height; j++)
+        {
+            (*this)(i,j).setType(WALL);
+            (*this)(i,j).setVisible(false);
+        }
+}
 // Creates a new map with the given # of rows and columns
 
 
@@ -98,13 +105,6 @@ void Map::generate(int requiredRooms)
     unordered_map<string,Room>::iterator it;
     Room R,Q;
     Graph dots;
-
-    for(int i = 0; i < width; i++)        // Map initialization
-        for(int j = 0; j < height; j++)
-        {
-            (*this)(i,j).setType(WALL);
-            (*this)(i,j).setVisible(false);
-        }
 
     generateRooms(requiredRooms);
     populateGraph(dots);
@@ -209,26 +209,51 @@ void Map::connectToMap(Graph& G, Point& p, Point& q)
 
 void Map::freeSpots(int n,unordered_set<Point>& spots,int r)
 {
+    int i = 0;
     unordered_map<string,Room>::iterator it;
-    int permutation[n];
-    generateKPermutation(permutation,0,this->rooms.size()-1,n);
+    if (n < this->rooms.size())
+    {
+        int permutation[n];
+        generateKPermutation(permutation,0,this->rooms.size()-1,n);
 
-    for(int i = 0; i < n; i++) 
+        while(i < n)
+        {
+            it = this->rooms.begin();
+            for(int j = 0; j < permutation[i]; j++)
+                ++it;
+
+            for(int k = 0; k < r; k++)
+            {
+                Point position;
+
+                do
+                {
+                    position = freeSpot((*it).second);
+                }
+                while(spots.find(position) != spots.end());
+                spots.insert(position);
+                i++;
+            }
+        }
+    }
+    else
     {
         it = this->rooms.begin();
-        for(int j = 0; j < permutation[i]; j++)
-            ++it;
-
-        for(int k = 0; k < r; k++)
+        while(i < n)
         {
-            Point position;
-
-            do
+            for(int k = 0; k < r; k++)
             {
-                position = freeSpot((*it).second);
+                Point position;
+
+                do
+                {
+                    position = freeSpot((*it).second);
+                }
+                while(spots.find(position) != spots.end());
+                spots.insert(position);
+                i++;
             }
-            while(spots.find(position) != spots.end());
-            spots.insert(position);
+
         }
     }
 }
