@@ -42,7 +42,6 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
     spots.clear();
     id = 0;
     // Spawn monsters
-    //map.freeSpots(_monsters,spots);
     map.freeSpots(_monsters,spots,ceil((double)(_monsters)/rooms));
     for(Point p : spots)
     {
@@ -618,15 +617,17 @@ bool Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playab
 
                 switch (c){
                     case '1': // Attacco normale scelto
-
-                        if (Luck(player.getLuck()) == 1) { // attacco critico
-                            m.setLP(m.getLP() - Atk_Def(m.getDEF(), (2 * player.getATK())));
-                            battle_win.printLine("Colpo Critico");
-                        } else{
-                            m.setLP(m.getLP() - Atk_Def(m.getDEF(), player.getATK()));  //attacco normale
-                                               battle_win.printLine("Hai tolto al tuo avversario " + to_string(Atk_Def(m.getDEF(), player.getATK())) + " punti vita");
-                        }
-                        break;
+			    int damage;
+			    if (Luck(player.getLuck()) == 1) { // attacco critico
+				    damage = Atk_Def(m.getDEF(), (2 * player.getATK()));
+				    battle_win.printLine("Colpo Critico");
+				    getch();
+			    } else{
+				    damage = Atk_Def(m.getDEF(), player.getATK());
+			    }
+			    m.setLP(m.getLP() - damage);
+			    battle_win.printLine("Hai tolto al tuo avversario " + to_string(damage) + " punti vita");
+			    break;
 
                     case '2':
                         switch (player.getName().front()){
