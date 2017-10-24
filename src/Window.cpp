@@ -40,11 +40,7 @@ void Window::readFromFile(string filename)
         else
             description += line;
     }
-    char_separator<char> sep("\n");
-    description = wrap(description, ncols - 1);
-    tokenizer<char_separator<char>> tokens(description,sep);
-    for(string line : tokens)
-        printLine(line);
+    print(description);
 }
 // Given a filename, it writes its contents in the window
 
@@ -123,4 +119,13 @@ void Window::clean()
 {
     clear();
     box();
+}
+
+void Window::print(string str)
+{
+    str = wrap(str, ncols - 1);
+    char_separator<char> sep("\n");
+    tokenizer<char_separator<char>> tokens(str,sep);
+    for(string line : tokens)
+        printLine(line);
 }
