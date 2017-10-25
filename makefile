@@ -1,11 +1,17 @@
 CC=g++
 SRC=src
 CFLAGS=-I include -g -std=c++11
-CURSES=-lpanel -lncurses -lmenu
+CURSES=-lpanel -lncurses -lmenu -ltinfo
 BUILD=build
 DEPS=utility.h
+SHELL=/bin/bash
 
-all: $(BUILD)/Graph.o $(BUILD)/main.o $(BUILD)/Map.o $(BUILD)/Matrix.o $(BUILD)/Room.o $(BUILD)/Tile.o $(BUILD)/main.o $(BUILD)/Menu.o $(BUILD)/Window.o $(BUILD)/Item.o $(BUILD)/Level.o $(BUILD)/Monster.o $(BUILD)/personaggiGiocabili.o $(BUILD)/utility.o $(BUILD)/Area.o
+all: builddir game
+
+builddir: 
+	if [ ! -d "$(BUILD)" ]; then mkdir "$(BUILD)"; fi;
+
+game: $(BUILD)/Graph.o $(BUILD)/main.o $(BUILD)/Map.o $(BUILD)/Matrix.o $(BUILD)/Room.o $(BUILD)/Tile.o $(BUILD)/main.o $(BUILD)/Menu.o $(BUILD)/Window.o $(BUILD)/Item.o $(BUILD)/Level.o $(BUILD)/Monster.o $(BUILD)/personaggiGiocabili.o $(BUILD)/utility.o $(BUILD)/Area.o
 	$(CC) build/*.o -o Test $(CFLAGS) $(CURSES)
 $(BUILD)/main.o: src/main.cpp
 	g++ -c $(CFLAGS) src/main.cpp -o $(BUILD)/main.o -g $(CURSES)
@@ -36,4 +42,5 @@ $(BUILD)/personaggiGiocabili.o: src/personaggiGiocabili.cpp include/personaggiGi
 $(BUILD)/utility.o: src/utility.cpp include/utility.h
 	$(CC) -c $(SRC)/utility.cpp $(CFLAGS) -o $(BUILD)/utility.o
 clean:
-	rm build/* Test
+	rm build/* 
+	if [ -f Test ]; then rm Test; fi;
