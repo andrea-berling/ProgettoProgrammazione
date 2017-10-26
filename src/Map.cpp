@@ -1,6 +1,7 @@
 #include "../include/Map.h"
 #include "../include/utility.h"
 #include <unordered_set>
+#include <ncurses.h>
 #ifdef DEBUG
 #include <cstdlib>
 #include <iostream>
@@ -268,7 +269,7 @@ std::string Map::placeCharacter(PlayableCharacter& player)
     int width = R.getWidth();
     do
     {
-        p = Point(rand(x+1,x+width-2),rand(y+1,y+height-2));
+        p = Point(rand(x+2,x+width-3),rand(y+2,y+height-3)); // the player can't spawn near an exit
     }
     while((*this)(p.x,p.y).getUpperLayer() != "");
 
@@ -352,16 +353,69 @@ Point Map::freeSpot(Room R)
     return p;
 }
 
-void Map::placeStairs(tile_t type, int& x, int& y)
+Point Map::placeStairs(tile_t type, int x, int y)
 {
-    if(type == UP_STAIRS || type == DOWN_STAIRS)
+    Point p = {x,y};
+    if(type == UP_STAIRS)
     {
-        Point p = {x,y};
-        Room R = this->rooms[(*this)(x,y).getId()];
-        while((*this)(p.x-1,p.y).getType() == HALLWAY || (*this)(p.x+1,p.y).getType() == HALLWAY || (*this)(p.x,p.y+1).getType() == HALLWAY)
-            p = freeSpot(R);
-        x = p.x;
-        y = p.y;
-        (*this)(x,y).setType(type);
+        Room R = pickRoom();
+        int x2 = R.getCorner().x;
+        int y2 = R.getCorner().y;
+        int height = R.getHeight();
+        int width = R.getWidth();
+        do
+        {
+            p = {rand(x2+2,x2+width-3),rand(y2+2,y2+height-3)}; // the stairs can't be near an ex2it
+        }
+        while((*this)(p.x,p.y).getUpperLayer() != "");
+        (*this)(p.x,p.y).setType(type);
     }
+    else if (type == DOWN_STAIRS && x != -1 && y != -1)
+        (*this)(x,y).setType(type);
+    return p;
+}
+
+bool Map::movePlayer(PlayableCharacter& player, int c)
+{
+    bool moved = false;
+    int x = player.getPosition().x, y = player.getPosition().y;
+    switch(c)
+    {
+        case 'k':
+        case KEY_UP:
+            if((*this)(x,y-1).isWalkable())
+            {
+                y = y - 1;
+                moved = true;
+            }
+            break;
+        case 'j':
+        case KEY_DOWN:
+            if((*this)(x,y + 1).isWalkable()) 
+            {
+                y = y + 1;
+                moved = true;
+            }
+            break;
+        case 'h':
+        case KEY_LEFT:
+            if((*this)(x - 1,y).isWalkable()) 
+            {
+                x = x - 1;
+                moved = true;
+            }
+            break;
+        case 'l':
+        case KEY_RIGHT:
+            if((*this)(x + 1,y).isWalkable()) 
+            {
+                x = x + 1;
+                moved = true;
+            }
+            break;
+    }
+    
+    player.setPosition(x,y);
+    
+    return moved;
 }
