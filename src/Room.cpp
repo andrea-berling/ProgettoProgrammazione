@@ -59,3 +59,8 @@ void Room::setId(string id)
     this->id = id;
 }
 // Sets the id of the room
+
+bool Room::isBorder(int x, int y)
+{
+    return x == p.x || x == p.x + width - 1 || y == p.y || y == p.y + height - 1;
+}
