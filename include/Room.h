@@ -35,6 +35,10 @@ class Room : public Area
 
         void setId(std::string id);
         // Sets the id of the room
+
+        bool isBorder(int x, int y);
+        // Returns true if the given point is on the border of the room, false otherwise
+
 };
 
 #endif
