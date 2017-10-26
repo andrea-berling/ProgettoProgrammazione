@@ -57,7 +57,7 @@ void Tile::setSymbol()
     switch(type)
     {
         case VOID:
-            symbol = ' ';
+            symbol = '&';
             break;
         case PAVEMENT:
             symbol = ' ';
@@ -67,9 +67,6 @@ void Tile::setSymbol()
             break;
         case ROOM_BORDER:
             symbol = '%';
-            break;
-        case HALLWAY:
-            symbol = ' ';
             break;
         case UP_STAIRS:
             symbol = '/';
@@ -98,5 +95,5 @@ void Tile::setUpperLayer(std::string id)
 
 bool Tile::isWalkable()
 {
-    return (type == HALLWAY || type == PAVEMENT || type == UP_STAIRS || type == DOWN_STAIRS) && (upperLayer == "" || upperLayer[0] != 'm');
+    return (type == PAVEMENT || type == UP_STAIRS || type == DOWN_STAIRS) && (upperLayer == "" || upperLayer[0] != 'm');
 }
