@@ -24,9 +24,9 @@ Level::Level(LevelConfig& config, PlayableCharacter& pg):level(config.n),map(con
     if(level > 1)
         shopMenu(pg, itemsSet);
 
-    map.generate(config.rooms);
+    int generatedRooms = map.generate(config.rooms);
     // Spawn items
-    map.freeSpots(config.items,spots,ceil((double)(config.items)/config.rooms));
+    map.freeSpots(config.items,spots,ceil((double)(config.items)/generatedRooms));
     for(Point p : spots)
     {
         int index = rand(0,min(level*3,static_cast<int>(itemsSet.size())-1));
@@ -42,7 +42,7 @@ Level::Level(LevelConfig& config, PlayableCharacter& pg):level(config.n),map(con
     spots.clear();
     id = 0;
     // Spawn monsters
-    map.freeSpots(config.monsters,spots,ceil((double)(config.monsters)/config.rooms));
+    map.freeSpots(config.monsters,spots,ceil((double)(config.monsters)/generatedRooms));
     for(Point p : spots)
     {
         int index = rand(0,monstersSet.size()-1);
@@ -161,6 +161,7 @@ status_t Level::handleTurn(Window& mapWindow, Window& info, Window& bottom,Playa
                     m.second.wakeUp(true);
                 for(auto& i : items)
                     i.second.setVisible(true);
+                printMap(player.getPosition(),mapWindow);
                 break;
             case 'n':
                 return UP;
