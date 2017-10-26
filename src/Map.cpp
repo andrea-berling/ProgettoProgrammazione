@@ -2,6 +2,9 @@
 #include "../include/utility.h"
 #include <unordered_set>
 #include <ncurses.h>
+#ifndef DEBUG
+#define DEBUG
+#endif // DEBUG
 #ifdef DEBUG
 #include <cstdlib>
 #include <iostream>
@@ -101,7 +104,7 @@ void Map::showAround(int x, int y)
     (*this)(x,y - 1).setVisible(true);
 }
 
-void Map::generate(int requiredRooms)
+int Map::generate(int requiredRooms)
 {
     unordered_map<string,Room>::iterator it;
     Room R,Q;
@@ -121,6 +124,8 @@ void Map::generate(int requiredRooms)
         link(R,Q,dots);
         R = Q;
     }
+
+    return this->rooms.size();
 }
 
 Room Map::generateRoom(Area A,string id)
@@ -188,7 +193,7 @@ void Map::link(Room& R,Room& Q,Graph& G)
     retrievePath(steps,T,p,q);
 
     for(Point p : steps)
-        (*this)(p).setType(HALLWAY);
+        (*this)(p).setType(PAVEMENT);
 
     G.deletePoint(p);
     G.deletePoint(q);
@@ -197,13 +202,13 @@ void Map::link(Room& R,Room& Q,Graph& G)
 void Map::connectToMap(Graph& G, Point& p, Point& q)
 {
     G.insertPoint(p);
-    if((*this)(p.x-1,p.y).isWalkable() && (*this)(p.x-1,p.y).getType() != HALLWAY) // The room is on the left of the point
+    if(isWithinRoom(p.x-1,p.y))  // The room is to the left of p
         q = {p.x+1,p.y};
-    else if((*this)(p.x+1,p.y).isWalkable() && (*this)(p.x+1,p.y).getType() != HALLWAY) // The room is on the right of the point
+    else if(isWithinRoom(p.x+1,p.y)) // The room is to the right of p
         q = {p.x-1,p.y};
-    else if((*this)(p.x,p.y-1).isWalkable() && (*this)(p.x,p.y-1).getType() != HALLWAY) // And so on
+    else if(isWithinRoom(p.x,p.y-1)) // And so on
         q = {p.x,p.y+1};
-    else if((*this)(p.x,p.y+1).isWalkable() && (*this)(p.x,p.y+1).getType() != HALLWAY)
+    else if(isWithinRoom(p.x,p.y+1))
         q = {p.x,p.y-1};
     G.insertEdge(p,q);
 }
@@ -211,51 +216,35 @@ void Map::connectToMap(Graph& G, Point& p, Point& q)
 void Map::freeSpots(int n,unordered_set<Point>& spots,int r)
 {
     int i = 0;
+    int permutation[n];
     unordered_map<string,Room>::iterator it;
-    if (n < this->rooms.size())
-    {
-        int permutation[n];
+    if(n < this->rooms.size())
         generateKPermutation(permutation,0,this->rooms.size()-1,n);
 
-        while(i < n)
+    it = this->rooms.begin();
+    while(i < n)
+    {
+        if(n < this->rooms.size())
         {
             it = this->rooms.begin();
             for(int j = 0; j < permutation[i]; j++)
                 ++it;
-
-            for(int k = 0; k < r; k++)
-            {
-                Point position;
-
-                do
-                {
-                    position = freeSpot((*it).second);
-                }
-                while(spots.find(position) != spots.end());
-                spots.insert(position);
-                i++;
-            }
         }
-    }
-    else
-    {
-        it = this->rooms.begin();
-        while(i < n)
+
+        for(int k = 0; k < r; k++)
         {
-            for(int k = 0; k < r; k++)
+            Point position;
+
+            do
             {
-                Point position;
-
-                do
-                {
-                    position = freeSpot((*it).second);
-                }
-                while(spots.find(position) != spots.end());
-                spots.insert(position);
-                i++;
+                position = freeSpot((*it).second);
             }
-
+            while(spots.find(position) != spots.end());
+            spots.insert(position);
+            i++;
         }
+        if(n >= this->rooms.size())
+            ++it;
     }
 }
 
@@ -418,4 +407,21 @@ bool Map::movePlayer(PlayableCharacter& player, int c)
     player.setPosition(x,y);
     
     return moved;
+}
+
+bool Map::isWithinRoom(int x, int y)
+{
+    bool in;
+
+    if((*this)(x,y).getId() == "")
+        in = false;
+    else
+    {
+        if(rooms[(*this)(x,y).getId()].isBorder(x,y))
+            in = false;
+        else
+            in = true;
+    }
+
+    return in;
 }

@@ -42,6 +42,8 @@ class Map
         void generateRooms(int n);
         // Given a number n, it generates n rooms
 
+        bool isWithinRoom(int x, int y);
+        // Returns true if the given point is inside a room, borders excluded, false otherwise
 
     public:
 
@@ -60,8 +62,9 @@ class Map
         int getHeight();
         // getter for height
 
-        void generate(int requiredRooms);
-        // Generates the map given a number of required rooms
+        int generate(int requiredRooms);
+        // Tries to generate a map with the required number of rooms
+        // Returns the actual number of generated rooms
 
         void setVisible(std::string id,std::unordered_map<std::string,Monster>& monsters,std::unordered_map<std::string,Item>& items);
         // Given an id, it sets the corresponding room visible
