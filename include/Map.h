@@ -84,9 +84,13 @@ class Map
         Point freeSpot(Room R);
         // Given a room, returns a free spot in the room
 
-        void placeStairs(tile_t type, int& x, int& y);
+        Point placeStairs(tile_t type, int x = -1, int y = -1);
         // Places the stairs specified by type in x,y if possible
         // If the stairs are in the way of the hallway, the stairs are placed nearby
+
+        bool movePlayer(PlayableCharacter& player, int c);
+        // Moves the player to the position specified by c, if possible
+        // Returns true if the player moved, false otherwise
 
 };
 
