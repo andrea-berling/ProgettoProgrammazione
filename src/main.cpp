@@ -29,6 +29,13 @@ void endCurses();
 void showStory();
 // Creates a window that shows the main story
 
+void setCharacter(PlayableCharacter& player, int character);
+// Sets the chosen character as player
+
+list<Level>::iterator createLevel(list<Level>& levels, LevelConfig& config, PlayableCharacter& player, Window& mapWindow, Window& infoWindow);
+// Creates a new level, stores it in the given levels list and returns an iterator pointing to it. Furthermore it
+// prints the map and the stats of the player
+
 int main()
 {	
     int choice;
@@ -56,84 +63,63 @@ int main()
     }
     if(!quit) 
     {
-        int mapWidth = 100, mapHeight = 37, n = 1, rooms = 2, items = 1, monsters = 1, status = -1;
-        Window mapWindow(0,0,mapHeight,mapWidth), infoWindow(101, 0, 37, 30), bottomWindow(0, 37, 10, 100);
+        status_t status = DEFAULT;
+        // level, width, height, rooms, monsters, items
+        LevelConfig config = {1,100,37,2,1,1};
+        Window mapWindow(0,0,config.height,config.width), infoWindow(101, 0, 37, 30), bottomWindow(0, 37, 10, 100);
         list<Level> levels;
         list<Level>::iterator currentLevel;
         PlayableCharacter player;
         bool done = false;
-        int positionPreference = 0;
-
 
         clear();
         refresh();
         showStory();    // Shows the main story
 
-        switch(character)
-        {
-            case 0:
-                player = PlayableCharacter(15,0,20,12,5,30,"Gaudenzio");
-                break;
-            case 1:
-                player = PlayableCharacter(10,9,10,8,5,30,"Peppino");
-                break;
-            case 2:
-                player = PlayableCharacter(10,0,5,12,10,60,"Badore");
-                break;
-        }
-
-        levels.insert(levels.begin(),Level(n,mapWidth,mapHeight,rooms,items,monsters,player));
-        currentLevel = levels.begin();
-        (*currentLevel).placeCharacter(player,positionPreference);   // place the player in a random room
-        (*currentLevel).printMap(player.getPosition(),mapWindow);
-        writeInfo(infoWindow,player,(*currentLevel).getLevel());
+        setCharacter(player,character);
+        currentLevel = createLevel(levels,config,player,mapWindow,infoWindow);                   
         bottomWindow.box();
+
         while(!done)
         {
             status = (*currentLevel).handleTurn(mapWindow,infoWindow,bottomWindow,player);
-            if(status != 0 && status != 2)
+            if(status != LOSS && status != WIN && status != QUIT)
             {
                 switch(status)
                 {
-                    case 1:
+                    case UP:
                         ++currentLevel;
                         if(currentLevel == levels.end())
                         {
                             // Creation of a new level
-                            ++n;
-                            rooms++;
-                            items = rooms/2;
-                            monsters = rooms/2;
+                            config.newLevel();
                             player.LVLup();
                             mapWindow.clear();
-                            Level newLevel = Level(n,mapWidth,mapHeight,rooms,items,monsters,player);
-                            currentLevel = levels.insert(levels.end(),newLevel);
-                            positionPreference = 0;
+                            currentLevel = createLevel(levels,config,player,mapWindow,infoWindow);                   
                         }
                         else
-                            positionPreference = 1; // no need to increment, the increment was done in the if part
+                            (*currentLevel).placeCharacter(player,DOWNSTAIRS); // no need to increment, the increment was done in the if part
                         break;
-                    case -1:
+                    case DOWN:
                         if(currentLevel != levels.begin())
                         {
                             currentLevel--;
-                            positionPreference = -1;
+                            (*currentLevel).placeCharacter(player,UPSTAIRS);
                         }
                         break;
                 }
-                (*currentLevel).placeCharacter(player,positionPreference);
                 (*currentLevel).printMap(player.getPosition(),mapWindow);
                 infoWindow.clear();
-                writeInfo(infoWindow,player,(*currentLevel).getLevel());
+                (*currentLevel).writeInfo(infoWindow,player);
             }
             else
             {
                 switch(status)
                 {
-                    case 2:
+                    case WIN:
                         // Victory
                         break;
-                    case 0:
+                    case LOSS:
                         // Loss
                         break;
                 }
@@ -231,4 +217,29 @@ void showStory()
     storyWin.readFromFile("resources/storia.dat");
     storyWin.printLine("Premi un tasto per continuare...");
     getch();
+}
+
+void setCharacter(PlayableCharacter& player, int character)
+{
+    switch(character)
+    {
+        case 0:
+            player = PlayableCharacter(15,0,20,12,5,30,"Gaudenzio");
+            break;
+        case 1:
+            player = PlayableCharacter(10,9,10,8,5,30,"Peppino");
+            break;
+        case 2:
+            player = PlayableCharacter(10,0,5,12,10,60,"Badore");
+            break;
+    }
+}
+
+list<Level>::iterator createLevel(list<Level>& levels,LevelConfig& config, PlayableCharacter& player, Window& mapWindow, Window& infoWindow)
+{
+    list<Level>::iterator it = levels.insert(levels.end(),Level(config,player));
+    (*it).placeCharacter(player,RANDOM);   // place the player in a random room
+    (*it).printMap(player.getPosition(),mapWindow);
+    (*it).writeInfo(infoWindow,player);
+    return it;
 }
