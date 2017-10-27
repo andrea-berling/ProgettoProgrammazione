@@ -216,20 +216,18 @@ void Map::connectToMap(Graph& G, Point& p, Point& q)
 void Map::freeSpots(int n,unordered_set<Point>& spots,int r)
 {
     int i = 0;
+    int j = 0;
     int permutation[n];
     unordered_map<string,Room>::iterator it;
-    if(n < this->rooms.size())
-        generateKPermutation(permutation,0,this->rooms.size()-1,n);
+    generateKPermutation(permutation,0,this->rooms.size()-1,min((int)(this->rooms.size()),n));
 
     it = this->rooms.begin();
     while(i < n)
     {
-        if(n < this->rooms.size())
-        {
-            it = this->rooms.begin();
-            for(int j = 0; j < permutation[i]; j++)
-                ++it;
-        }
+        it = this->rooms.begin();
+        for(int k = 0; k < permutation[j]; k++)
+            ++it;
+        j++;
 
         for(int k = 0; k < r; k++)
         {
@@ -243,8 +241,6 @@ void Map::freeSpots(int n,unordered_set<Point>& spots,int r)
             spots.insert(position);
             i++;
         }
-        if(n >= this->rooms.size())
-            ++it;
     }
 }
 
