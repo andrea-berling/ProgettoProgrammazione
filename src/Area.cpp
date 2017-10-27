@@ -110,7 +110,7 @@ namespace std
 {
     size_t hash<Area>::operator()(Area A) const
     {
-        return hash<Point>()(A.getCorner()) ^ hash<int>()(A.getWidth()/A.getHeight());
+        return hash<Point>()(A.getCorner());
     }
 }
 

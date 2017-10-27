@@ -31,11 +31,7 @@ namespace std
 {
     size_t hash<Point>::operator()(Point n) const
     {
-
-        double arg = (double(n.x))/n.y;
-        int module = n.x*n.x + n.y*n.y;
-
-        return hash<double>()(arg*module);
+        return hash<int>()(n.x ^ (n.y << 3));
     }
 }
 
