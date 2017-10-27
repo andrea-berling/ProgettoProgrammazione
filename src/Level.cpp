@@ -11,7 +11,7 @@
 
 using namespace std;
 
-Level::Level(int level, int width, int height, int rooms, int _monsters, int _items, PlayableCharacter& pg):level(level),map(width,height),monsters(47),items(47)
+Level::Level(LevelConfig& config, PlayableCharacter& pg):level(config.n),map(config.width,config.height)
 {
     unordered_set<Point> spots;
     vector<Item> itemsSet;
@@ -24,9 +24,9 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
     if(level > 1)
         shopMenu(pg, itemsSet);
 
-    map.generate(rooms);
+    int generatedRooms = map.generate(config.rooms);
     // Spawn items
-    map.freeSpots(_items,spots,ceil((double)(_items)/rooms));
+    map.freeSpots(config.items,spots,ceil((double)(config.items)/generatedRooms));
     for(Point p : spots)
     {
         int index = rand(0,min(level*3,static_cast<int>(itemsSet.size())-1));
@@ -42,7 +42,7 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
     spots.clear();
     id = 0;
     // Spawn monsters
-    map.freeSpots(_monsters,spots,ceil((double)(_monsters)/rooms));
+    map.freeSpots(config.monsters,spots,ceil((double)(config.monsters)/generatedRooms));
     for(Point p : spots)
     {
         int index = rand(0,monstersSet.size()-1);
@@ -56,13 +56,10 @@ Level::Level(int level, int width, int height, int rooms, int _monsters, int _it
         // Spawn a monster
     }
 
+    upStairs = map.placeStairs(UP_STAIRS);
+
     Room R = map.pickRoom();
     Point p = map.freeSpot(R);
-    map.placeStairs(UP_STAIRS,p.x,p.y);
-    upStairs = {p.x,p.y};
-
-    R = map.pickRoom();
-    p = map.freeSpot(R);
     map(p.x,p.y).setUpperLayer("degree");
 }
 
@@ -102,86 +99,58 @@ void Level::printMap(Point playerPos, Window& mapWindow)
     wrefresh(win);
 }
 
-void Level::placeCharacter(PlayableCharacter& player,int playerPosition)
+void Level::placeCharacter(PlayableCharacter& player,pos_pref_t preference)
 {
-    switch(playerPosition)
+    switch(preference)
     {
-        case 0:
+        case RANDOM:
             {
                 string room = map.placeCharacter(player);
                 map.setVisible(room,monsters,items);
                 if (level > 1)
-                {
-                    int x = player.getPosition().x;
-                    int y = player.getPosition().y;
-                    map.placeStairs(DOWN_STAIRS,x,y);    // Here x and y can be modified to the actual position
-                    downStairs = {x,y};
-                }
+                    downStairs = map.placeStairs(DOWN_STAIRS,player.getPosition().x,player.getPosition().y);
             }
             break;
             
-        case 1:
+        case DOWNSTAIRS:
             player.setPosition(downStairs.x,downStairs.y);
             break;
 
-        case -1:
+        case UPSTAIRS:
             player.setPosition(upStairs.x,upStairs.y);
             break;
     }
 }
 
-int Level::handleTurn(Window& mapWindow, Window& info, Window& bottom,PlayableCharacter& player)
+status_t Level::handleTurn(Window& mapWindow, Window& info, Window& bottom,PlayableCharacter& player)
 {
-    int x,y,c, status = -2; // Default value
+    status_t status = DEFAULT;
+    int x,y,c;
     bool moved = false;
-    x = player.getPosition().x;
-    y = player.getPosition().y;
-    list<Monster> monstersNearby;
 
-    map.showAround(x,y);
-
-    while(status == -2)
+    while(status == DEFAULT)
     {
-        monstersNearby.clear();
-
-        // Handle the actual movement of the player
+        // Handle the input from the player
         c = getch();
         switch(c)
         {
+            // Movement keys
             case 'k':
             case KEY_UP:
-                if(map(x,y-1).isWalkable())
-                {
-                    y = y - 1;
-                    moved = true;
-                }
-                break;
-
             case 'j':
             case KEY_DOWN:
-                if(map(x,y + 1).isWalkable()) 
-                {
-                    y = y + 1;
-                    moved = true;
-                }
-                break;
-
             case 'h':
             case KEY_LEFT:
-                if(map(x - 1,y).isWalkable()) 
-                {
-                    x = x - 1;
-                    moved = true;
-                }
-                break;
-
             case 'l':
             case KEY_RIGHT:
-                if(map(x + 1,y).isWalkable()) 
-                {
-                    x = x + 1;
-                    moved = true;
-                }
+                moved = map.movePlayer(player,c);
+                break;
+            case 'i':
+                player.showInventory();
+                writeInfo(info,player);
+                break;
+            case 'q':
+                status = promptExit(bottom);
                 break;
 #ifdef DEBUG
             case 'p':
@@ -192,35 +161,25 @@ int Level::handleTurn(Window& mapWindow, Window& info, Window& bottom,PlayableCh
                     m.second.wakeUp(true);
                 for(auto& i : items)
                     i.second.setVisible(true);
+                printMap(player.getPosition(),mapWindow);
                 break;
             case 'n':
-                return 1;
+                return UP;
                 break;
             case 'N':
-                return -1;
+                return DOWN;
                 break;
             case '$':
                 player.setCoins(9999);
                 break;
 #endif
-            case 'i':
-                player.showInventory();
-                break;
-            case 'q':
-                status = 0;
-                break;
-            case 'P':
-                for(int i = player.getPieces(); i < NEEDED_PIECES - 1; i++)
-                    player.pickUpPiece();
-                break;
         }
-        player.setPosition(x,y);
+
+        x = player.getPosition().x;
+        y = player.getPosition().y;
 
         // Show the map dinamically
-        if(map(x,y).getId() != "")
-            map.setVisible(map(x,y).getId(),monsters,items);
-        else
-            map.showAround(x,y);
+        showMap(player.getPosition());
 
         if(moved == true)
         {
@@ -230,70 +189,21 @@ int Level::handleTurn(Window& mapWindow, Window& info, Window& bottom,PlayableCh
                 if(m.second.isAwake())
                     moveMonster(player.getPosition(),m.second);
             // Change level
-            if(map(x,y).getType() == UP_STAIRS)
-                status = 1;
-            else if(map(x,y).getType() == DOWN_STAIRS)
-                status = -1;
-        }
-
-        // Pick up items or degree pieces
-        printMap(player.getPosition(),mapWindow);
-        if(map(x,y).getUpperLayer() != "")
-            if(map(x,y).getUpperLayer().front() == 'i')
-                if(player.pickItem(items[map(x,y).getUpperLayer()]))    /* returns true if the item was actually picke
-                     up*/
-                {
-                    bottom.printLine("Raccolto " + items[map(x,y).getUpperLayer()].getName());
-                    getch();
-                    bottom.clean();
-                    items.erase(map(x,y).getUpperLayer());
-                    map(x,y).setUpperLayer("");
-                }
-                else
-                {
-                    bottom.printLine("Hai camminato su " + items[map(x,y).getUpperLayer()].getName());
-                    getch();
-                    bottom.clean();
-                } 
+            if(map(x,y).getType() == UP_STAIRS || map(x,y).getType() == DOWN_STAIRS)
+                status = map(x,y).getType() == UP_STAIRS ? UP : DOWN;
             else
             {
-                player.pickUpPiece();
-                bottom.printLine("Hai raccolto un pezzo di laurea");
-                map(x,y).setUpperLayer("");
-                getch();
-                if(player.getPieces() == NEEDED_PIECES)
-                {
-                    bottom.printLine("Hai trovato tutti i pezzi della laurea");
-                    getch();
-                    status = 2;   // Victory status
-                }
-                else
-                {
-                    bottom.printLine("Ne mancano ancora " + to_string(NEEDED_PIECES - player.getPieces()) + ". Tieni duro");
-                    getch();
-                    bottom.clean();
-                } 
+                // Update the players info
+                info.clear();
+                writeInfo(info,player);
+                printMap(player.getPosition(),mapWindow);
+
+                // Handle the battle with nearby monsters, if present
+                status = handleBattles(player,bottom,info,mapWindow);
+                if(status != LOSS && map(x,y).getUpperLayer() != "")
+                    // Pick up items or degree pieces
+                    status = pickItUp(player,bottom);
             }
-
-        // Update the players info
-        info.clear();
-        writeInfo(info,player,level);
-
-        // Handle the battle between nearby monsters, if present
-        monstersAround(player.getPosition(),monstersNearby);
-        if(!monstersNearby.empty())
-        {
-            for(Monster m : monstersNearby)
-                if(Battle(bottom,info,mapWindow,player,m))  // Returns true upon a win, false upon a loss
-                {
-                    map(m.getPosition()).setUpperLayer("");
-                    monsters.erase(m.getId());
-                    printMap(player.getPosition(),mapWindow);
-                    info.clear();
-                    writeInfo(info,player,level);
-                } 
-                else
-                    status = 0;
         }
     }
 
@@ -368,7 +278,7 @@ void writeEquipment(Window& win, PlayableCharacter& pg){
     }
 }
 
-void writeInfo(Window& win,PlayableCharacter& pg, int level){
+void Level::writeInfo(Window& win,PlayableCharacter& pg){
     win.clean();
     win.printLine(pg.getName());
     win.printLine("");
@@ -637,14 +547,14 @@ bool Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playab
                                 case 'G':   //gaudenzio
                                     battle_win.printLine("Hai guadagnato " + to_string(player.getLV() * 2) + " punti vita!");
                                     player.setLP(player.getLP() + player.getLV() * 2);
-                                    writeInfo(right_win, player, level);
+                                    writeInfo(right_win, player);
                                     break;
 
                                 case 'P':   //peppino
                                     if (player.getMP() > 3) {
                                         battle_win.printLine("Stai usando 3 mana: attacco duplicato!");
                                         m.setLP(m.getLP() - Atk_Def(m.getDEF(), (2 * player.getATK())));
-                                        writeInfo(right_win, player, level);
+                                        writeInfo(right_win, player);
                                     }
                                     break;
 
@@ -655,7 +565,7 @@ bool Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playab
                                     } else {
                                         battle_win.printLine("Sei stato maldestro: il nemico contrattacca e perdi un turno!");
                                         player.setLP(player.getLP() - Atk_Def(player.getDEF(), (2 * m.getATK())));
-                                        writeInfo(right_win, player, level);
+                                        writeInfo(right_win, player);
                                     }
                                     break;
                             }
@@ -687,7 +597,7 @@ bool Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playab
                 case 'i':
                     player.showInventory();
                     right_win.clean();
-                    writeInfo(right_win, player, level);
+                    writeInfo(right_win, player);
                     printMap(player.getPosition(), mapWin);
 
                     break;
@@ -759,12 +669,12 @@ bool Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playab
                     player.setLP(0);
 
                 right_win.clean();
-                writeInfo(right_win, player, level);
+                writeInfo(right_win, player);
             }
 	
     	    if (k == 0){
 	            battle_win.clean();
-	            battle_win.printLine("L'avversaerio è maldestro, fallisce l'attacco");
+	            battle_win.printLine("L'avversaerio e' maldestro, fallisce l'attacco");
                 getch();
     	    }
     }
@@ -796,7 +706,7 @@ int Atk_Def (int def, int atk) {
     return  (int)(atk -  (double)(atk * def) / 100);           // fare il casting
 }
 
-int Luck (int luck){   //luck= fortuna del pg, oppure luck= 70 per determinare se l'avversario è maldestro
+int Luck (int luck){
     
     int i=0;
 
@@ -806,4 +716,105 @@ int Luck (int luck){   //luck= fortuna del pg, oppure luck= 70 per determinare s
         return 1;
     else
         return 0;
+}
+
+status_t promptExit(Window& win)
+{
+    status_t status = DEFAULT;
+    int c;
+
+    win.clean();
+    win.printLine("Sei sicuro di voler uscire? (y/n)");
+    c = getch();
+
+    if(c == 'y')
+        status = QUIT;
+    else
+        win.clean();
+
+    return status;
+}
+
+void Level::showMap(Point p)
+{
+    if(map(p.x,p.y).getId() != "")
+        map.setVisible(map(p.x,p.y).getId(),monsters,items);
+    else
+        map.showAround(p.x,p.y);
+}
+
+status_t Level::pickItUp(PlayableCharacter& player,Window& win)
+{
+    status_t status = DEFAULT;
+    Point p = player.getPosition();
+
+    if(map(p.x,p.y).getUpperLayer().front() == 'i') // It's an item
+        if(player.pickItem(items[map(p.x,p.y).getUpperLayer()]))    /* returns true if the item was actually picked
+                                                                   up*/
+        {
+            win.printLine("Raccolto " + items[map(p.x,p.y).getUpperLayer()].getName());
+            getch();
+            win.clean();
+            items.erase(map(p.x,p.y).getUpperLayer());
+            map(p.x,p.y).setUpperLayer("");
+        }
+        else
+        {
+            win.printLine("Hai camminato su " + items[map(p.x,p.y).getUpperLayer()].getName());
+            getch();
+            win.clean();
+        } 
+    else    // it's a degree piece
+    {
+        player.pickUpPiece();
+        win.printLine("Hai raccolto un pezzo di laurea");
+        map(p.x,p.y).setUpperLayer("");
+        getch();
+        if(player.getPieces() == NEEDED_PIECES)
+        {
+            win.printLine("Hai trovato tutti i pezzi della laurea");
+            getch();
+            status = WIN;
+        }
+        else
+        {
+            win.printLine("Ne mancano ancora " + to_string(NEEDED_PIECES - player.getPieces()) + ". Tieni duro");
+            getch();
+            win.clean();
+        } 
+    }
+
+    return status;
+}
+
+status_t Level::handleBattles(PlayableCharacter& player, Window& bottom, Window& playerInfo, Window& mapWindow)
+{
+    status_t status = DEFAULT;
+    list<Monster> monstersNearby;
+
+    monstersAround(player.getPosition(),monstersNearby);
+    if(!monstersNearby.empty())
+    {
+        for(Monster m : monstersNearby)
+            if(Battle(bottom,playerInfo,mapWindow,player,m))  // Returns true upon a win, false upon a loss
+            {
+                map(m.getPosition()).setUpperLayer("");
+                monsters.erase(m.getId());
+                printMap(player.getPosition(),mapWindow);
+                playerInfo.clear();
+                writeInfo(playerInfo,player);
+            } 
+            else
+                status = LOSS;
+    }
+
+    return status;
+}
+
+void LevelConfig::newLevel()
+{
+    n++;
+    rooms++;
+    items = rooms/2;
+    monsters = rooms/2;
 }
