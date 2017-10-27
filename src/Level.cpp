@@ -11,7 +11,7 @@
 
 using namespace std;
 
-Level::Level(LevelConfig& config, PlayableCharacter& pg):level(config.n),map(config.width,config.height)
+Level::Level(int level, int width, int height, int rooms, int _monsters, int _items, PlayableCharacter& pg):level(level),map(width,height),monsters(47),items(47)
 {
     unordered_set<Point> spots;
     vector<Item> itemsSet;
@@ -24,9 +24,9 @@ Level::Level(LevelConfig& config, PlayableCharacter& pg):level(config.n),map(con
     if(level > 1)
         shopMenu(pg, itemsSet);
 
-    int generatedRooms = map.generate(config.rooms);
+    map.generate(rooms);
     // Spawn items
-    map.freeSpots(config.items,spots,ceil((double)(config.items)/generatedRooms));
+    map.freeSpots(_items,spots,ceil((double)(_items)/rooms));
     for(Point p : spots)
     {
         int index = rand(0,min(level*3,static_cast<int>(itemsSet.size())-1));
@@ -42,7 +42,7 @@ Level::Level(LevelConfig& config, PlayableCharacter& pg):level(config.n),map(con
     spots.clear();
     id = 0;
     // Spawn monsters
-    map.freeSpots(config.monsters,spots,ceil((double)(config.monsters)/generatedRooms));
+    map.freeSpots(_monsters,spots,ceil((double)(_monsters)/rooms));
     for(Point p : spots)
     {
         int index = rand(0,monstersSet.size()-1);
@@ -56,10 +56,13 @@ Level::Level(LevelConfig& config, PlayableCharacter& pg):level(config.n),map(con
         // Spawn a monster
     }
 
-    upStairs = map.placeStairs(UP_STAIRS);
-
     Room R = map.pickRoom();
     Point p = map.freeSpot(R);
+    map.placeStairs(UP_STAIRS,p.x,p.y);
+    upStairs = {p.x,p.y};
+
+    R = map.pickRoom();
+    p = map.freeSpot(R);
     map(p.x,p.y).setUpperLayer("degree");
 }
 
@@ -99,58 +102,86 @@ void Level::printMap(Point playerPos, Window& mapWindow)
     wrefresh(win);
 }
 
-void Level::placeCharacter(PlayableCharacter& player,pos_pref_t preference)
+void Level::placeCharacter(PlayableCharacter& player,int playerPosition)
 {
-    switch(preference)
+    switch(playerPosition)
     {
-        case RANDOM:
+        case 0:
             {
                 string room = map.placeCharacter(player);
                 map.setVisible(room,monsters,items);
                 if (level > 1)
-                    downStairs = map.placeStairs(DOWN_STAIRS,player.getPosition().x,player.getPosition().y);
+                {
+                    int x = player.getPosition().x;
+                    int y = player.getPosition().y;
+                    map.placeStairs(DOWN_STAIRS,x,y);    // Here x and y can be modified to the actual position
+                    downStairs = {x,y};
+                }
             }
             break;
             
-        case DOWNSTAIRS:
+        case 1:
             player.setPosition(downStairs.x,downStairs.y);
             break;
 
-        case UPSTAIRS:
+        case -1:
             player.setPosition(upStairs.x,upStairs.y);
             break;
     }
 }
 
-status_t Level::handleTurn(Window& mapWindow, Window& info, Window& bottom,PlayableCharacter& player)
+int Level::handleTurn(Window& mapWindow, Window& info, Window& bottom,PlayableCharacter& player)
 {
-    status_t status = DEFAULT;
-    int x,y,c;
+    int x,y,c, status = -2; // Default value
     bool moved = false;
+    x = player.getPosition().x;
+    y = player.getPosition().y;
+    list<Monster> monstersNearby;
 
-    while(status == DEFAULT)
+    map.showAround(x,y);
+
+    while(status == -2)
     {
-        // Handle the input from the player
+        monstersNearby.clear();
+
+        // Handle the actual movement of the player
         c = getch();
         switch(c)
         {
-            // Movement keys
             case 'k':
             case KEY_UP:
+                if(map(x,y-1).isWalkable())
+                {
+                    y = y - 1;
+                    moved = true;
+                }
+                break;
+
             case 'j':
             case KEY_DOWN:
+                if(map(x,y + 1).isWalkable()) 
+                {
+                    y = y + 1;
+                    moved = true;
+                }
+                break;
+
             case 'h':
             case KEY_LEFT:
+                if(map(x - 1,y).isWalkable()) 
+                {
+                    x = x - 1;
+                    moved = true;
+                }
+                break;
+
             case 'l':
             case KEY_RIGHT:
-                moved = map.movePlayer(player,c);
-                break;
-            case 'i':
-                player.showInventory();
-                writeInfo(info,player);
-                break;
-            case 'q':
-                status = promptExit(bottom);
+                if(map(x + 1,y).isWalkable()) 
+                {
+                    x = x + 1;
+                    moved = true;
+                }
                 break;
 #ifdef DEBUG
             case 'p':
@@ -161,25 +192,35 @@ status_t Level::handleTurn(Window& mapWindow, Window& info, Window& bottom,Playa
                     m.second.wakeUp(true);
                 for(auto& i : items)
                     i.second.setVisible(true);
-                printMap(player.getPosition(),mapWindow);
                 break;
             case 'n':
-                return UP;
+                return 1;
                 break;
             case 'N':
-                return DOWN;
+                return -1;
                 break;
             case '$':
                 player.setCoins(9999);
                 break;
 #endif
+            case 'i':
+                player.showInventory();
+                break;
+            case 'q':
+                status = 0;
+                break;
+            case 'P':
+                for(int i = player.getPieces(); i < NEEDED_PIECES - 1; i++)
+                    player.pickUpPiece();
+                break;
         }
-
-        x = player.getPosition().x;
-        y = player.getPosition().y;
+        player.setPosition(x,y);
 
         // Show the map dinamically
-        showMap(player.getPosition());
+        if(map(x,y).getId() != "")
+            map.setVisible(map(x,y).getId(),monsters,items);
+        else
+            map.showAround(x,y);
 
         if(moved == true)
         {
@@ -189,21 +230,70 @@ status_t Level::handleTurn(Window& mapWindow, Window& info, Window& bottom,Playa
                 if(m.second.isAwake())
                     moveMonster(player.getPosition(),m.second);
             // Change level
-            if(map(x,y).getType() == UP_STAIRS || map(x,y).getType() == DOWN_STAIRS)
-                status = map(x,y).getType() == UP_STAIRS ? UP : DOWN;
+            if(map(x,y).getType() == UP_STAIRS)
+                status = 1;
+            else if(map(x,y).getType() == DOWN_STAIRS)
+                status = -1;
+        }
+
+        // Pick up items or degree pieces
+        printMap(player.getPosition(),mapWindow);
+        if(map(x,y).getUpperLayer() != "")
+            if(map(x,y).getUpperLayer().front() == 'i')
+                if(player.pickItem(items[map(x,y).getUpperLayer()]))    /* returns true if the item was actually picke
+                     up*/
+                {
+                    bottom.printLine("Raccolto " + items[map(x,y).getUpperLayer()].getName());
+                    getch();
+                    bottom.clean();
+                    items.erase(map(x,y).getUpperLayer());
+                    map(x,y).setUpperLayer("");
+                }
+                else
+                {
+                    bottom.printLine("Hai camminato su " + items[map(x,y).getUpperLayer()].getName());
+                    getch();
+                    bottom.clean();
+                } 
             else
             {
-                // Update the players info
-                info.clear();
-                writeInfo(info,player);
-                printMap(player.getPosition(),mapWindow);
-
-                // Handle the battle with nearby monsters, if present
-                status = handleBattles(player,bottom,info,mapWindow);
-                if(status != LOSS && map(x,y).getUpperLayer() != "")
-                    // Pick up items or degree pieces
-                    status = pickItUp(player,bottom);
+                player.pickUpPiece();
+                bottom.printLine("Hai raccolto un pezzo di laurea");
+                map(x,y).setUpperLayer("");
+                getch();
+                if(player.getPieces() == NEEDED_PIECES)
+                {
+                    bottom.printLine("Hai trovato tutti i pezzi della laurea");
+                    getch();
+                    status = 2;   // Victory status
+                }
+                else
+                {
+                    bottom.printLine("Ne mancano ancora " + to_string(NEEDED_PIECES - player.getPieces()) + ". Tieni duro");
+                    getch();
+                    bottom.clean();
+                } 
             }
+
+        // Update the players info
+        info.clear();
+        writeInfo(info,player,level);
+
+        // Handle the battle between nearby monsters, if present
+        monstersAround(player.getPosition(),monstersNearby);
+        if(!monstersNearby.empty())
+        {
+            for(Monster m : monstersNearby)
+                if(Battle(bottom,info,mapWindow,player,m))  // Returns true upon a win, false upon a loss
+                {
+                    map(m.getPosition()).setUpperLayer("");
+                    monsters.erase(m.getId());
+                    printMap(player.getPosition(),mapWindow);
+                    info.clear();
+                    writeInfo(info,player,level);
+                } 
+                else
+                    status = 0;
         }
     }
 
@@ -278,7 +368,7 @@ void writeEquipment(Window& win, PlayableCharacter& pg){
     }
 }
 
-void Level::writeInfo(Window& win,PlayableCharacter& pg){
+void writeInfo(Window& win,PlayableCharacter& pg, int level){
     win.clean();
     win.printLine(pg.getName());
     win.printLine("");
@@ -489,194 +579,194 @@ bool Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playab
 
     using namespace std;
     char c;
+    int k;
     bool noAttack = false;
     bool escape = false;
     bool win;
 
     while ((m.getLP() > 0) && (player.getLP() > 0) && (!escape)) {
 
-        battle_win.clean();
-        battle_win.printLine("Premi:");
-        battle_win.printLine("a) Attacco");
-        battle_win.printLine("i) Consultare Inventario");
-        battle_win.printLine("r) Corrompere il mostro");
+            battle_win.clean();
+            battle_win.printLine("Premi:");
+            battle_win.printLine("a) Attacco");
+            battle_win.printLine("i) Consultare Inventario");
+            battle_win.printLine("r) Corrompere il mostro");
 
-        c = getch();
-
-        battle_win.clean();
-        noAttack = false;
-
-        switch (c) {
-            case 'a':
-
-                battle_win.printLine("Battaglia con " + m.getName() + ":");
-                battle_win.printLine("");
-                battle_win.printLine("PUNTI VITA -> " + to_string(m.getLP()));
-                battle_win.printLine("ATTACCO -> " + to_string(m.getATK()));
-                battle_win.printLine("DIFESA -> " + to_string(m.getDEF()));
-
-                getch();
-
-                battle_win.clean();
-                battle_win.printLine("Cosa vuoi fare?");
-                battle_win.printLine("1) Attacco normale");
-                battle_win.printLine("2) Mossa speciale");
-                battle_win.printLine("");
-
-                c = getch();
-
-                switch (c){
-                    case '1': // Attacco normale scelto
-                        int damage;
-                        if (Luck(player.getLuck()) == 1) { // attacco critico
-                            damage = Atk_Def(m.getDEF(), (2 * player.getATK()));
-                            battle_win.printLine("Colpo Critico");
-                            getch();
-                        } else{
-                            damage = Atk_Def(m.getDEF(), player.getATK());
-                        }
-                        m.setLP(m.getLP() - damage);
-                        battle_win.printLine("Hai tolto al tuo avversario " + to_string(damage) + " punti vita");
-                        break;
-
-                    case '2':
-                        switch (player.getName().front()){
-                            case 'G':   //gaudenzio
-                                battle_win.printLine("Hai guadagnato " + to_string(player.getLV() * 2) + " punti vita!");
-                                player.setLP(player.getLP() + player.getLV() * 2);
-                                writeInfo(right_win, player);
-                                break;
-
-                            case 'P':   //peppino
-                                if (player.getMP() >= 3) {
-                                    battle_win.printLine("Stai usando 3 mana: attacco duplicato!");
-                                    player.setMP(player.getMP() - 3);
-                                    m.setLP(m.getLP() - Atk_Def(m.getDEF(), (2 * player.getATK())));
-                                    writeInfo(right_win, player);
-                                }
-                                else
-                                    battle_win.printLine("Mana insufficiente!");
-                                break;
-
-                            case 'B':   //badore
-                                if (Luck(player.getLuck()) == 1) {
-                                    battle_win.printLine("Il nemico non ti vede: attacco triplicato!");
-                                    m.setLP(m.getLP() - Atk_Def(m.getDEF(), (3 * player.getATK())));
-                                } else {
-                                    battle_win.printLine("Sei stato maldestro: il nemico contrattacca e perdi un turno!");
-                                    player.setLP(player.getLP() - Atk_Def(player.getDEF(), (2 * m.getATK())));
-                                    writeInfo(right_win, player);
-                                }
-                                break;
-                        }
-
-                        break;
-
-                    default:
-                        battle_win.printLine("Hai fatto una mossa falsa, perdi il turno!");
-                        battle_win.printLine("(la prossima volta premi 1 o 2)");
-                        break;
-                }
-
-                getch();
-
-                if (m.getLP() < 0)
-                    m.setLP(0);
-
-                battle_win.clean();
-
-                battle_win.printLine("Battaglia con " + m.getName() + ":");
-                battle_win.printLine("");
-                battle_win.printLine("PUNTI VITA -> " + to_string(m.getLP()));
-                battle_win.printLine("LIVELLO -> " + to_string(m.getLV()));
-
-                getch();
-
-                break;
-
-            case 'i':
-                player.showInventory();
-                writeInfo(right_win,player);
-                printMap(player.getPosition(), mapWin);
-
-                break;
-
-            case 'r':
-
-                if (Luck(player.getLuck()) == 1){
-                    battle_win.printLine("Per corrompere il mostro devi dare " + to_string(m.getLV()*5) + " Cucuzze");
-
-                    if (player.getCoins() < m.getLV()*2){
-                        battle_win.printLine("Non hai abbastanza cucuzze!");
-                    }
-                    else {
-                        battle_win.printLine("Per procedere premi s, altrimenti n");
-
-                        do{
-                            c= getch();
-                        } while (c!= 's' && c!= 'n');
-
-                        battle_win.clean();
-
-                        if (c == 's'){
-                            win = true;
-                            escape = true;
-
-                            player.setCoins(player.getCoins() - m.getLV()*5);
-
-                            battle_win.clean();
-                            battle_win.printLine("Hai corrotto il mostro, se n'è andato");
-                            battle_win.printLine("Hai dovuto pagare " + to_string(m.getLV()*5) + " Cucuzze");
-                        }
-                        else
-                            escape =  false;
-                    }
-                }
-                else {
-                    battle_win.printLine("Non sei abbastanza fortunato il mostro non si fa corrompere");
-                    battle_win.printLine("Perdi il tuo turno, il mostro ne approfitta e attacca");
-                    escape = false;
-                }
-
-                getch();
-                battle_win.clean();
-
-                break;
-
-            default:
-                battle_win.printLine("Premere un tasto valido!");
-                getch();
-                battle_win.clean();
-                noAttack = true;
-                break;
-        }
-
-        if ((m.getLP() > 0) && (!noAttack) && (!escape)) {
+            c = getch();
 
             battle_win.clean();
-            battle_win.printLine("L'avversario ti attacca!");
+            noAttack = false;
 
-            getch();
+            switch (c) {
+                case 'a':
 
-            player.setLP(player.getLP() - Atk_Def(player.getDEF(), m.getATK()));
+                    battle_win.printLine("Battaglia con " + m.getName() + ":");
+                    battle_win.printLine("");
+                    battle_win.printLine("PUNTI VITA -> " + to_string(m.getLP()));
+                    battle_win.printLine("ATTACCO -> " + to_string(m.getATK()));
+                    battle_win.printLine("DIFESA -> " + to_string(m.getDEF()));
 
-            battle_win.printLine("");
-            battle_win.printLine("L'attacco del nemico ti toglie -> " + to_string(Atk_Def(player.getDEF(), m.getATK())) + " LP");
+                    getch();
 
-            getch();
+                    battle_win.clean();
+                    battle_win.printLine("Cosa vuoi fare?");
+                    battle_win.printLine("1) Attacco normale");
+                    battle_win.printLine("2) Mossa speciale");
+                    battle_win.printLine("");
 
-            if (player.getLP() <= 0)
-                player.setLP(0);
+                    c = getch();
 
-            right_win.clean();
-            writeInfo(right_win, player);
+                    switch (c){
+                        case '1': // Attacco normale scelto
+                            int damage;
 
-        }
-#if 0
-        else
-            noAttack = true;
-#endif
+                            if (Luck(player.getLuck()) == 1) {             // attacco critico
+                                damage = Atk_Def(m.getDEF(), (2 * player.getATK()));
+                                battle_win.printLine("Colpo Critico");
+                                getch();
+                            } else{
+                                damage = Atk_Def(m.getDEF(), player.getATK());
+                            }
 
+                            m.setLP(m.getLP() - damage);
+                            battle_win.printLine("Hai tolto al tuo avversario " + to_string(damage) + " punti vita");
+                            break;
+
+                        case '2':
+                            switch (player.getName().front()){
+                                case 'G':   //gaudenzio
+                                    battle_win.printLine("Hai guadagnato " + to_string(player.getLV() * 2) + " punti vita!");
+                                    player.setLP(player.getLP() + player.getLV() * 2);
+                                    writeInfo(right_win, player, level);
+                                    break;
+
+                                case 'P':   //peppino
+                                    if (player.getMP() > 3) {
+                                        battle_win.printLine("Stai usando 3 mana: attacco duplicato!");
+                                        m.setLP(m.getLP() - Atk_Def(m.getDEF(), (2 * player.getATK())));
+                                        writeInfo(right_win, player, level);
+                                    }
+                                    break;
+
+                                case 'B':   //badore
+                                    if (Luck(player.getLuck()) == 1) {
+                                        battle_win.printLine("Il nemico non ti vede: attacco triplicato!");
+                                        m.setLP(m.getLP() - Atk_Def(m.getDEF(), (3 * player.getATK())));
+                                    } else {
+                                        battle_win.printLine("Sei stato maldestro: il nemico contrattacca e perdi un turno!");
+                                        player.setLP(player.getLP() - Atk_Def(player.getDEF(), (2 * m.getATK())));
+                                        writeInfo(right_win, player, level);
+                                    }
+                                    break;
+                            }
+
+                            break;
+
+                        default:
+                            battle_win.printLine("Hai fatto una mossa falsa, perdi il turno!");
+                            battle_win.printLine("(la prossima volta premi 1 o 2)");
+                            break;
+                    }
+
+                    getch();
+
+                    if (m.getLP() < 0)
+                        m.setLP(0);
+
+                    battle_win.clean();
+
+                    battle_win.printLine("Battaglia con " + m.getName() + ":");
+                    battle_win.printLine("");
+                    battle_win.printLine("PUNTI VITA -> " + to_string(m.getLP()));
+                    battle_win.printLine("LIVELLO -> " + to_string(m.getLV()));
+
+                    getch();
+
+                    break;
+
+                case 'i':
+                    player.showInventory();
+                    right_win.clean();
+                    writeInfo(right_win, player, level);
+                    printMap(player.getPosition(), mapWin);
+
+                    break;
+
+                case 'r':
+
+                    if (Luck(player.getLuck()) == 1){
+                        battle_win.printLine("Per corrompere il mostro devi dare " + to_string(m.getLV()*5) + " Cucuzze");
+
+                        if (player.getCoins() < m.getLV()*2){
+                            battle_win.printLine("Non hai abbastanza cucuzze!");
+                        }
+                        else {
+                            battle_win.printLine("Per procedere premi s, altrimenti n");
+
+                            do{
+                                c= getch();
+                            } while (c!= 's' && c!= 'n');
+
+                            battle_win.clean();
+
+                            if (c == 's'){
+                                win = true;
+                                escape = true;
+
+                                player.setCoins(player.getCoins() - m.getLV()*5);
+
+                                battle_win.clean();
+                                battle_win.printLine("Hai corrotto il mostro, se n'è andato");
+                                battle_win.printLine("Hai dovuto pagare " + to_string(m.getLV()*5) + " Cucuzze");
+                            }
+                            else
+                                escape =  false;
+                        }
+                    }
+                    else {
+                        battle_win.printLine("Non sei abbastanza fortunato il mostro non si fa corrompere");
+                        battle_win.printLine("Perdi il tuo turno, il mostro ne approfitta e attacca");
+                        escape = false;
+                    }
+
+                    getch();
+                    battle_win.clean();
+
+                    break;
+
+                default:
+                    battle_win.printLine("Premere un tasto valido!");
+                    getch();
+                    battle_win.clean();
+                    noAttack = true;
+                    break;
+            }
+
+            k = Luck(70);
+
+            if ((m.getLP() > 0) && (!noAttack) && (!escape) && (k == 1)) {
+
+                player.setLP(player.getLP() - Atk_Def(player.getDEF(), m.getATK()));
+
+	            battle_win.clean();
+                battle_win.printLine("L'avversario ti attacca!");
+                battle_win.printLine("");
+                battle_win.printLine("L'attacco del nemico ti toglie -> " + to_string(Atk_Def(player.getDEF(), m.getATK())) + " LP");
+
+                getch();
+
+                if (player.getLP() <= 0)
+                    player.setLP(0);
+
+                right_win.clean();
+                writeInfo(right_win, player, level);
+            }
+	
+    	    if (k == 0){
+	            battle_win.clean();
+	            battle_win.printLine("L'avversaerio è maldestro, fallisce l'attacco");
+                getch();
+    	    }
     }
 
     if (m.getLP() <= 0) {
@@ -706,115 +796,14 @@ int Atk_Def (int def, int atk) {
     return  (int)(atk -  (double)(atk * def) / 100);           // fare il casting
 }
 
-int Luck (int luck){
+int Luck (int luck){   //luck= fortuna del pg, oppure luck= 70 per determinare se l'avversario è maldestro
     
     int i=0;
 
-    i = rand() % 100;
+    i = rand() % 100 + 1;
     
     if (i <= luck)    // se i <= della fortuna del pg allora viene effettuato il critico (atk*2)
         return 1;
     else
         return 0;
-}
-
-status_t promptExit(Window& win)
-{
-    status_t status = DEFAULT;
-    int c;
-
-    win.clean();
-    win.printLine("Sei sicuro di voler uscire? (y/n)");
-    c = getch();
-
-    if(c == 'y')
-        status = QUIT;
-    else
-        win.clean();
-
-    return status;
-}
-
-void Level::showMap(Point p)
-{
-    if(map(p.x,p.y).getId() != "")
-        map.setVisible(map(p.x,p.y).getId(),monsters,items);
-    else
-        map.showAround(p.x,p.y);
-}
-
-status_t Level::pickItUp(PlayableCharacter& player,Window& win)
-{
-    status_t status = DEFAULT;
-    Point p = player.getPosition();
-
-    if(map(p.x,p.y).getUpperLayer().front() == 'i') // It's an item
-        if(player.pickItem(items[map(p.x,p.y).getUpperLayer()]))    /* returns true if the item was actually picked
-                                                                   up*/
-        {
-            win.printLine("Raccolto " + items[map(p.x,p.y).getUpperLayer()].getName());
-            getch();
-            win.clean();
-            items.erase(map(p.x,p.y).getUpperLayer());
-            map(p.x,p.y).setUpperLayer("");
-        }
-        else
-        {
-            win.printLine("Hai camminato su " + items[map(p.x,p.y).getUpperLayer()].getName());
-            getch();
-            win.clean();
-        } 
-    else    // it's a degree piece
-    {
-        player.pickUpPiece();
-        win.printLine("Hai raccolto un pezzo di laurea");
-        map(p.x,p.y).setUpperLayer("");
-        getch();
-        if(player.getPieces() == NEEDED_PIECES)
-        {
-            win.printLine("Hai trovato tutti i pezzi della laurea");
-            getch();
-            status = WIN;
-        }
-        else
-        {
-            win.printLine("Ne mancano ancora " + to_string(NEEDED_PIECES - player.getPieces()) + ". Tieni duro");
-            getch();
-            win.clean();
-        } 
-    }
-
-    return status;
-}
-
-status_t Level::handleBattles(PlayableCharacter& player, Window& bottom, Window& playerInfo, Window& mapWindow)
-{
-    status_t status = DEFAULT;
-    list<Monster> monstersNearby;
-
-    monstersAround(player.getPosition(),monstersNearby);
-    if(!monstersNearby.empty())
-    {
-        for(Monster m : monstersNearby)
-            if(Battle(bottom,playerInfo,mapWindow,player,m))  // Returns true upon a win, false upon a loss
-            {
-                map(m.getPosition()).setUpperLayer("");
-                monsters.erase(m.getId());
-                printMap(player.getPosition(),mapWindow);
-                playerInfo.clear();
-                writeInfo(playerInfo,player);
-            } 
-            else
-                status = LOSS;
-    }
-
-    return status;
-}
-
-void LevelConfig::newLevel()
-{
-    n++;
-    rooms++;
-    items = rooms/2;
-    monsters = rooms/2;
 }
