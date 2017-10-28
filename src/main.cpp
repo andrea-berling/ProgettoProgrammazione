@@ -255,7 +255,7 @@ void showCredits()
     creditsWin.printLine("Storia principale: Andrea Berlingieri");
     creditsWin.printLine("Personaggi principali: Giacomo Puligheddu");
     creditsWin.printLine("Mostri: Giacomo Puligheddu");
-    creditsWin.printLine("Oggetti: Giacomo Pulighe");
+    creditsWin.printLine("Oggetti: Giacomo Puligheddu");
     creditsWin.printLine("Storia dei personaggi: Giacomo Puligheddu");
     creditsWin.printLine("Shop: Giacomo Puligheddu");
     creditsWin.printLine("Battaglie: Riccardo Bellelli");

@@ -2,14 +2,6 @@
 #include "../include/utility.h"
 #include <unordered_set>
 #include <ncurses.h>
-#ifndef DEBUG
-#define DEBUG
-#endif // DEBUG
-#ifdef DEBUG
-#include <cstdlib>
-#include <iostream>
-#include <fstream>
-#endif
 
 using namespace std;
 
