@@ -5,6 +5,7 @@ CURSES=-lpanel -lncurses -lmenu -ltinfo
 BUILD=build
 DEPS=utility.h
 SHELL=/bin/bash
+NAME=AlmaMater
 
 all: builddir game
 
@@ -12,7 +13,7 @@ builddir:
 	if [ ! -d "$(BUILD)" ]; then mkdir "$(BUILD)"; fi;
 
 game: $(BUILD)/Graph.o $(BUILD)/main.o $(BUILD)/Map.o $(BUILD)/Matrix.o $(BUILD)/Room.o $(BUILD)/Tile.o $(BUILD)/main.o $(BUILD)/Menu.o $(BUILD)/Window.o $(BUILD)/Item.o $(BUILD)/Level.o $(BUILD)/Monster.o $(BUILD)/personaggiGiocabili.o $(BUILD)/utility.o $(BUILD)/Area.o
-	$(CC) build/*.o -o Test $(CFLAGS) $(CURSES)
+	$(CC) build/*.o -o $(NAME) $(CFLAGS) $(CURSES)
 $(BUILD)/main.o: src/main.cpp
 	g++ -c $(CFLAGS) src/main.cpp -o $(BUILD)/main.o -g $(CURSES)
 $(BUILD)/Menu.o: src/Menu.cpp include/Menu.h
@@ -43,4 +44,4 @@ $(BUILD)/utility.o: src/utility.cpp include/utility.h
 	$(CC) -c $(SRC)/utility.cpp $(CFLAGS) -o $(BUILD)/utility.o
 clean:
 	if [ -d "$(BUILD)" ]; then rm -r "$(BUILD)"; fi;
-	if [ -f Test ]; then rm Test; fi;
+	if [ -f $(NAME) ]; then rm $(NAME); fi;
