@@ -32,11 +32,13 @@
 *.app
 
 logfile
-Test
+AlmaMater
 tags
 .idea
 cmake-build-debug
 updateTags
 classgit
-relazione*
 *.orig
+relazione.aux
+relazione.log
+relazione.toc
