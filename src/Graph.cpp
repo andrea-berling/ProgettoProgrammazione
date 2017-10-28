@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <deque>
 #include "../include/Graph.h"
+#include <utility>
+#include <boost/functional/hash.hpp>
 #include <iostream>
 #ifndef DEBUG
 #define DEBUG
@@ -31,7 +33,7 @@ namespace std
 {
     size_t hash<Point>::operator()(Point n) const
     {
-        return hash<int>()(n.x ^ (n.y << 3));
+        return hash<int>()(boost::hash<pair<int,int>>()(pair<int,int>(n.x,n.y)));
     }
 }
 
