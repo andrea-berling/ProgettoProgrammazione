@@ -152,27 +152,6 @@ status_t Level::handleTurn(Window& mapWindow, Window& info, Window& bottom,Playa
             case 'q':
                 status = promptExit(bottom);
                 break;
-#ifdef DEBUG
-            case 'p':
-                for(int i = 0; i < map.getHeight(); i++)
-                    for(int j = 0; j < map.getWidth(); j++)
-                        map(j,i).setVisible(true);
-                for(auto& m : monsters)
-                    m.second.wakeUp(true);
-                for(auto& i : items)
-                    i.second.setVisible(true);
-                printMap(player.getPosition(),mapWindow);
-                break;
-            case 'n':
-                return UP;
-                break;
-            case 'N':
-                return DOWN;
-                break;
-            case '$':
-                player.setCoins(9999);
-                break;
-#endif
         }
 
         x = player.getPosition().x;

@@ -4,9 +4,6 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <list>
-#ifndef DEBUG
-#define DEBUG
-#endif
 
 #define INF INT_MAX
 

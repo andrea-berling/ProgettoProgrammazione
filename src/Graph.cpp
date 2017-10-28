@@ -6,9 +6,6 @@
 #include <utility>
 #include <boost/functional/hash.hpp>
 #include <iostream>
-#ifndef DEBUG
-#define DEBUG
-#endif
 
 using namespace std;
 
