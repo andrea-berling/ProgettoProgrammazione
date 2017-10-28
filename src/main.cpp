@@ -36,16 +36,19 @@ list<Level>::iterator createLevel(list<Level>& levels, LevelConfig& config, Play
 // Creates a new level, stores it in the given levels list and returns an iterator pointing to it. Furthermore it
 // prints the map and the stats of the player
 
+void showCredits();
+// Displays the credits for the game
+
 int main()
 {	
     int choice;
     bool quit = false;
     int character = -1;
     srand(time(0));
+    startCurses();
 
     while(character == -1 && !quit)
     {
-        startCurses();
         choice = mainMenu();
         switch(choice)
         {
@@ -53,8 +56,7 @@ int main()
                 character = playerChoiceMenu();
                 break;
             case 1:
-                quit = true;
-                // To implement the credits window
+                showCredits();
                 break;
             case 2:
                 quit = true;
@@ -242,4 +244,21 @@ list<Level>::iterator createLevel(list<Level>& levels,LevelConfig& config, Playa
     (*it).printMap(player.getPosition(),mapWindow);
     (*it).writeInfo(infoWindow,player);
     return it;
+}
+
+void showCredits()
+{
+    Window creditsWin(COLS/3 + 10,LINES/3,30,70);
+    creditsWin.printLine("Mappa: Andrea Berlingieri");
+    creditsWin.printLine("Grafica: Andrea Berlingieri");
+    creditsWin.printLine("Livelli: Andrea Berlingieri");
+    creditsWin.printLine("Storia principale: Andrea Berlingieri");
+    creditsWin.printLine("Personaggi principali: Giacomo Puligheddu");
+    creditsWin.printLine("Mostri: Giacomo Puligheddu");
+    creditsWin.printLine("Oggetti: Giacomo Pulighe");
+    creditsWin.printLine("Storia dei personaggi: Giacomo Puligheddu");
+    creditsWin.printLine("Shop: Giacomo Puligheddu");
+    creditsWin.printLine("Battaglie: Riccardo Bellelli");
+    creditsWin.printLine("Inventario: Riccardo Bellelli");
+    getch();
 }
