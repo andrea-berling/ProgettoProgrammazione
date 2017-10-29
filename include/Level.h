@@ -110,4 +110,7 @@ status_t promptExit(Window& win);
 // Prompts an exit confirmation request on the given window
 // Returns QUIT if the exit request is confirmed, DEFAULT otherwise
 
+void showInstructions();
+// Shows general instructions for the game
+
 #endif  // LEVEL_H
