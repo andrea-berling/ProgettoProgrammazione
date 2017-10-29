@@ -13,53 +13,24 @@ using namespace std;
 
 Level::Level(LevelConfig& config, PlayableCharacter& pg):level(config.n),map(config.width,config.height)
 {
-    unordered_set<Point> spots;
     vector<Item> itemsSet;
-    vector<Monster> monstersSet;
-    int id = 0;
-    ifstream itemsFile("resources/items.txt");
-    retrieveItems(itemsFile,itemsSet);
-    monstersSet = {Monster("Goblin",level),Monster("Troll",level),Monster("Golem",level),Monster("Gineppino",level)};
+    Room R;
+    Point p;
+
+    retrieveItems(itemsSet); // Retrieves all the possible items from a file and puts them in the vector
 
     if(level > 1)
         shopMenu(pg, itemsSet);
 
     int generatedRooms = map.generate(config.rooms);
-    // Spawn items
-    map.freeSpots(config.items,spots,ceil((double)(config.items)/generatedRooms));
-    for(Point p : spots)
-    {
-        int index = rand(0,min(level*3,static_cast<int>(itemsSet.size())-1));
-        Item i = itemsSet[index];
-        i.setPosition(p.x,p.y);
-        string ID = "item" + to_string(id) + "." + to_string(level);
-        i.setId(ID);
-        id++;
-        map(p.x,p.y).setUpperLayer(ID);
-        items[ID] = i;
-        // Place an object
-    }
-    spots.clear();
-    id = 0;
-    // Spawn monsters
-    map.freeSpots(config.monsters,spots,ceil((double)(config.monsters)/generatedRooms));
-    for(Point p : spots)
-    {
-        int index = rand(0,monstersSet.size()-1);
-        Monster m = monstersSet[index];
-        m.setPosition(p.x,p.y);
-        string ID = "monster" + to_string(id);
-        m.setId(ID);
-        id++;
-        map(p.x,p.y).setUpperLayer(ID);
-        monsters[ID] = m;
-        // Spawn a monster
-    }
+
+    spawnItems(config.items,itemsSet,generatedRooms);
+    spawnMonsters(config.monsters,generatedRooms);
 
     upStairs = map.placeStairs(UP_STAIRS);
 
-    Room R = map.pickRoom();
-    Point p = map.freeSpot(R);
+    R = map.pickRoom();
+    p = map.freeSpot(R);
     map(p.x,p.y).setUpperLayer("degree");
 }
 
@@ -796,4 +767,46 @@ void LevelConfig::newLevel()
     rooms++;
     items = rooms/2;
     monsters = rooms/2;
+}
+
+void Level::spawnItems(int n,vector<Item>& itemsSet, int generatedRooms)
+{
+    int id = 0;
+    unordered_set<Point> spots;
+    map.freeSpots(n,spots,ceil(static_cast<double>(n)/generatedRooms));
+    for(Point p : spots)
+    {
+        int index = rand(0,min(level*3,static_cast<int>(itemsSet.size())-1));
+        Item i = itemsSet[index];
+        i.setPosition(p.x,p.y);
+        string ID = "item" + to_string(id) + "." + to_string(level);
+        i.setId(ID);
+        id++;
+        map(p.x,p.y).setUpperLayer(ID); // Place an object
+        items[ID] = i;
+    }
+}
+
+void Level::spawnMonsters(int n,int generatedRooms)
+{
+    int id = 0;
+    unordered_set<Point> spots;
+    vector<Monster> monstersSet = {Monster("Goblin",level),
+                                   Monster("Troll",level),
+                                   Monster("Golem",level),
+                                   Monster("Gineppino",level)};
+
+    map.freeSpots(n,spots,ceil(static_cast<double>(n)/generatedRooms));
+
+    for(Point p : spots)
+    {
+        int index = rand(0,monstersSet.size()-1);
+        Monster m = monstersSet[index];
+        m.setPosition(p.x,p.y);
+        string ID = "monster" + to_string(id);
+        m.setId(ID);
+        id++;
+        map(p.x,p.y).setUpperLayer(ID); // Spawn a monster
+        monsters[ID] = m;
+    }
 }

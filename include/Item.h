@@ -83,6 +83,7 @@ namespace std
 }
 
 
-void retrieveItems(std::ifstream& file, std::vector<Item>& set);
-// Given a file with the items and a vector of Items, it retireves them and stores them in the vector
+void retrieveItems(std::vector<Item>& set);
+// Retrieves all the possible items from a file in the resources dir and puts them into set
+
 #endif //GAME_ITEM_H

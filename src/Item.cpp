@@ -116,16 +116,18 @@ namespace std
     // Hash function for the class Item
 }
 
-void retrieveItems(std::ifstream& file, std::vector<Item>& set)
+void retrieveItems(std::vector<Item>& set)
 {
     using namespace boost;
     using namespace std;
     string name,line;
     int type,LP,MP,DEF,ATK,LUCK;
     char_separator<char> sep(",");
-    while(file)
+    ifstream itemsFile("resources/items.txt");
+
+    while(itemsFile)
     {
-        getline(file,line);
+        getline(itemsFile,line);
         if(line != "")
         {
             tokenizer<char_separator<char>> tokens(line,sep);
