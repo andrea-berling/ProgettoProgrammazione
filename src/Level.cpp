@@ -123,6 +123,9 @@ status_t Level::handleTurn(Window& mapWindow, Window& info, Window& bottom,Playa
             case 'q':
                 status = promptExit(bottom);
                 break;
+            case '?':
+                showInstructions();
+                break;
         }
 
         x = player.getPosition().x;
@@ -809,4 +812,20 @@ void Level::spawnMonsters(const int n, const int generatedRooms)
         map(p.x,p.y).setUpperLayer(ID); // Spawn a monster
         monsters[ID] = m;
     }
+}
+
+void showInstructions()
+{
+    Window instructionsWin(COLS/5,0,30,50);
+    instructionsWin.box();
+    ifstream instructionsFile("resources/instructions.dat");
+    string line;
+
+    while(instructionsFile)
+    {
+        getline(instructionsFile,line);
+        instructionsWin.printLine(line);
+    }
+
+    getch();
 }
