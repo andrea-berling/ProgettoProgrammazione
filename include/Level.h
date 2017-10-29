@@ -2,6 +2,7 @@
 #define LEVEL_H
 #include "Map.h"
 #include <unordered_map>
+#include <vector>
 #include <string>
 #include <list>
 #include "Graph.h"
@@ -32,7 +33,17 @@ class Level
         Point upStairs;
         Point downStairs;
         int level;
+
         bool validPosition(Point pos,Point playerPos);
+        // Returns true if the given position is a valid position for the monster to move into
+
+        void spawnItems(int n,std::vector<Item>& itemsSet, int generatedRooms);
+        // Spawns the items given the vector of all possible items, the number of items to spawn and the number of
+        // generated rooms
+
+        void spawnMonsters(int n,int generatedRooms);
+        // Spawns the monsters given the number of monsters and the number of generated rooms
+
 
     public:
 
