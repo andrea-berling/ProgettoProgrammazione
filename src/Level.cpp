@@ -38,7 +38,7 @@ void Level::printMap(const Point playerPos, Window& mapWindow)
 {
     mapWindow.clear();
     WINDOW *win = mapWindow.getWin();
-    move(0,0);
+    wmove(win,0,0);
     for(int i = 0; i < map.getHeight(); i++)
     {
         for (int j = 0; j < map.getWidth(); j++)
@@ -704,21 +704,19 @@ status_t Level::pickItUp(PlayableCharacter& player,Window& win)
     Point p = player.getPosition();
 
     if(map(p.x,p.y).getUpperLayer().front() == 'i') // It's an item
+    {
         if(player.pickItem(items[map(p.x,p.y).getUpperLayer()]))    /* returns true if the item was actually picked
                                                                    up*/
         {
             win.printLine("Raccolto " + items[map(p.x,p.y).getUpperLayer()].getName());
-            getch();
-            win.clean();
             items.erase(map(p.x,p.y).getUpperLayer());
             map(p.x,p.y).setUpperLayer("");
         }
         else
-        {
             win.printLine("Hai camminato su " + items[map(p.x,p.y).getUpperLayer()].getName());
-            getch();
-            win.clean();
-        } 
+        getch();
+        win.clean();
+    }
     else    // it's a degree piece
     {
         player.pickUpPiece();
@@ -728,15 +726,12 @@ status_t Level::pickItUp(PlayableCharacter& player,Window& win)
         if(player.getPieces() == NEEDED_PIECES)
         {
             win.printLine("Hai trovato tutti i pezzi della laurea");
-            getch();
             status = WIN;
         }
         else
-        {
             win.printLine("Ne mancano ancora " + to_string(NEEDED_PIECES - player.getPieces()) + ". Tieni duro");
-            getch();
-            win.clean();
-        } 
+        getch();
+        win.clean();
     }
 
     return status;
