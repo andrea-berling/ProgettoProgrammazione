@@ -34,7 +34,7 @@ Level::Level(const LevelConfig& config, PlayableCharacter& pg):level(config.n),m
     map(p.x,p.y).setUpperLayer("degree");
 }
 
-void Level::printMap(Point playerPos, Window& mapWindow)
+void Level::printMap(const Point playerPos, Window& mapWindow)
 {
     mapWindow.clear();
     WINDOW *win = mapWindow.getWin();
@@ -70,7 +70,7 @@ void Level::printMap(Point playerPos, Window& mapWindow)
     wrefresh(win);
 }
 
-void Level::placeCharacter(PlayableCharacter& player,pos_pref_t preference)
+void Level::placeCharacter(PlayableCharacter& player, const pos_pref_t preference)
 {
     switch(preference)
     {
@@ -160,7 +160,8 @@ status_t Level::handleTurn(Window& mapWindow, Window& info, Window& bottom,Playa
     return status;
 }
 
-int Level::getLevel() {
+int Level::getLevel() const
+{
     return level;
 }
 
@@ -335,17 +336,17 @@ void Level::shopMenu(PlayableCharacter& pg,vector<Item>& itemsSet)
     }
 }
 
-Point Level::getUpStairs()
+Point Level::getUpStairs() const
 {
     return upStairs;
 }
 
-Point Level::getDownStairs()
+Point Level::getDownStairs() const
 {
     return downStairs;
 }
 
-void Level::monstersAround(Point playerPos, std::list<Monster>& list)
+void Level::monstersAround(const Point playerPos, std::list<Monster>& list)
 {
     std::list<std::string> ids;
 
@@ -429,7 +430,7 @@ void Level::moveMonster(Point playerPosition, Monster& mons){
     map(mpos).setUpperLayer(mons.getId());
 }
 
-bool Level::validPosition(Point pos,Point playerPos)
+bool Level::validPosition(const Point pos,const Point playerPos)
 {
     return pos != playerPos && map(pos).getType() == PAVEMENT && map(pos).getId() != "" && map(pos).getUpperLayer() == "";    // The monster can't leave
     //the room it's in and can't walk on the player or on items
@@ -622,7 +623,7 @@ bool Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playab
                 writeInfo(right_win, player);
             }
 	
-    	    if (k == 0){
+    	    if (m.getLP() > 0 && k == 0){
 	            battle_win.clean();
 	            battle_win.printLine("L'avversaerio e' maldestro, fallisce l'attacco");
                 getch();
@@ -685,7 +686,7 @@ status_t promptExit(Window& win)
     return status;
 }
 
-void Level::showMap(Point p)
+void Level::showMap(const Point p)
 {
     if(map(p.x,p.y).getId() != "")
         map.setVisible(map(p.x,p.y).getId(),monsters,items);
@@ -787,7 +788,7 @@ void Level::spawnItems(const int n,const vector<Item>& itemsSet,const int genera
     }
 }
 
-void Level::spawnMonsters(int n,int generatedRooms)
+void Level::spawnMonsters(const int n, const int generatedRooms)
 {
     int id = 0;
     unordered_set<Point> spots;

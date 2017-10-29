@@ -71,13 +71,13 @@ class Level
         // Returns UP or DOWN, if the player is on the up or down stairs respectively, WIN or LOSS if the player has
         // won the game or has lost due to a battle, QUIT if the quit request was confirmed
 
-        int getLevel();
+        int getLevel() const;
         //  Restituisce il numero del livello
 
-        Point getUpStairs();
+        Point getUpStairs() const;
         // Returns the coordinates of the up stairs
 
-        Point getDownStairs();
+        Point getDownStairs() const;
         // Returns the coordinates of the down stairs
 
         void monstersAround(const Point playerPos, std::list<Monster>& list);
@@ -86,7 +86,7 @@ class Level
         void shopMenu(PlayableCharacter& pg,std::vector<Item>& itemsSet);
         // Genera la finestra dello shop con i vari Item da acquistare
 
-        void moveMonster(const Point playerPosition, Monster& mons);
+        void moveMonster(Point playerPosition, Monster& mons);
         // Muove il mostro passato in modo che si avvicini al giocatore 
 
         bool Battle (Window& battle_win, Window& right_win, Window& mapWin, PlayableCharacter& player, Monster& m);
