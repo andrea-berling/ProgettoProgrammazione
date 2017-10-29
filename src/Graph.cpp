@@ -123,7 +123,7 @@ bool Graph::deleteEdge(Point p, Point q)
 }
 // Deletes an edge in the graph
 
-unordered_set<Point>* Graph::adj(Point p)
+unordered_set<Point>* Graph::adj(const Point p)
 {
     unordered_set<Point> *adj = new unordered_set<Point>();   // in the graph of the map there are at most 4 adjacent Points
 
@@ -136,7 +136,7 @@ unordered_set<Point>* Graph::adj(Point p)
 }
 // Returns the set of all the Points adiacient to u
 
-unordered_set<Point>* Graph::V()
+unordered_set<Point>* Graph::V() const
 {
     unordered_set<Point> *v = new unordered_set<Point>();               // a new set is created, so that modifications in this set without using the graph methods won't affect the graph
 
@@ -149,12 +149,12 @@ unordered_set<Point>* Graph::V()
 }
 // Retruns the set of all Points in the graph
 
-int Graph::n()
+int Graph::n() const
 {
     return C;
 }
 
-void shortestPath(Graph& G, Point r,unordered_map<Point,Point>& T)
+void shortestPath(Graph& G, const Point r,unordered_map<Point,Point>& T)
 {
     unordered_map<Point,int> d(2*G.n()+1);
     unordered_map<Point,bool> b(2*G.n()+1);
@@ -204,7 +204,7 @@ void shortestPath(Graph& G, Point r,unordered_map<Point,Point>& T)
     }
 }
 
-void retrievePath(list<Point>& l,unordered_map<Point,Point>& T,Point p,Point q)
+void retrievePath(list<Point>& l, unordered_map<Point,Point>& T,Point p,Point q)
 {
     while(q != p)
     {

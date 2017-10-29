@@ -17,29 +17,29 @@ Map::Map(int width, int height) : grid(height, width), width(width), height(heig
 // Creates a new map with the given # of rows and columns
 
 
-Tile& Map::operator () (int x, int y)
+Tile& Map::operator () (const int x, const int y) const
 {
     return this->grid(y,x);
 }
 // Returns a reference variable to Map(x,y)
 
-Tile& Map::operator () (Point p)
+Tile& Map::operator () (const Point p) const
 {
     return this->grid(p.y,p.x);
 }
 // Returns a reference variable to Map(x,y)
 
-int Map::getWidth()
+int Map::getWidth() const
 {
     return this->width;
 }
 
-int Map::getHeight()
+int Map::getHeight() const
 {
     return this->height;
 }
 
-void Map::place(Room& R)
+void Map::place(const Room& R)
 {
     Point p = R.getCorner();
     int RWidth = R.getWidth();
@@ -169,7 +169,7 @@ void Map::createLinks(Graph& G)
         }
 }
 
-void Map::link(Room& R,Room& Q,Graph& G)
+void Map::link(const Room& R,const Room& Q,Graph& G)
 {
     Point p = R.pickAPointAround();
     Point q = Q.pickAPointAround();

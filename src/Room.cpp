@@ -9,10 +9,10 @@ Room::Room():Area()
     id = "";
 }
 
-Room::Room(Point position, int width, int height, string id) : Area(position,width,height), visible(false), id(id)
+Room::Room(const Point position, const int width, const int height, const string id) : Area(position,width,height), visible(false), id(id)
 {}
 
-Point Room::pickPoint()
+Point Room::pickPoint() const
 {
     Point p;
     p.x = rand(this->p.x + 1,this->p.x + this->width - 2);
@@ -20,7 +20,7 @@ Point Room::pickPoint()
     return p;
 }
 
-Point Room::pickAPointAround()
+Point Room::pickAPointAround() const
 {
     Point q;
 
@@ -38,7 +38,7 @@ Point Room::pickAPointAround()
     return q;
 }
 
-bool Room::isVisible()
+bool Room::isVisible() const
 {
     return visible;
 }
@@ -48,7 +48,7 @@ void Room::setVisible(bool b)
     visible = b;
 }
 
-string Room::getId()
+string Room::getId() const
 {
     return id;
 }
@@ -60,7 +60,7 @@ void Room::setId(string id)
 }
 // Sets the id of the room
 
-bool Room::isBorder(int x, int y)
+bool Room::isBorder(const int x, const int y) const
 {
     return x == p.x || x == p.x + width - 1 || y == p.y || y == p.y + height - 1;
 }

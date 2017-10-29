@@ -5,7 +5,7 @@
 using namespace std;
 using namespace boost;
 
-Window::Window(int x, int y, int nlines, int ncols):x(x),y(y),nlines(nlines),ncols(ncols)
+Window::Window(const int x, const int y, const int nlines, const int ncols):x(x),y(y),nlines(nlines),ncols(ncols)
 {
     win = newwin(nlines,ncols,y,x);
     panel = new_panel(win);
@@ -26,7 +26,7 @@ Window::~Window()
 }
 // Destructor
 
-void Window::readFromFile(string filename)
+void Window::readFromFile(const string filename)
 {
     ifstream file(filename);
     string line;
@@ -44,7 +44,7 @@ void Window::readFromFile(string filename)
 }
 // Given a filename, it writes its contents in the window
 
-string wrap(string text,unsigned int maxLength)
+string wrap(const string text,const unsigned int maxLength)
 {
     int length = 0;
     char_separator<char> sep(" ");
@@ -67,7 +67,7 @@ string wrap(string text,unsigned int maxLength)
 }
 // Given a text and a limit length, it wraps the text to respect the given text width and returns it as a string
 
-void Window::printLine(string line) {
+void Window::printLine(const string line) {
     if (line.length() < ncols) {
         mvwprintw(win,firstAvailableLine,1,line.c_str());
         firstAvailableLine++;
@@ -96,7 +96,7 @@ void Window::clear()
     firstAvailableLine = 1;
 }
 
-WINDOW *Window::getWin()
+WINDOW *Window::getWin() const
 {
     return win;
 }

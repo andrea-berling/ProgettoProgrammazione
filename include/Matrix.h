@@ -15,17 +15,17 @@ class Matrix
         Matrix(const Matrix& m);
         // Copy constructor
         
-        Matrix(int rows, int cols);
+        Matrix(const int rows, const int cols);
         // Creates a new matrix with the given # of rows and columns
 
         ~Matrix();
         // Destructor
 
-        bool isEmpty(int i, int j);
+        bool isEmpty(const int i, const int j);
         // Given two indexes i and j, returns true if matrix[i][j] == T()
         // Not much reliable with primitive data types
 
-        T& operator () (int row, int col);
+        T& operator () (const int row, const int col) const;
         // Returns a reference variable to A[row][col]
 
 };
