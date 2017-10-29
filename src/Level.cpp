@@ -363,6 +363,7 @@ void Level::monstersAround(const Point playerPos, std::list<Monster>& list)
 }
 
 void Level::moveMonster(Point playerPosition, Monster& mons){
+    bool done = false;
     int dist;
     Point fmpos;    //  Futura posizione del mostro
     Point mpos; //  Posizione del mostro
@@ -373,7 +374,7 @@ void Level::moveMonster(Point playerPosition, Monster& mons){
     dist = w(playerPosition, mpos);
     if (map(playerPosition).getId() == map(mpos).getId()) { // if the monster and the player are in the same room
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4 && !done; i++) {
             switch (i) {
                 case 0:
                     fmpos.x = mpos.x + 1;
@@ -394,7 +395,10 @@ void Level::moveMonster(Point playerPosition, Monster& mons){
             }
 
             if (validPosition(fmpos, playerPosition) && (w(fmpos, playerPosition) < dist))
+            {
                 mpos = fmpos;
+                done = true;
+            }
 
         }
     }
