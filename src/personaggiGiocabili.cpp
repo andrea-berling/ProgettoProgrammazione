@@ -352,7 +352,7 @@ void PlayableCharacter::showInventory() {
 
                     case 'd':
                         ItemInventory.clean();
-                        if(it.getType() != 5)
+                        if(it.getType() != 5 && equipment[it.getType()].getId() == it.getId())
                             unequip(it);
                         dropItem(it);
                         ItemInventory.printLine(it.getName() + " droppat"+suffix(it.getType())+"!");
