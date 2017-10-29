@@ -41,14 +41,17 @@ Graph::Graph():Points(6143),C(0)
 
 bool Graph::insertPoint(Point p)
 {
+    bool status;
     if(Points.find(p) == Points.end())
     {
         Points[p] = new list<Point>();
         C++;
-        return true;
+        status = true;
     }
     else
-        return false;
+        status = false;
+
+    return status;
 }
 // Inserts a node into the graph
 
@@ -60,23 +63,26 @@ Graph::~Graph()
 
 bool Graph::insertEdge(Point p, Point q)
 {
+    bool status;
+
     if(Points.find(p) != Points.end() && Points.find(q) != Points.end())
     {
-        list<Point>* l = Points[p]; 
-        if(find(l->begin(),l->end(),q) == l->end())
-            l->insert(l->begin(),q);
-        l = Points[q];
-        if(find(l->begin(),l->end(),p) == l->end()) // The graph is undirected
-            l->insert(l->begin(),p);
-        return true;
+        if(find(Points[p]->begin(),Points[p]->end(),q) == Points[p]->end())
+            Points[p]->push_front(q);
+        if(find(Points[q]->begin(),Points[q]->end(),p) == Points[q]->end()) // The graph is undirected
+            Points[q]->push_front(p);
+        status = true;
     }
     else
-        return false;
+        status = false;
+
+    return status;
 }
 // Inserts a node into the graph
 
 bool Graph::deletePoint(Point p)
 {
+    bool status;
     unordered_map<Point,list<Point>*>::iterator p_it = Points.find(p);
     if(p_it != Points.end())
     {
@@ -86,40 +92,48 @@ bool Graph::deletePoint(Point p)
         C--;
         for(auto q : Points) // removing node p from all the adjacency lists where it appears
         {
-            for(list<Point>::iterator it = q.second->begin(); it != q.second->end() && !done; it++)
+            list<Point>::iterator it = q.second->begin();
+            while(it != q.second->end() && !done)
+            {
                 if(*it == p)
                 {
                     q.second->erase(it);
                     done = true;    // Stops looking for p in the adjacency list of the current node
                 }
+                ++it;
+            }
             done = false;
         }
-        return true;
+        status = true;
     }
     else
-        return false;
+        status = false;
+
+    return status;
 }
 // Deletes a node in the graph
 
 bool Graph::deleteEdge(Point p, Point q)
 {
+    bool status;
+
     if(Points.find(p) != Points.end() && Points.find(q) != Points.end())
     {
-        list<Point>* l = Points[p];
-        list<Point>* m = Points[q];
-        list<Point>::iterator it1 = find(l->begin(),l->end(),q); // Removing q from p's adjacency list
-        list<Point>::iterator it2 = find(m->begin(),m->end(),p); // Removing q from p's adjacency list
-        if(it1 != l->end() && it2 != m->end())
+        list<Point>::iterator it1 = find(Points[p]->begin(),Points[p]->end(),q); // Removing q from p's adjacency list
+        list<Point>::iterator it2 = find(Points[q]->begin(),Points[q]->end(),p); // Removing q from p's adjacency list
+        if(it1 != Points[p]->end() && it2 != Points[q]->end())
         {
-            l->erase(it1);
-            m->erase(it2);
-            return true;
+            Points[p]->erase(it1);
+            Points[q]->erase(it2);
+            status = true;
         }
         else
-            return false;
+            status = false;
     }
     else
-        return false;
+        status = false;
+
+    return status;
 }
 // Deletes an edge in the graph
 
@@ -208,12 +222,11 @@ void retrievePath(list<Point>& l, unordered_map<Point,Point>& T,Point p,Point q)
 {
     while(q != p)
     {
-        if (q != Point())
-            l.insert(l.begin(),q);
+        l.push_front(q);
         q = T[q];
     }
 
-    l.insert(l.begin(),p);
+    l.push_front(p);
 }
 
 int w(Point p, Point q)
