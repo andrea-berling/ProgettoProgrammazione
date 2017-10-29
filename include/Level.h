@@ -34,33 +34,42 @@ class Level
         Point downStairs;
         int level;
 
-        bool validPosition(Point pos,Point playerPos);
+        bool validPosition(const Point pos,const Point playerPos);
         // Returns true if the given position is a valid position for the monster to move into
 
-        void spawnItems(int n,std::vector<Item>& itemsSet, int generatedRooms);
+        void spawnItems(const int n,const std::vector<Item>& itemsSet, const int generatedRooms);
         // Spawns the items given the vector of all possible items, the number of items to spawn and the number of
         // generated rooms
 
-        void spawnMonsters(int n,int generatedRooms);
+        void spawnMonsters(const int n,const int generatedRooms);
         // Spawns the monsters given the number of monsters and the number of generated rooms
 
+        status_t pickItUp(PlayableCharacter& player,Window& win);
+        // Makes the player pick up what is beneath him, if possible, printing messages to the given win
+        // Returns WIN if the picked up item was the last special item (which means victory), DEFAULT otherwise
+
+        status_t handleBattles(PlayableCharacter& player, Window& bottom, Window& playerInfo, Window& mapWindow);
+        // Handles the battle with monsters nearby, if present. It a turn battle one monster at a time
+        // Returns a LOSS status upon a lost battle, DEFAULT if no battle is lost 
 
     public:
 
-        Level(LevelConfig& config,PlayableCharacter& pg);
-        // Given a width, a height and a number of rooms, monsters and items, it creates a new level
+        Level(const LevelConfig& config,PlayableCharacter& pg);
+        // Given a level configuration and the player it creates a new level
 
-        void printMap(Point playerPos, Window& mapWindow);
+        void printMap(const Point playerPos, Window& mapWindow);
         // Prints the map, the monsters, the items and the player
 
-        void placeCharacter(PlayableCharacter& player, pos_pref_t preference);
+        void placeCharacter(PlayableCharacter& player, const pos_pref_t preference);
         // Given a main character and a preference for the position, places the characeter accordingly
-        // if playerPosition == 0, the position is random
-        // if playerPosition == 1, the position is the same as the one of the down stairs
-        // if playerPosition == -1, the position is the same as the one of the up stairs
+        // if preference == RANDOM, the position is random
+        // if preference == DOWN, the position is the same as the one of the down stairs
+        // if preference == UP, the position is the same as the one of the up stairs
 
         status_t handleTurn(Window& mapWindow, Window& info, Window& bottom, PlayableCharacter& player);
         // Handles the player's turn
+        // Returns UP or DOWN, if the player is on the up or down stairs respectively, WIN or LOSS if the player has
+        // won the game or has lost due to a battle, QUIT if the quit request was confirmed
 
         int getLevel();
         //  Restituisce il numero del livello
@@ -71,28 +80,20 @@ class Level
         Point getDownStairs();
         // Returns the coordinates of the down stairs
 
-        void monstersAround(Point playerPos, std::list<Monster>& list);
+        void monstersAround(const Point playerPos, std::list<Monster>& list);
         // Given a player and an empty list, it fills the list with the the monsters around player
 
-        void shopMenu(PlayableCharacter& pg, std::vector<Item>& itemsSet);
-        //  Genera la finestra dello shop con i vari Item da acquistare
+        void shopMenu(PlayableCharacter& pg,std::vector<Item>& itemsSet);
+        // Genera la finestra dello shop con i vari Item da acquistare
 
-        void moveMonster(Point playerPosition, Monster& mons);
+        void moveMonster(const Point playerPosition, Monster& mons);
         // Muove il mostro passato in modo che si avvicini al giocatore 
 
         bool Battle (Window& battle_win, Window& right_win, Window& mapWin, PlayableCharacter& player, Monster& m);
 
-        void showMap(Point pos);
+        void showMap(const Point pos);
         // Given the position of the player, it shows the map dinamically: shows the four tiles adjacent to pos, if the
         // position is not within a room, else it shows the whole room
-
-        status_t pickItUp(PlayableCharacter& player,Window& win);
-        // Makes the player pick up what is beneath him, if possible, printing messages to the given win
-        // Returns 2 if the picked up item was the last special item (which means victory), -2 otherwise
-
-        status_t handleBattles(PlayableCharacter& player, Window& bottom, Window& playerInfo, Window& mapWindow);
-        // Handles the battle with monsters nearby, if present
-        // Returns a LOSS status upon a lost battle, DEFAULT if no battle is lost 
 
         void writeInfo(Window& win,PlayableCharacter& pg);
         //  Scrive le informazioni nella finestra a destra, fornendo i dati su oggetti posseduti e sulle statistiche del PG
@@ -107,7 +108,6 @@ int Luck (int luck);
 
 status_t promptExit(Window& win);
 // Prompts an exit confirmation request on the given window
-// Returns 0 if the exit request is confirmed, -2 otherwise
+// Returns QUIT if the exit request is confirmed, DEFAULT otherwise
 
-
-#endif
+#endif  // LEVEL_H

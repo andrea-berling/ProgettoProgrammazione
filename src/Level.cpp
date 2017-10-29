@@ -11,7 +11,7 @@
 
 using namespace std;
 
-Level::Level(LevelConfig& config, PlayableCharacter& pg):level(config.n),map(config.width,config.height)
+Level::Level(const LevelConfig& config, PlayableCharacter& pg):level(config.n),map(config.width,config.height)
 {
     vector<Item> itemsSet;
     Room R;
@@ -264,7 +264,7 @@ void Level::writeInfo(Window& win,PlayableCharacter& pg){
 
 }
 
-void Level::shopMenu(PlayableCharacter& pg, vector<Item>& itemsSet)
+void Level::shopMenu(PlayableCharacter& pg,vector<Item>& itemsSet)
 {
     int priceMult = 4;
     int items = 3;
@@ -769,7 +769,7 @@ void LevelConfig::newLevel()
     monsters = rooms/2;
 }
 
-void Level::spawnItems(int n,vector<Item>& itemsSet, int generatedRooms)
+void Level::spawnItems(const int n,const vector<Item>& itemsSet,const int generatedRooms)
 {
     int id = 0;
     unordered_set<Point> spots;

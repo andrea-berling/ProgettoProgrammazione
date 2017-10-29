@@ -7,19 +7,17 @@
 
 #define INF INT_MAX
 
-class Point
+struct Point
 {
-    public: 
-
         int x,y;
         Point();
-        Point(int x,int y);
+        Point(const int x, const int y);
 };
 
-bool operator ==(Point p, Point q);
+bool operator ==(const Point p, const Point q);
 // returns true if two Points have the same coordinates
 
-bool operator !=(Point p, Point q);
+bool operator !=(const Point p, const Point q);
 // returns true if two Points have the same coordinates
 
 
@@ -27,7 +25,7 @@ namespace std
 {
     template <> struct hash<Point>
     {
-        size_t operator()(Point n) const;
+        size_t operator()(const Point n) const;
         // needed to generate a hash code out of a node
     };
 }
@@ -48,40 +46,40 @@ class Graph
         ~Graph();
         // Destructor
         
-        bool insertPoint(Point p);
+        bool insertPoint(const Point p);
         // Inserts a node into the graph
         // Returns true if inserted correctly, false otherwise
 
-        bool insertEdge(Point p, Point q);
+        bool insertEdge(const Point p, const Point q);
         // Inserts an edge into the graph
         // Returns true if inserted correctly, false otherwise
 
-        bool deletePoint(Point u);
+        bool deletePoint(const Point u);
         // Deletes a node in the graph
         // Returns true if deleted correctly, false otherwise
 
-        bool deleteEdge(Point u, Point v);
+        bool deleteEdge(const Point u, const Point v);
         // Deletes an edge in the graph
         // Returns true if deleted correctly, false otherwise
 
-        std::unordered_set<Point>* adj(Point u);
+        std::unordered_set<Point>* adj(const Point u);
         // Returns the set of all the nodes adiacient to u
 
-        std::unordered_set<Point>* V();
+        std::unordered_set<Point>* V() const;
         // Retruns the set of all nodes in the graph
 
-        int n();
-        // Retuns the size of the nodes set
+        int n() const;
+        // Retuns the number of nodes
         
 };
 
-void shortestPath(Graph& G, Point r,std::unordered_map<Point,Point>& T);
+void shortestPath(Graph& G, const Point r,std::unordered_map<Point,Point>& T);
 // Find the shortest path between point r and all other points in the graph G
 
 void retrievePath(std::list<Point>& l,std::unordered_map<Point,Point>& T,Point p,Point q);
-// Retrieves the path between one and two, saved in the map T and stores it in l
+// Retrieves the path between one and two, saved in the map T, and stores it in l
 
-int w(Point p, Point q);
+int w(const Point p, const Point q);
 // Returns the walking distance between p and q in the map (how many steps are required to get to q from p)
 
 #endif

@@ -23,15 +23,16 @@ class Menu
         int ncols;
         int x;
         int y;
+
         void createMenu();
-        // Once the items and choices vectors have been filled, creates a new menu
+        // Once the items and choices arrays have been filled, creates a new menu
 
     public:
 
-        Menu(int x, int y, std::vector<std::string> options);
-        // Given two position coordinates and the options, as strings in a list, it creates a new menu
+        Menu(const int x, const int y, std::vector<std::string> options);
+        // Given two position coordinates and the options, as strings in a vector, it creates a new menu
 
-        Menu(int x, int y, int n, std::string option1, ...);
+        Menu(const int x, const int y, const int n, const std::string option1, ...);
         // Given two position coordinates, the number of the options and the options, as strings, it creates a new menu
 
         ~Menu();
@@ -41,10 +42,10 @@ class Menu
         // Lets an user navigate the menu and choose an option from it
         // Returns an int correponding to the positon of the choice (0 is first)
 
-        int getX();
+        int getX() const;
         // Returns the x coordinate of the top left corner of the window
 
-        int getY();
+        int getY() const;
         // Returns the y coordinate of the top left corner of the window
 };
 

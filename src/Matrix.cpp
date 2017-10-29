@@ -13,7 +13,7 @@ Matrix<T>::Matrix(const Matrix& m):Matrix(m.rows,m.cols)
 }
 
 template<typename T>
-Matrix<T>::Matrix(int rows, int cols) : rows(rows), cols(cols)
+Matrix<T>::Matrix(const int rows, const int cols) : rows(rows), cols(cols)
 {
    matrix = new T* [rows];
    for(int i = 0; i < rows; i++)
@@ -31,14 +31,14 @@ Matrix<T>::~Matrix()
 // Destructor
 
 template<typename T>
-T& Matrix<T>::operator () (int row, int col)
+T& Matrix<T>::operator () (const int row, const int col) const
 {
     return matrix[row][col];
 }
 // Returns a reference variable to A[y][x]
 
 template<typename T>
-bool Matrix<T>::isEmpty(int i, int j)
+bool Matrix<T>::isEmpty(const int i, const int j)
 {
     return matrix[i][j] == T();     // if i and j are invalid indexes, a segmentation fault error will occurr
     // Could implement differently with three return values(0 for false,1 for true, 2 for invalid indexes)

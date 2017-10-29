@@ -16,16 +16,16 @@ class Window
 
     public:
 
-        Window(int x, int y, int nlines, int ncols);
+        Window(const int x, const int y, const int nlines, const int ncols);
         // Given position coordinates and the number of lines and columns, it creates a new window
 
         ~Window();
         // Destructor
 
-        void readFromFile(std::string filename);
+        void readFromFile(const std::string filename);
         // Given a filename, it writes its contents in the window
 
-        void printLine(std::string);
+        void printLine(const std::string);
         //  Stampa una stringa e poi va a capo
 
         void separator();
@@ -41,7 +41,7 @@ class Window
         // Cleans the window, keeping the box
         // Use only with boxed windows
 
-        WINDOW *getWin();
+        WINDOW *getWin() const;
         // Returns the WINDOW pointer
 
         void show();
@@ -55,6 +55,7 @@ class Window
 
 };
 
-std::string wrap(std::string text,unsigned int maxLength);
+std::string wrap(const std::string text,const unsigned int maxLength);
 // Given a text and a limit length, it wraps the text to respect the given text width and returns it as a string
+
 #endif

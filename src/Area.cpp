@@ -4,7 +4,7 @@
 Area::Area():p({-1,-1}),width(-1),height(-1)
 {}
 
-Area::Area(Point position, int width, int height) : p(position), width(width), height(height)
+Area::Area(const Point position, const int width, const int height) : p(position), width(width), height(height)
 {}
 
 
@@ -16,25 +16,25 @@ Area::Area(const Area& A)
 }
 // Copy constructor
 
-Point Area::getCorner()
+Point Area::getCorner() const
 {
     return p;
 }
 // Returns the upper left corner
 
-int Area::getWidth()
+int Area::getWidth() const
 {
     return width;
 }
 // Returns the width of the room
 
-int Area::getHeight()
+int Area::getHeight() const
 {
     return height;
 }
 // Returns the height of the room
 
-void Area::split(Area& A1, Area& A2, bool vertical)
+void Area::split(Area& A1, Area& A2,const bool vertical) const
 {
     int offset,x1,y1,w1,h1,x2,y2,w2,h2;
     if(vertical)
@@ -71,7 +71,7 @@ void Area::split(Area& A1, Area& A2, bool vertical)
     A2 = Area({x2,y2},w2,h2);
 }
 
-void Area::splitInHalf(Area& A1, Area& A2, bool vertical)
+void Area::splitInHalf(Area& A1, Area& A2, const bool vertical) const
 {
     int x1,y1,w1,h1,x2,y2,w2,h2;
     if(vertical)
@@ -108,13 +108,13 @@ void Area::splitInHalf(Area& A1, Area& A2, bool vertical)
 
 namespace std
 {
-    size_t hash<Area>::operator()(Area A) const
+    size_t hash<Area>::operator()(const Area A) const
     {
         return hash<Point>()(A.getCorner());
     }
 }
 
-bool operator==(Area A1,Area A2)
+bool operator==(const Area A1,const Area A2)
 {
     return (A1.p == A2.p && A1.width == A2.width && A1.height == A2.height);
 }

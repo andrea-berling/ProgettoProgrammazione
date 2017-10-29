@@ -22,43 +22,43 @@ class Tile
         Tile();
         // Default constructor
 
-        Tile(tile_t type);
+        Tile(const tile_t type);
         // Given a type, it creates a new tile (not visible)
 
-        Tile(tile_t type, bool visible);
+        Tile(const tile_t type, const bool visible);
         // Given a type and a visible state, it creates a new tile
 
-        Tile(tile_t type, std::string id, bool visible);
+        Tile(const tile_t type, const std::string id, const bool visible);
         // Given a type, a visible state and an id it creates a new tile
 
-        tile_t getType();
+        tile_t getType() const;
         // Returns the type of the tile
 
-        std::string getId();
+        std::string getId() const;
         // Returns the id of the tile
         
-        std::string getUpperLayer();
+        std::string getUpperLayer() const;
         // Returns the id of the item/monster on the tile, if present
 
-        bool isVisible();
+        bool isVisible() const;
         // Returns true if the tile is visible
 
-        char getSymbol();
+        char getSymbol() const;
         // Returns the symbol of the tile
 
-        void setVisible(bool b);
+        void setVisible(const bool b);
         // Sets the visible state of the tile
 
-        void setType(tile_t type);
+        void setType(const tile_t type);
         // Sets the type of the tile
 
-        void setId(std::string id);
+        void setId(const std::string id);
         // Sets the id of the tile
 
-        void setUpperLayer(std::string id);
+        void setUpperLayer(const std::string id);
         // Sets the id of the tile
 
-        bool isWalkable();
+        bool isWalkable() const;
         // Returns true if the tile is walkable
 };
 

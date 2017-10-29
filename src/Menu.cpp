@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Menu::Menu(int x, int y, std::vector<string> options):x(x),y(y)
+Menu::Menu(const int x, const int y, std::vector<string> options):x(x),y(y)
 {
     int i;
     nlines = options.size();
@@ -35,7 +35,7 @@ Menu::Menu(int x, int y, std::vector<string> options):x(x),y(y)
     createMenu();
 }
 
-Menu::Menu(int x, int y, int n, string option1, ...):x(x),y(y)
+Menu::Menu(const int x,const int y,const int n, const string option1, ...):x(x),y(y)
 {
     va_list args;
     va_start(args,option1);
@@ -130,12 +130,12 @@ int Menu::handleChoice()
     return choice;
 }
 
-int Menu::getX()
+int Menu::getX() const
 {
     return x;
 }
 
-int Menu::getY()
+int Menu::getY() const
 {
     return y;
 }
