@@ -119,10 +119,13 @@ int main()
             }
             else
             {
-                mapWindow.clear();
-                infoWindow.clear();
-                bottomWindow.clear();
-                showEpilogue(status);
+                if(status != QUIT)
+                {
+                    mapWindow.clear();
+                    infoWindow.clear();
+                    bottomWindow.clear();
+                    showEpilogue(status);
+                }
                 done = true;
             }
         }
