@@ -239,7 +239,9 @@ void setCharacter(PlayableCharacter& player, int character)
 
 list<Level>::iterator createLevel(list<Level>& levels,LevelConfig& config, PlayableCharacter& player, Window& mapWindow, Window& infoWindow)
 {
-    list<Level>::iterator it = levels.insert(levels.end(),Level(config,player));
+    list<Level>::iterator it;
+    levels.push_back(Level(config,player));
+    it = --levels.end();   // last element of the list
     (*it).placeCharacter(player,RANDOM);   // place the player in a random room
     (*it).printMap(player.getPosition(),mapWindow);
     (*it).writeInfo(infoWindow,player);
