@@ -25,39 +25,39 @@ Monster::Monster(string Name, int LV) {
     awake = false;
 
     if (Name == "Goblin"){  //  Mostri diversi statistiche e simboli diversi
-        atk = 2 * (LV +1 );
-        def = 2 + LV;
-        lp =2 * LV;
+        atk = 3 + LV;
+        def = 3 * LV;
+        lp = 8 + LV;
         this->symbol = 'G';
     }
 
     if (Name == "Troll"){
-        if ((3 + LV) > 50) //  I mostri hanno punti difesa di 50 massimo
+        if ((4 * LV) > 50) //  I mostri hanno punti difesa di 50 massimo
             def = 50;
         else
-            def = 4 + LV;
+            def = 4 * LV;
 
         atk = 3 + LV;
-        lp = 3 + LV;
+        lp = 6 + LV;
         this->symbol = 'T';
     }
 
     if (Name == "Golem"){
-        if ((2 * (LV + 1)) > 50)
+        if ((4 * (LV + 1)) > 50)
             def = 50;
         else
-            def = 2 * (LV + 1);
+            def = 4 * (LV + 1);
 
         atk = 2 + LV;
-        lp = 3 + LV;
+        lp = 4 + (2*LV);
         this->symbol = 'O';
     }
 
     if (Name == "Gineppino"){
-        if ((5 * LV) > 50)
+        if ((4 * LV) > 50)
             def = 50;
         else
-            def = 3 * LV;
+            def = 4 * LV;
 
         atk = 2 * LV;
         lp = 4 * LV;
