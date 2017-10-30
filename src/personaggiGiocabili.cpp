@@ -208,8 +208,8 @@ using namespace std;
         this->LV++;
         int atk = 0, def = 0, lp = 0, mp = 0, luck = 0;
         if (this->Name == "Gaudenzio"){ //  Ogni PG Incrementa le statistiche in modo diverso
-            atk = 2;
-            def = 3;
+            atk = 1;
+            def = 2;
             lp = 2;
             luck = 1;
         }
@@ -221,8 +221,9 @@ using namespace std;
             luck = 1;
         }
         else if (this->Name == "Badore"){
-            atk = 2;
+            atk = 1;
             lp = 1;
+            def = 1;
             luck = 3;
         }
 

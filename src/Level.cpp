@@ -522,7 +522,7 @@ bool Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playab
                                         m.setLP(m.getLP() - Atk_Def(m.getDEF(), (3 * player.getATK())));
                                     } else {
                                         battle_win.printLine("Sei stato maldestro: il nemico contrattacca e perdi un turno!");
-                                        player.setLP(player.getLP() - Atk_Def(player.getDEF(), (2 * m.getATK())));
+                                        player.setLP(player.getLP() - Atk_Def(player.getDEF(), (m.getATK())));
                                         writeInfo(right_win, player);
                                     }
                                     break;
