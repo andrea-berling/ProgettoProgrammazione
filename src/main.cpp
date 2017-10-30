@@ -83,6 +83,7 @@ int main()
 
         setCharacter(player,character);
         currentLevel = createLevel(levels,config,player,mapWindow,infoWindow);                   
+        showInstructions();
         bottomWindow.box();
 
         while(!done)
