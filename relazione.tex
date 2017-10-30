@@ -66,56 +66,26 @@ ecc.) sono eseguite mediante apposite funzioni membro.
 
 \section{La battaglia}
 
-L'inizio della battaglia è caratterizzato da una prima scelta randomica, che decide se il nemico è sufficientemente
-fortunato da attaccare per primo, nel qual caso questa condizione si avveri il  personaggio principale perde il turno e
-di conseguenza si passa alla mano successiva, nella quale inizia per primo il player, il quale può scegliere tra tre
-differenti opzioni:
+Lo svolgimento della battaglia è mostrato al di sotto della mappa, in una finestra nella quale appaiono le statistiche del nemico e le perdite durate gli attacchi da parte di entrambi gli avversari, tenendo aggiornati i parametri del player e del mostro. Inoltre se viene scelto l'inventario verrà aggiornata la finestra degli equipaggiamenti così da permette al giocatore di visionare che parti dell'armatura indossa.
+
+L'inizio della battaglia è caratterizzato dall'attacco del personaggio principale, il quale può scegliere tra tre differenti opzioni:
 \begin{enumerate}
 
-    \item \textbf{Attacco}: il player attacca l'avversario, può scegliere tra due diverse mosse: la prima è l'attacco normale, che
-    toglie all'aversario punti vita in base all'attaco del player e alla difesa del nemico, ed anche in questo caso è
-    presente una scelta randomica, che determina se l'attacco possa o non possa essere critico, così da moltiplicare per due
-    l'attacco del personaggio principale e di conseguenza aumentando il danno al mostro; la seconda riguarda la mossa
-    speciale, che differesce in base al personaggio, infatti Gaudenzio sfrutta la rigenerazione, Peppino l'attacco magico
-    che gli raddoppia l'attacco ed infine Badore che sfrutta l'attacco furtivo per triplicare i danni al nemico, ma che se
-    viene scoperto perde il turno senza poter attaccare.
+    \item \textbf{Attacco}: il player attacca l'avversario, può scegliere tra due diverse mosse:
+ - La prima è l'attacco normale, che toglie all'avversario punti vita in base all'attacco del player e alla difesa del nemico, ed in questo caso è presente una scelta randomica, che determina se l'attacco sarà oppure no critico; se così fosse, il PG ottiene attacco raddoppiato, aumentando il danno inflitto al mostro;
+ - La seconda riguarda la mossa speciale, che differisce in base al personaggio: Gaudenzio sfrutta la rigenerazione (guadagna LP in base al suo livello), Peppino utilizza un attacco magico (attraverso i punti mana raddoppia l'attacco) e Badore sfrutta l'attacco furtivo (può triplicare i danni al nemico, ma se viene scoperto perde il turno e il mostro fa due attacchi).
+Se non viene scelta nessuna delle due opzioni, il player perde un turno per aver sbagliato a digitare, lasciando l'attacco all'avversario.
 
-    \item \textbf{Inventario}: si può consultare l'inventario e guardare quali oggetti sono stati raccolti durante il percorso nel
-    gioco, si possono equipaggiare, disequipaggiare pezzi di armatura e utilizzare i consumabili.
+    \item \textbf{Inventario}: si può consultare l'inventario e guardare gli oggetti, si possono equipaggiare, disequipaggiare, droppare o utilizzare se sono consumabili. Tuttavia si perderà un turno di gioco, consentendo al nemico di attaccare.
 
     \item \textbf{Corruzione}: invece che combattere il nemico, il player può affidarsi a una scelta randomica e e nel qual caso vada a
-    buon fine, può far si che il mostro se ne vada pagando un determinato numero di monete (Cuccuzze).
+    buon fine, può far si che il mostro se ne vada, pagando un determinato numero di monete (Cucuzze).
 \end{enumerate}
 
-
-Nel caso 1 la battaglia tra player e avversario prosegue finchè uno dei due non riesce a sopraffare l'altro e quindi
-azzerargli i punti vita, nel qual caso sia il player a vincere, egli guadagna una somma di denaro che potrà sfruttare
-nello shop del gioco, oppure per corrompere il nemico.  Nel caso opposto, cioè in cui sia il nemico a vincere il gioco
-finisce automaticamente in quanto si è stati sconfitti.
-
-Nel caso 2, invece, si ha solo una fase transitoria in cui il personaggio cerca di equipaggiarsi o rafforzarsi per
-affrontare, con maggiore probabilità di successo, il nemico. Con questa scelta però si perde la possibilità di attaccare
-e si lascia l'attacco all'avversario.
-
-Nel caso 3, si può sfuggiare alla battaglia in qualsiasi momento, sempre che siano soddisfatte le condizioni citate nel
-punto 3.  Lo svolgimento della battaglia è mostrato al di sotto della mappa, in una finestra nella quale appaiono le
-statistiche del nemico e le perdite durate gli attacchi da parte di entrambi gli avversari, tenendo aggiornati i
-parametri del player e del mostro. Inoltre se viene scelto l'inventario verrà aggiornata la finestra degli
-equipaggiamenti così da permette al giocatore di visionare che parti dell'armatura indossa. 
-
-L'inventario è un'opzione che può essere attivata sia durante la perlustrazione della mappa, sia quando si sta
-combattendo contro un mostro. Gli oggetti che si possono salvare al suo interno sono di due tipi: consumabili, quindi
-che una volta usati vengono cancellati dall'inventario perchè hanno un solo utilizzo che modifica le statistiche del
-personaggio principale, mentre gli altri oggetti sono di tipo equipaggiamento di conseguenza possono essere equipaggiati
-oppure disequipaggiati nel qual caso il player li abbia addosso come parte dell'armatura. Gli spazi, invece, che non
-contengono oggetti sono vuoti e vengono contrassegnati dalla scritta "-VUOTO-" così da poter monitorare le capacità
-dell'inventario e degli spazi restanti. Per tutti gli oggeti è inoltre disponibile l'opzione di drop, che consiste nel
-lasciare l'oggetto e poter liberare spazio necessario per un altro oggetto. 
-
-Per rappresentare l'inventario viene creata una finestra sulla mappa che permette di spostarsi tra i vari manufatti e
-permette di scegliere quale sia il più adatto allo scopo del giocatore grazie alla presenza di una finestra lateralmente
-alla lista, nella quale sono mostrate le caratteristiche di ognuno dei manufatti con al di sotto le opzioni sfruttabili,
-che cambiano rispetto al tipo di oggetto che si sta guardando in quel momento.
+Il mostro possiede solo l'attacco normale e il suo colpo potrebbe fallire, mediante una scelta randomica.
+La battaglia tra player e avversario prosegue finché uno dei due non riesce a sopraffare
+l'altro. Se il player vince, guadagna una somma di denaro che dipenderà dal tipo di mostro affrontato.
+Nel caso opposto, cioè se vince il nemico, il gioco finisce in quanto si è stati sconfitti.
 
 \section{I personaggi}
 
@@ -125,12 +95,7 @@ Per quanto riguarda l'inventario, questo fa parte della classe del pg ed è impl
 unordered set, ovvero come un insieme di item senza un ordine particolare. Tale scelta consente di avere
 dei tempi di accesso agli item molto bassi rispetto a un'altra struttura dati. 
 Oltre all'inventario è presente un vettore chiamato equipaggiamento che contiene, appunto,
-gli oggetti che il pg ha equipaggiato. La scelta di un vettore piuttosto che di una lista o una qualsiasi
-altra struttura, è dovuta al fatto che in tal modo si possono distinguere (usando l'indice del vettore) 
-item dello stesso tipo: 0 indica l'elmo, 1 la corazza, 2 la spada e così via; questo significa che solo
-un elmo può occupare un posto nel vettore, solo una corazza e via dicendo. Gli Item consumabili, ovvero 
-quelli che una volta utilizzati vengono rimosssi dall'inventario, non sono equipaggiabili e pertanto, 
-dato che il vettore equipaggiamento ha dimensione pari a 5, i consumabili hanno indice/tipo pari a 5.
+gli oggetti che il pg ha equipaggiato.
 
 Oltre ai metodi set, get, pickItem, dropItem.. questa classe contiene anche un metodo LVLup che si occupa
 di far salire le statistiche del PG, in relazione al PG scelto: il guerriero non otterrà mana e avrà un
@@ -150,58 +115,44 @@ determinato oggetto: alcuni item sono maschili, altri femminili e altri al plura
 \section{Gli oggetti}
 
 La classe Item ha al suo interno tutti i campi relativi alle statistiche modificate, alla posizione sulla
-mappa, al simbolo con la quale verrà visualizzato e al fatto se l'item è visibile o meno sulla mappa.
+mappa, al simbolo con la quale verrà visualizzato e al fatto se l'item è visibile o meno.
 
-Due sono i campi fondamentali: il campo id e il campo type.
-Il campo id consente di identificare univocamente un Item, ovvero di distinguere più item tra loro,
-anche con lo stesso nome. È stato necessario implementare tale campo perchè potrebbero comparire più 
-oggetti identici nella mappa. Per quanto riguarda il campo type, questo è l'indice con la quali gli item
-verranno inseriti nel vettore equipaggiamento; come detto prima, un item di tipo elmo avrà type uguale a
+Due sono i campi fondamentali: id e type.
+Il campo id consente di identificare univocamente un Item, ovvero di distinguere più oggetti tra loro,
+anche con lo stesso nome. Questa scelta è stata necessaria perchè potrebbero comparire più 
+oggetti identici sulla mappa. Per quanto riguarda il campo type, questo è l'indice con la quali gli item
+verranno inseriti nel vettore equipaggiamento; un item di tipo elmo avrà type uguale a
 0, un item di tipo corazza avrà type uguale a 1 e così via. I consumabili sono di type 5 (il vettore 
 equipaggiamento arriva fino all'indice 4). 
 
-È stato necessario confrontare gli item tra loro, pertanto sono stati creati due metodi per poter
-decidere se due item sono uguali o diversi; due item sono uguali se hanno lo stesso id, diversi altrimenti.
+È stato necessario confrontare gli oggetti tra loro, pertanto sono stati creati due metodi per poter
+decidere se due item sono uguali o diversi; sono uguali se hanno lo stesso id, diversi altrimenti.
+
+\subsection{Inventario}
+Per rappresentare l'inventario viene creata una finestra contenente un menù che permette di spostarsi tra i vari Item; in una finestra laterale vengono mostrate le statistiche e al di sotto di queste ci sono le opzioni disponibili.
+
+L'inventario si può consultare sia durante la perlustrazione della mappa, sia quando 
+si sta combattendo contro un mostro. 
+Se l'oggetto è un consumabile, una volta usato viene cancellato dall'inventario; 
+Se l'oggetto è equipaggiabile, può essere indossato o rimosso. Gli spazi che non contengono oggetti sono vuoti e vengono contrassegnati dalla scritta "-VUOTO-" così da poter monitorare le capacità dell'inventario. 
+
+Per tutti gli oggetti è inoltre disponibile l'opzione di drop, che consiste nel lasciare l'oggetto, liberando così uno slot.
 
 \section{I mostri}
 
 La classe Monster contiene i campi relativi alle statistiche, al livello, alla posizione e al nome.
 Ha poi altri campi tra cui id (che funziona come per gli item) e symbol che, in base al mostro, indica
 il carattere con cui quel nemico verrà stampato sulla mappa.
-È importante anche il campo awake, true se il mostro è sveglio e false altrimenti. Questo campo è utile
-per far sì che il mostro stia fermo fino a quando la stanza in cui si trova non viene scoperta dal PG.
 
 Anche qui sono presenti i vari metodi set e get e i metodi necessari per confrontare due mostri e vedere
 se sono uguali oppure no (in base all'id).
 
-\subsection{moveMonster}
-Questo metodo consente lo spostamento dei mostri sulla mappa. Prevede due tipi di spostamenti per i
-mostri: casuale oppure inseguimento del PG. Quando il PG lascia la stanza i mostri iniziano a muoversi
-casualmente, senza uscire da questa. La scelta è stata necessaria perchè altrimenti, il PG sarebbe
-sempre costretto ad affrontare i mostri che lo pedinerebbero lungo tutti i corridoi.	
+Il metodo moveMonster gestisce lo spostamento dei mostri sulla mappa. Prevede due casi: 
+casuale oppure inseguimento del PG (se nella stessa stanza). Quando il PG lascia la stanza i mostri iniziano a muoversi casualmente, senza uscire da questa. La scelta è stata necessaria perchè altrimenti, 
+il PG sarebbe sempre costretto ad affrontare i mostri che lo bloccherebbero nei corridoi.	
 
-\subsection{writeInfo}
-
-Tale metodo è utile per dare formazioni fondamentali al giocatore: grazie alla finestra generata,
-l'utente conosce le statistiche del pg, il livello in cui si trova e quanto manca al raggiungimento
-dell'obbiettivo che gli consente di vincere il gioco. La finestra inoltre ricorda qual è l'abilità del
-PG scelto all'inizio.
-
-\subsection{writeEquipment}
-
-Il funzionamento è simile a writeInfo ma stampa a schermo gli oggetti equipaggiati. Nell'implementare
-tale metodo è stato tenuto conto anche del suffisso richiesto dai vari oggetti, tramite la funzione 
-suffix.
-
-\subsection{shopMenu}
+\section{Lo Shop}
 
 Ogni volta che si sale di livello il giocatore ha la possibilità di acquistare uno tra tre oggetti per 
-il PG, consumabili o equipaggiabili. Per non creare confusione nella schermata di gioco, il menù dello shop compare dove dovrebbe comparire la mappa e una volta comprato un oggetto (o dichiarato lo stato di
-povertà) il menù si chiude e il nuovo livello viene stampato. Affinchè non vengano presentati tre item
-identici, è stata utilizzata una funzione (generateKPermutation) per generare una disposizione di 3
-oggetti. Per garantire un buon bilanciamento del gioco, i tre oggetti hanno prezzo relativo alla loro
-rarità: quando vengono presi dal file, tramite la funzione retrieveItems, vengono inseriti ordinatamente
-in un vettore. L'ordine è stato deciso in base alla rarità: rarità e indice del vettore sono direttamente
-proporzionali, consentendo di generare il prezzo relativo all'item sulla base del suo indice.
-
+il PG. Una volta comprato un oggetto (o dichiarato lo stato di povertà) il menù si chiude e il nuovo livello viene stampato. Affinchè non vengano presentati tre oggetti identici, è stata utilizzata una funzione (generateKPermutation) per generare una disposizione di 3 oggetti. Per garantire un buon bilanciamento del gioco, i tre oggetti hanno prezzo relativo alla loro rarità, ovvero all'indice con cui sono stati inseriti nel vettore ItemsSet dalla funzione retrieveItems.
 \end{document}
