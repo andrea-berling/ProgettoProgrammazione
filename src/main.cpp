@@ -176,17 +176,17 @@ int playerChoiceMenu()
             case 0:
                 name = "Gaudenzio";
                 filename += "gaudenzio.desc";
-                stats = "LP: 15 MP: 0 DEF: 20 ATK: 12 LUCK: 5 COINS: 30";
+                stats = "LP: 15 MP: 0 DEF: 15 ATK: 9 LUCK: 5 COINS: 30";
                 break;
             case 1:
                 name = "Peppino";
                 filename += "peppino.desc";
-                stats = "LP: 10 MP: 9 DEF: 10 ATK: 8 LUCK: 5 COINS: 30";
+                stats = "LP: 10 MP: 9 DEF: 8 ATK: 5 LUCK: 5 COINS: 30";
                 break;
             case 2:
                 name = "Badore";
                 filename += "badore.desc";
-                stats = "LP: 10 MP: 0 DEF: 5 ATK: 12 LUCK: 10 COINS: 60";
+                stats = "LP: 10 MP: 0 DEF: 5 ATK: 8 LUCK: 12 COINS: 60";
                 break;
             case 3:
                 done = true;
@@ -225,13 +225,13 @@ void setCharacter(PlayableCharacter& player, int character)
     switch(character)
     {
         case 0:
-            player = PlayableCharacter(15,0,20,12,5,30,"Gaudenzio");
+            player = PlayableCharacter(15,0,15,9,5,30,"Gaudenzio");
             break;
         case 1:
-            player = PlayableCharacter(10,9,10,8,5,30,"Peppino");
+            player = PlayableCharacter(10,9,8,5,5,30,"Peppino");
             break;
         case 2:
-            player = PlayableCharacter(10,0,5,12,10,60,"Badore");
+            player = PlayableCharacter(10,0,5,8,12,60,"Badore");
             break;
     }
 }
