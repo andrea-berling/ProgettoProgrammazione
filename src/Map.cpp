@@ -348,7 +348,7 @@ Point Map::placeStairs(tile_t type, int x, int y)
         {
             p = {rand(x2+2,x2+width-3),rand(y2+2,y2+height-3)}; // the stairs can't be near an ex2it
         }
-        while((*this)(p.x,p.y).getUpperLayer() != "");
+        while((*this)(p.x,p.y).getUpperLayer() != "" && (*this)(p.x,p.y).getType() == DOWN_STAIRS);
         (*this)(p.x,p.y).setType(type);
     }
     else if (type == DOWN_STAIRS && x != -1 && y != -1)
