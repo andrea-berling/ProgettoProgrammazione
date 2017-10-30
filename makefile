@@ -1,6 +1,6 @@
 CC=g++
 SRC=src
-CFLAGS=-I include -g -std=c++11
+CFLAGS=-I include -std=c++11
 CURSES=-lpanel -lncurses -lmenu -ltinfo
 BUILD=build
 DEPS=utility.h
