@@ -75,10 +75,6 @@ using namespace std;
         return min(this->LUCK,30);  // La fortuna masssima può arrivare fino a 30
     }
 
-    int PlayableCharacter::getLuckMAX() {
-        return this->LUCKMAX;
-    }
-
     int PlayableCharacter::getLV(){
         return this->LV;
     }

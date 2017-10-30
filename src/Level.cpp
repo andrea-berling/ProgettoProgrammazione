@@ -512,12 +512,13 @@ bool Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playab
                                     if (player.getMP() > 3) {
                                         battle_win.printLine("Stai usando 3 mana: attacco duplicato!");
                                         m.setLP(m.getLP() - Atk_Def(m.getDEF(), (2 * player.getATK())));
+                                        player.setMP(player.getMP() - 3);
                                         writeInfo(right_win, player);
                                     }
                                     break;
 
                                 case 'B':   //badore
-                                    if (Luck(player.getLuck()) == 1) {
+                                    if (Luck(player.getLuck() + 20) == 1) { //Luck + 20 perchè altrimenti è troppo raro
                                         battle_win.printLine("Il nemico non ti vede: attacco triplicato!");
                                         m.setLP(m.getLP() - Atk_Def(m.getDEF(), (3 * player.getATK())));
                                     } else {
