@@ -171,21 +171,25 @@ int playerChoiceMenu()
     {
         string filename = "resources/descriptions/";
         string name;
+        string classe;
         switch(choice)
         {
             case 0:
                 name = "Gaudenzio";
+                classe = "Guerriero";
                 filename += "gaudenzio.desc";
                 stats = "LP: 15 MP: 0 DEF: 15 ATK: 9 LUCK: 5 COINS: 30";
                 break;
             case 1:
                 name = "Peppino";
+                classe = "Mago";
                 filename += "peppino.desc";
                 stats = "LP: 10 MP: 9 DEF: 8 ATK: 5 LUCK: 5 COINS: 30";
                 break;
             case 2:
                 name = "Badore";
                 filename += "badore.desc";
+                classe = "Ladro";
                 stats = "LP: 10 MP: 0 DEF: 5 ATK: 8 LUCK: 12 COINS: 60";
                 break;
             case 3:
@@ -196,6 +200,9 @@ int playerChoiceMenu()
         {
             description.clear();
             description.printLine(name);
+            description.printLine("");
+            description.printLine("Classe: " + classe);
+            description.printLine("");
             description.readFromFile(filename);
             description.separator();
             description.printLine(stats);
