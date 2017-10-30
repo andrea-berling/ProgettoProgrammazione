@@ -562,8 +562,7 @@ bool Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playab
                     break;
 
                 case 'r':
-
-                    if (Luck(player.getLuck()) == 1){
+                    if (Luck(player.getLuck() + 30) == 1){
                         battle_win.printLine("Per corrompere il mostro devi dare " + to_string(m.getLV()*5) + " Cucuzze");
 
                         if (player.getCoins() < m.getLV()*2){
@@ -585,7 +584,7 @@ bool Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playab
                                 player.setCoins(player.getCoins() - m.getLV()*5);
 
                                 battle_win.clean();
-                                battle_win.printLine("Hai corrotto il mostro, se n'è andato");
+                                battle_win.printLine("Hai corrotto il mostro, se n'e' andato");
                                 battle_win.printLine("Hai dovuto pagare " + to_string(m.getLV()*5) + " Cucuzze");
                             }
                             else
@@ -631,7 +630,7 @@ bool Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playab
                 writeInfo(right_win, player);
             }
 	
-    	    if (m.getLP() > 0 && k == 0){
+    	    if ((m.getLP() > 0) && (!noAttack) && (!escape) && k == 0){
 	            battle_win.clean();
 	            battle_win.printLine("L'avversaerio e' maldestro, fallisce l'attacco");
                 getch();
@@ -672,9 +671,9 @@ int Luck (int luck){
     i = rand() % 100 + 1;
     
     if (i <= luck)    // se i <= della fortuna del pg allora viene effettuato il critico (atk*2)
-        return 1;
+        return 1; 
     else
-        return 0;
+        return 0; 
 }
 
 status_t promptExit(Window& win)
