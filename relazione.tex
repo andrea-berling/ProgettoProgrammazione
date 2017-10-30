@@ -52,15 +52,15 @@ Per passare da un livello all'altro si utilizzano delle scale. Si hanno sia scal
 tornare indietro di un livello, fatta ovviamente eccezione per il primo livello.
 
 I livelli vengono mantenuti in una lista ed il passaggio da un livello ad un altro corrisponde all'incremento o
-decremento di un iteratore che punta al livello corrente. Se la lista "finisce" un nuovo livello viene creato.
+decremento di un iteratore che punta al livello corrente. Se la lista ``finisce'' un nuovo livello viene creato.
 
 \section{Grafica}
 
 Per la parte grafica del gioco si è utilizzata la libreria ncurses insieme alle librerie aggiuntive menu e
-panel, che definiscono alcuni "widget" per ncurses che ne rendono l'utilizzo pratico più agevole. Le strutture dati che
-rappresentano le finestre ed i menù in ncurses sono state "racchiuse" in dei wrapper ad oggetti. In questo modo la
+panel, che definiscono alcuni ``widget'' per ncurses che ne rendono l'utilizzo pratico più agevole. Le strutture dati che
+rappresentano le finestre ed i menù in ncurses sono state ``racchiuse'' in dei wrapper ad oggetti. In questo modo la
 creazione di una finestra o di un menù è resa più agevole tramite l'utilizzo di appositi costruttori, e una volta che
-la loro "vita utile" termina la memoria occupata viene liberata automaticamente tramite appositi distruttori. Inoltre le
+la loro ``vita utile'' termina la memoria occupata viene liberata automaticamente tramite appositi distruttori. Inoltre le
 azioni di uso comune (come la stampa di una linea, la pulizia di una finestra, la scelta di un'opzione di un menu,
 ecc.) sono eseguite mediante apposite funzioni membro.
 
@@ -72,8 +72,17 @@ L'inizio della battaglia è caratterizzato dall'attacco del personaggio principa
 \begin{enumerate}
 
     \item \textbf{Attacco}: il player attacca l'avversario, può scegliere tra due diverse mosse:
- - La prima è l'attacco normale, che toglie all'avversario punti vita in base all'attacco del player e alla difesa del nemico, ed in questo caso è presente una scelta randomica, che determina se l'attacco sarà oppure no critico; se così fosse, il PG ottiene attacco raddoppiato, aumentando il danno inflitto al mostro;
- - La seconda riguarda la mossa speciale, che differisce in base al personaggio: Gaudenzio sfrutta la rigenerazione (guadagna LP in base al suo livello), Peppino utilizza un attacco magico (attraverso i punti mana raddoppia l'attacco) e Badore sfrutta l'attacco furtivo (può triplicare i danni al nemico, ma se viene scoperto perde il turno e il mostro fa due attacchi).
+ 	\begin{itemize}
+
+	     \item La prima è l'attacco normale, che toglie all'avversario punti vita in base all'attacco del player e
+	     alla difesa del nemico, ed in questo caso è presente una scelta randomica, che determina se l'attacco sarà
+	     oppure no critico; se così fosse, il PG ottiene attacco raddoppiato, aumentando il danno inflitto al
+	     mostro;
+	     \item La seconda riguarda la mossa speciale, che differisce in base al personaggio: Gaudenzio sfrutta la
+	     rigenerazione (guadagna LP in base al suo livello), Peppino utilizza un attacco magico (attraverso i punti
+	     mana raddoppia l'attacco) e Badore sfrutta l'attacco furtivo (può triplicare i danni al nemico, ma se viene
+	     scoperto perde il turno e il mostro fa due attacchi).
+	\end{itemize}
 Se non viene scelta nessuna delle due opzioni, il player perde un turno per aver sbagliato a digitare, lasciando l'attacco all'avversario.
 
     \item \textbf{Inventario}: si può consultare l'inventario e guardare gli oggetti, si possono equipaggiare, disequipaggiare, droppare o utilizzare se sono consumabili. Tuttavia si perderà un turno di gioco, consentendo al nemico di attaccare.
@@ -103,9 +112,6 @@ incremento di punti vita mentre il mago avrà più mana e meno punti vita; il la
 fortuna. I personaggi salgono di livello man mano che si scoprono nuovi livelli: se ci troviamo per la prima volta al
 livello n, il PG passerà da livello n-1 a livello n. Questo permette un bilanciamento tra
 le statistiche del PG e quelle dei mostri.
-Da notare che è stato creato un apposito metodo per accedere al vettore equipaggiamento; ciò si è reso
-necessario perchè chiaramente non è possibile restituire un vettore per intero, quindi, dato un indice,
-viene restituito l'elemento presente in quell'indice del vettore equipaggiamento.
 Il metodo showInventory è all'interno della classe personaggi perchè questo ha contribuito a una 
 realizzazione più semplice (dato che così può accedere ai campi del PG). Tale metodo gestisce
 l'interazione dell'utente con l'inventario del suo personaggio.
@@ -128,13 +134,14 @@ equipaggiamento arriva fino all'indice 4).
 È stato necessario confrontare gli oggetti tra loro, pertanto sono stati creati due metodi per poter
 decidere se due item sono uguali o diversi; sono uguali se hanno lo stesso id, diversi altrimenti.
 
-\subsection{Inventario}
+\section{Inventario}
 Per rappresentare l'inventario viene creata una finestra contenente un menù che permette di spostarsi tra i vari Item; in una finestra laterale vengono mostrate le statistiche e al di sotto di queste ci sono le opzioni disponibili.
 
 L'inventario si può consultare sia durante la perlustrazione della mappa, sia quando 
 si sta combattendo contro un mostro. 
 Se l'oggetto è un consumabile, una volta usato viene cancellato dall'inventario; 
-Se l'oggetto è equipaggiabile, può essere indossato o rimosso. Gli spazi che non contengono oggetti sono vuoti e vengono contrassegnati dalla scritta "-VUOTO-" così da poter monitorare le capacità dell'inventario. 
+Se l'oggetto è equipaggiabile, può essere indossato o rimosso. Gli spazi che non contengono oggetti sono vuoti e vengono
+contrassegnati dalla scritta ``-VUOTO-'' così da poter monitorare le capacità dell'inventario. 
 
 Per tutti gli oggetti è inoltre disponibile l'opzione di drop, che consiste nel lasciare l'oggetto, liberando così uno slot.
 
@@ -148,11 +155,17 @@ Anche qui sono presenti i vari metodi set e get e i metodi necessari per confron
 se sono uguali oppure no (in base all'id).
 
 Il metodo moveMonster gestisce lo spostamento dei mostri sulla mappa. Prevede due casi: 
-casuale oppure inseguimento del PG (se nella stessa stanza). Quando il PG lascia la stanza i mostri iniziano a muoversi casualmente, senza uscire da questa. La scelta è stata necessaria perchè altrimenti, 
+casuale oppure inseguimento del PG (se nella stessa stanza). Quando il PG lascia la stanza i mostri iniziano a muoversi
+casualmente, senza uscire da questa. La scelta è stata necessaria perchè altrimenti, 
 il PG sarebbe sempre costretto ad affrontare i mostri che lo bloccherebbero nei corridoi.	
 
 \section{Lo Shop}
 
 Ogni volta che si sale di livello il giocatore ha la possibilità di acquistare uno tra tre oggetti per 
-il PG. Una volta comprato un oggetto (o dichiarato lo stato di povertà) il menù si chiude e il nuovo livello viene stampato. Affinchè non vengano presentati tre oggetti identici, è stata utilizzata una funzione (generateKPermutation) per generare una disposizione di 3 oggetti. Per garantire un buon bilanciamento del gioco, i tre oggetti hanno prezzo relativo alla loro rarità, ovvero all'indice con cui sono stati inseriti nel vettore ItemsSet dalla funzione retrieveItems.
+il PG. Una volta comprato un oggetto (o dichiarato lo stato di povertà) il menù si chiude e il nuovo livello viene
+stampato. Affinchè non vengano presentati tre oggetti identici, è stata utilizzata una funzione (generateKPermutation)
+per generare una disposizione di 3 oggetti. Per garantire un buon bilanciamento del gioco, i tre oggetti hanno prezzo
+relativo alla loro rarità, ovvero all'indice con cui sono stati inseriti nel vettore ItemsSet dalla funzione
+retrieveItems.
+
 \end{document}
