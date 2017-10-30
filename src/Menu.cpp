@@ -103,11 +103,13 @@ int Menu::handleChoice()
         c = wgetch(menuwin);
         switch(c)
 	    {	
+            case 'j':
             case KEY_DOWN:
 		        menu_driver(menu, REQ_DOWN_ITEM);
                 if(choice < nlines - 1)
                     choice++;
 				break;
+			case 'k':
 			case KEY_UP:
 				menu_driver(menu, REQ_UP_ITEM);
                 if(choice > 0)

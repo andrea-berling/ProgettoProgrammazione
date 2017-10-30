@@ -7,8 +7,8 @@
 #include <cstring>
 #include <ncurses.h>
 #include <menu.h>
-#include <errno.h>
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -38,6 +38,9 @@ list<Level>::iterator createLevel(list<Level>& levels, LevelConfig& config, Play
 
 void showCredits();
 // Displays the credits for the game
+
+void showEpilogue(status_t status);
+// Displays the epilogue of the game, based on the given status
 
 int main()
 {	
@@ -116,20 +119,16 @@ int main()
             }
             else
             {
-                switch(status)
+                if(status != QUIT)
                 {
-                    case WIN:
-                        // Victory
-                        break;
-                    case LOSS:
-                        // Loss
-                        break;
+                    mapWindow.clear();
+                    infoWindow.clear();
+                    bottomWindow.clear();
+                    showEpilogue(status);
                 }
-
                 done = true;
             }
         }
-        // Generate the map with the given character
     }
 
     endCurses();
@@ -177,17 +176,17 @@ int playerChoiceMenu()
             case 0:
                 name = "Gaudenzio";
                 filename += "gaudenzio.desc";
-                stats = "LP: 15 MP: 0 DEF: 20 ATK: 12 LUCK: 5 COINS: 30";
+                stats = "LP: 15 MP: 0 DEF: 15 ATK: 9 LUCK: 5 COINS: 30";
                 break;
             case 1:
                 name = "Peppino";
                 filename += "peppino.desc";
-                stats = "LP: 10 MP: 9 DEF: 10 ATK: 8 LUCK: 5 COINS: 30";
+                stats = "LP: 10 MP: 9 DEF: 8 ATK: 5 LUCK: 5 COINS: 30";
                 break;
             case 2:
                 name = "Badore";
                 filename += "badore.desc";
-                stats = "LP: 10 MP: 0 DEF: 5 ATK: 12 LUCK: 10 COINS: 60";
+                stats = "LP: 10 MP: 0 DEF: 5 ATK: 8 LUCK: 12 COINS: 60";
                 break;
             case 3:
                 done = true;
@@ -226,20 +225,22 @@ void setCharacter(PlayableCharacter& player, int character)
     switch(character)
     {
         case 0:
-            player = PlayableCharacter(15,0,20,12,5,30,"Gaudenzio");
+            player = PlayableCharacter(15,0,15,9,5,30,"Gaudenzio");
             break;
         case 1:
-            player = PlayableCharacter(10,9,10,8,5,30,"Peppino");
+            player = PlayableCharacter(10,9,8,5,5,30,"Peppino");
             break;
         case 2:
-            player = PlayableCharacter(10,0,5,12,10,60,"Badore");
+            player = PlayableCharacter(10,0,5,8,12,60,"Badore");
             break;
     }
 }
 
 list<Level>::iterator createLevel(list<Level>& levels,LevelConfig& config, PlayableCharacter& player, Window& mapWindow, Window& infoWindow)
 {
-    list<Level>::iterator it = levels.insert(levels.end(),Level(config,player));
+    list<Level>::iterator it;
+    levels.push_back(Level(config,player));
+    it = --levels.end();   // last element of the list
     (*it).placeCharacter(player,RANDOM);   // place the player in a random room
     (*it).printMap(player.getPosition(),mapWindow);
     (*it).writeInfo(infoWindow,player);
@@ -249,16 +250,30 @@ list<Level>::iterator createLevel(list<Level>& levels,LevelConfig& config, Playa
 void showCredits()
 {
     Window creditsWin(COLS/3 + 10,LINES/3,30,70);
-    creditsWin.printLine("Mappa: Andrea Berlingieri");
-    creditsWin.printLine("Grafica: Andrea Berlingieri");
-    creditsWin.printLine("Livelli: Andrea Berlingieri");
-    creditsWin.printLine("Storia principale: Andrea Berlingieri");
-    creditsWin.printLine("Personaggi principali: Giacomo Puligheddu");
-    creditsWin.printLine("Mostri: Giacomo Puligheddu");
-    creditsWin.printLine("Oggetti: Giacomo Puligheddu");
-    creditsWin.printLine("Storia dei personaggi: Giacomo Puligheddu");
-    creditsWin.printLine("Shop: Giacomo Puligheddu");
-    creditsWin.printLine("Battaglie: Riccardo Bellelli");
-    creditsWin.printLine("Inventario: Riccardo Bellelli");
+    ifstream credits("resources/credits.dat");
+    string line;
+    while(credits)
+    {
+        getline(credits,line);
+        creditsWin.printLine(line);
+    }
+    getch();
+}
+
+void showEpilogue(status_t status)
+{
+    Window epilogueWin(COLS/3,LINES/5,30,70);
+    ifstream file;
+    string filePath="resources/";
+    switch(status)
+    {
+        case WIN:
+            filePath += "victory.dat";
+            break;
+        case LOSS:
+            filePath += "loss.dat";
+            break;
+    }
+    epilogueWin.readFromFile(filePath);
     getch();
 }

@@ -38,7 +38,7 @@ void Level::printMap(const Point playerPos, Window& mapWindow)
 {
     mapWindow.clear();
     WINDOW *win = mapWindow.getWin();
-    move(0,0);
+    wmove(win,0,0);
     for(int i = 0; i < map.getHeight(); i++)
     {
         for (int j = 0; j < map.getWidth(); j++)
@@ -122,6 +122,9 @@ status_t Level::handleTurn(Window& mapWindow, Window& info, Window& bottom,Playa
                 break;
             case 'q':
                 status = promptExit(bottom);
+                break;
+            case '?':
+                showInstructions();
                 break;
         }
 
@@ -363,6 +366,7 @@ void Level::monstersAround(const Point playerPos, std::list<Monster>& list)
 }
 
 void Level::moveMonster(Point playerPosition, Monster& mons){
+    bool done = false;
     int dist;
     Point fmpos;    //  Futura posizione del mostro
     Point mpos; //  Posizione del mostro
@@ -373,7 +377,7 @@ void Level::moveMonster(Point playerPosition, Monster& mons){
     dist = w(playerPosition, mpos);
     if (map(playerPosition).getId() == map(mpos).getId()) { // if the monster and the player are in the same room
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4 && !done; i++) {
             switch (i) {
                 case 0:
                     fmpos.x = mpos.x + 1;
@@ -394,7 +398,10 @@ void Level::moveMonster(Point playerPosition, Monster& mons){
             }
 
             if (validPosition(fmpos, playerPosition) && (w(fmpos, playerPosition) < dist))
+            {
                 mpos = fmpos;
+                done = true;
+            }
 
         }
     }
@@ -515,7 +522,7 @@ bool Level::Battle(Window& battle_win, Window& right_win, Window& mapWin, Playab
                                         m.setLP(m.getLP() - Atk_Def(m.getDEF(), (3 * player.getATK())));
                                     } else {
                                         battle_win.printLine("Sei stato maldestro: il nemico contrattacca e perdi un turno!");
-                                        player.setLP(player.getLP() - Atk_Def(player.getDEF(), (2 * m.getATK())));
+                                        player.setLP(player.getLP() - Atk_Def(player.getDEF(), (m.getATK())));
                                         writeInfo(right_win, player);
                                     }
                                     break;
@@ -699,21 +706,19 @@ status_t Level::pickItUp(PlayableCharacter& player,Window& win)
     Point p = player.getPosition();
 
     if(map(p.x,p.y).getUpperLayer().front() == 'i') // It's an item
+    {
         if(player.pickItem(items[map(p.x,p.y).getUpperLayer()]))    /* returns true if the item was actually picked
                                                                    up*/
         {
             win.printLine("Raccolto " + items[map(p.x,p.y).getUpperLayer()].getName());
-            getch();
-            win.clean();
             items.erase(map(p.x,p.y).getUpperLayer());
             map(p.x,p.y).setUpperLayer("");
         }
         else
-        {
             win.printLine("Hai camminato su " + items[map(p.x,p.y).getUpperLayer()].getName());
-            getch();
-            win.clean();
-        } 
+        getch();
+        win.clean();
+    }
     else    // it's a degree piece
     {
         player.pickUpPiece();
@@ -723,15 +728,12 @@ status_t Level::pickItUp(PlayableCharacter& player,Window& win)
         if(player.getPieces() == NEEDED_PIECES)
         {
             win.printLine("Hai trovato tutti i pezzi della laurea");
-            getch();
             status = WIN;
         }
         else
-        {
             win.printLine("Ne mancano ancora " + to_string(NEEDED_PIECES - player.getPieces()) + ". Tieni duro");
-            getch();
-            win.clean();
-        } 
+        getch();
+        win.clean();
     }
 
     return status;
@@ -809,4 +811,20 @@ void Level::spawnMonsters(const int n, const int generatedRooms)
         map(p.x,p.y).setUpperLayer(ID); // Spawn a monster
         monsters[ID] = m;
     }
+}
+
+void showInstructions()
+{
+    Window instructionsWin(COLS/5,0,30,50);
+    instructionsWin.box();
+    ifstream instructionsFile("resources/instructions.dat");
+    string line;
+
+    while(instructionsFile)
+    {
+        getline(instructionsFile,line);
+        instructionsWin.printLine(line);
+    }
+
+    getch();
 }

@@ -1,0 +1,27 @@
+Movimento: frecce sinistra, giu', su, destra
+	   h,j,k,l
+Inventario: i
+Procedere nelle schermate di testo: qualunque
+Uscire: q
+Aprire questo menu: ?
+Le scale per il livello successivo sono
+contrassegnate da /, quelle per il livello
+precedente da \
+I simboli ? indicano degli oggetti che possono
+essere raccolti
+I simboli * indicano i pezzi di laurea, da
+collezionare per vincere
+Le lettere P,T,G,O indicano vari tipi di mostri
+Le tiles contrassegnate da %% indicano il bordo
+di una stanza, quelle contrassegnate da # un
+muro
+Navigazione nel menu': frecce giu',su per salire
+scendere (oppure j,k), G per andare all'ultima
+opzione, q per selezionare l'ultima opzione, 
+invio per scegliere. In alcuni menu e' 
+necessario confermare la scelta fatta scegliendo
+nuovamente l'opzione scelta (senza scegliere
+un'altra opzione prima)
+Nelle battaglie e nell'inventario i tasti per
+eseguire determinate azioni saranno suggerite a
+testo
